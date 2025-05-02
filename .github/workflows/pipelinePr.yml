@@ -1,0 +1,58 @@
+name: CI/CD Front-end
+
+on:
+  pull_request:
+    paths:
+      - 'frontend/**'
+      - 'backend/**'
+
+jobs:
+  frontend:
+      name: Frontend CI
+      runs-on: ubuntu-latest
+  
+      steps:
+        - uses: actions/checkout@v4
+        - uses: actions/setup-node@v3
+          with:
+            node-version: '18'
+        
+        - name: Install dependencies
+          run: |
+            cd frontend
+            npm install
+  
+        - name: Run ESLint
+          run: |
+            cd frontend
+            npm run lint
+            
+        - name: Run Build
+          run: |
+            cd frontend
+            npm run build
+
+  backend:
+    name: Backend CI
+    runs-on: ubuntu-latest
+  
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0'
+      
+      - name: Install dependencies
+        run: |
+          cd backend
+          dotnet restore
+
+      - name: Run Build
+        run: |
+          cd backend
+          dotnet build --configuration Release
+          
+      - name: Run Tests
+        run: |
+          cd backend
+          echo "Ainda não tem testes"
