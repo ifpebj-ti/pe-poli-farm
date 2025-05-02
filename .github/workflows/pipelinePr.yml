@@ -1,4 +1,4 @@
-name: CI/CD Front-end
+name: Pull requests CI
 
 on:
   pull_request:
