@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Authorization;
 using Webapi.Configuration;
 using WebApi.Config;
+using WebApi.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,10 +13,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Extension methods
-builder.Services.AddDbContextExtension(builder.Configuration);
 builder.Services.AddCorsExtension();
 builder.Services.AddIocDependencies();
 builder.Services.AddSwaggerExtension();
+builder.Services.AddDbContextExtension(builder.Configuration);
+builder.Services.AddAuthenticationExtension(builder.Configuration);
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -27,6 +31,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

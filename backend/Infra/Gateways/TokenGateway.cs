@@ -14,7 +14,7 @@ namespace Infra.Gateways
         public string? CreateToken(UserEntity user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = configuration.GetValue<string>("JWT:KEY");
+            var key = configuration.GetValue<string>("JWT_SETTINGS:SECRET");
             if (key is null) return null;
             var keyEncoded = Encoding.ASCII.GetBytes(key);
             var tokenDescriptor = new SecurityTokenDescriptor()
