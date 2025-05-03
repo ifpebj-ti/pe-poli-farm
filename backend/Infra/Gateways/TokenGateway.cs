@@ -1,5 +1,6 @@
 ﻿using Application.Gateways;
 using Domain.Entites.User;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -8,12 +9,12 @@ using System.Text;
 
 namespace Infra.Gateways
 {
-    public class TokenGateway : ITokenGateway
+    public class TokenGateway(IConfiguration configuration) : ITokenGateway
     {
         public string? CreateToken(UserEntity user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Environment.GetEnvironmentVariable("TOKEN_KEY");
+            var key = configuration.GetValue<string>("JWT:KEY");
             if (key is null) return null;
             var keyEncoded = Encoding.ASCII.GetBytes(key);
             var tokenDescriptor = new SecurityTokenDescriptor()
