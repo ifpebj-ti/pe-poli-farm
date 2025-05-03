@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Infra.Gateways
 {
-    public class GenericgatewayRepository<T>(PolifarmDbContext context) : IGenericGateway<T> where T : BaseEntity
+    public class GenericgatewayRepository<T>(PolifarmDbContext context) : IGenericGatewayRepository<T> where T : BaseEntity
     {
         public async Task AddAsync(T entity)
         {

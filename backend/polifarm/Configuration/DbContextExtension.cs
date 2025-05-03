@@ -9,7 +9,8 @@ namespace Webapi.Configuration
         {
             services.AddDbContext<PolifarmDbContext>(options =>
             {
-                options.UseSqlite(configuration.GetConnectionString("DefaultConnection"));
+                options.UseSqlite(configuration.GetConnectionString("DefaultConnection"),
+                    sql => sql.MigrationsAssembly("WebApi"));
             });
 
             return services;

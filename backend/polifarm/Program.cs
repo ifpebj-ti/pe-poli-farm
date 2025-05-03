@@ -11,6 +11,7 @@ builder.Services.AddSwaggerGen();
 
 // Extension methods
 builder.Services.AddDbContextExtension(builder.Configuration);
+builder.Services.AddCorsExtension();
 
 var app = builder.Build();
 

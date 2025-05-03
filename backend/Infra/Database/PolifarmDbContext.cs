@@ -1,4 +1,7 @@
 ﻿using Domain.Entites;
+using Domain.Entites.AccessCode;
+using Domain.Entites.Profile;
+using Domain.Entites.User;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -11,7 +14,9 @@ namespace Infra.Database
 {
     public class PolifarmDbContext : DbContext
     {
-        public DbSet<BaseEntity> BaseEntities { get; set; }
+        public DbSet<UserEntity> Users { get; private set; }
+        public DbSet<ProfileEntity> Profiles { get; private set; }
+        public DbSet<AccessCodeEntity> AccessCodes { get; private set; }
 
         public PolifarmDbContext(DbContextOptions<PolifarmDbContext> options) : base(options)
         {
