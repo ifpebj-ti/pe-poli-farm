@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace WebApi.Migrations
 {
     [DbContext(typeof(PolifarmDbContext))]
-    [Migration("20250503122721_AdicionadoEntidadeUsuario")]
+    [Migration("20250503144133_AdicionadoEntidadeUsuario")]
     partial class AdicionadoEntidadeUsuario
     {
         /// <inheritdoc />
@@ -66,9 +66,21 @@ namespace WebApi.Migrations
 
             modelBuilder.Entity("Domain.Entites.Profile.ProfileEntity", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("TEXT");
 
                     b.ComplexProperty<Dictionary<string, object>>("Role", "Domain.Entites.Profile.ProfileEntity.Role#Role", b1 =>
                         {
@@ -115,8 +127,8 @@ namespace WebApi.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("TEXT");
 
-                    b.Property<long>("ProfileId")
-                        .HasColumnType("INTEGER");
+                    b.Property<Guid>("ProfileId")
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("TEXT");

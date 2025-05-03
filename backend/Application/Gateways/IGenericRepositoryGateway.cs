@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.Gateways
 {
-    public interface IGenericGatewayRepository<T> where T : BaseEntity
+    public interface IGenericRepositoryGateway<T> where T : BaseEntity
     {
         Task<List<T>> GetAllAsync();
         Task<T?> GetByIdAsync(Guid id);

@@ -9,14 +9,13 @@ using System.Threading.Tasks;
 
 namespace Domain.Entites.Profile
 {
-    public class ProfileEntity
+    public class ProfileEntity : BaseEntity
     {
-        public long Id { get; private set; }
         public Role Role { get; private set; } = null!;
         public ICollection<UserEntity> Users { get; private set; } = null!;
         public ProfileEntity() { }
 
-        public ProfileEntity(long id, Role role)
+        public ProfileEntity(Guid id, Role role)
         {
             Id = id;
             Role = role;

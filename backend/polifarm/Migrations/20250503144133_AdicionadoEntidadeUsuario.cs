@@ -15,9 +15,12 @@ namespace WebApi.Migrations
                 name: "Profiles",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Role_Value = table.Column<string>(type: "TEXT", nullable: false)
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Role_Value = table.Column<string>(type: "TEXT", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -33,7 +36,7 @@ namespace WebApi.Migrations
                     Password = table.Column<string>(type: "TEXT", maxLength: 150, nullable: false),
                     FirstAccess = table.Column<bool>(type: "INTEGER", nullable: false),
                     Active = table.Column<bool>(type: "INTEGER", nullable: false),
-                    ProfileId = table.Column<long>(type: "INTEGER", nullable: false),
+                    ProfileId = table.Column<Guid>(type: "TEXT", nullable: false),
                     Cpf_Value = table.Column<string>(type: "TEXT", maxLength: 15, nullable: false),
                     Email_Value = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     Position_Value = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),

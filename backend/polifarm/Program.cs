@@ -1,4 +1,5 @@
 using Webapi.Configuration;
+using WebApi.Config;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,8 @@ builder.Services.AddSwaggerGen();
 // Extension methods
 builder.Services.AddDbContextExtension(builder.Configuration);
 builder.Services.AddCorsExtension();
+builder.Services.AddIocDependencies();
+builder.Services.AddSwaggerExtension();
 
 var app = builder.Build();
 

@@ -47,7 +47,7 @@ namespace Domain.Entites.User
         public bool FirstAccess { get; set; } = false;
         public bool Active { get; private set; } = true;
         public ProfileEntity Profile { get; private set; } = null!;
-        public long ProfileId { get; private set; }
+        public Guid ProfileId { get; private set; }
         public AccessCodeEntity AccessCode { get; private set; } = null!;
     }
 }
