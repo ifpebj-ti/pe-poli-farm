@@ -29,13 +29,6 @@ jobs:
             context: ./frontend/
             push: true
             tags: ghcr.io/ifpebj-ti/polifarm-frontend:latest
-
-        - name: Scan Docker image (Docker Scout)
-          run: |
-            curl -fsSL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh -o install-scout.sh
-            sh install-scout.sh
-            docker scout quickview ghcr.io/ifpebj-ti/polifarm-frontend:latest
-            docker scout cves ghcr.io/ifpebj-ti/polifarm-frontend:latest
             
   backend:
       name: Backend CI/CD
@@ -60,10 +53,3 @@ jobs:
             context: ./backend/
             push: true
             tags: ghcr.io/ifpebj-ti/polifarm-backend:latest
-
-        - name: Scan Docker image (Docker Scout)
-          run: |
-            curl -fsSL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh -o install-scout.sh
-            sh install-scout.sh
-            docker scout quickview ghcr.io/ifpebj-ti/polifarm-backend:latest
-            docker scout cves ghcr.io/ifpebj-ti/polifarm-backend:latest
