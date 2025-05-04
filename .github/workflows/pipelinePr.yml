@@ -2,9 +2,8 @@ name: Pull requests CI
 
 on:
   pull_request:
-    paths:
-      - 'frontend/**'
-      - 'backend/**'
+    branches: 
+      - main
 
 jobs:
   frontend:
