@@ -1,6 +1,6 @@
 services:
   backend:
-    build: ./backend
+    image: ghcr.io/ifpebj-ti/polifarm-backend:latest
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
@@ -9,7 +9,7 @@ services:
       - app-network
 
   frontend:
-    build: ./frontend
+    image: ghcr.io/ifpebj-ti/polifarm-frontend:latest
     ports:
       - "3000:3000"
     networks:
