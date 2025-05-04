@@ -12,6 +12,9 @@ jobs:
   frontend:
       name: Frontend CI/CD
       runs-on: ubuntu-latest
+      permissions:
+        contents: write
+        packages: write
   
       steps:
         - uses: actions/checkout@v4
@@ -20,7 +23,7 @@ jobs:
         - uses: docker/login-action@v3.4.0
           with:
             registry: ghcr.io
-            username: ifpebj-ti
+            username: ${{ secrets.GH_PACKAGES_USER }}
             password: ${{ secrets.GH_PACKAGES_TOKEN }}
 
         - name: Build and push Docker images
@@ -35,18 +38,4 @@ jobs:
       runs-on: ubuntu-latest
     
       steps:
-        - uses: actions/checkout@v4
-  
-        - name: Docker Login
-        - uses: docker/login-action@v3.4.0
-          with:
-            registry: ghcr.io
-            username: ifpebj-ti
-            password: ${{ secrets.GH_PACKAGES_TOKEN }}
-  
-        - name: Build and push Docker images
-        - uses: docker/build-push-action@v6.16.0
-          with:
-            context: ./backend/
-            push: true
-            tags: ghcr.io/ifpebj-ti/polifarm-backend:latest
+        - run: ls
