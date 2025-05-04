@@ -32,10 +32,3 @@ jobs:
             context: ./frontend/
             push: true
             tags: ghcr.io/ifpebj-ti/polifarm-frontend:latest
-
-  backend:
-      name: Backend CI/CD
-      runs-on: ubuntu-latest
-    
-      steps:
-        - run: ls
