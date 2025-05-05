@@ -42,8 +42,8 @@ jobs:
           run: |
             curl -fsSL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh -o install-scout.sh
             sh install-scout.sh
-            docker scout quickview --local polifarm-frontend:latest
-            docker scout cves --local polifarm-frontend:latest
+            docker scout quickview polifarm-frontend:latest
+            docker scout cves polifarm-frontend:latest
 
   backend:
     name: Backend CI
@@ -80,5 +80,5 @@ jobs:
         run: |
           curl -fsSL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh -o install-scout.sh
           sh install-scout.sh
-          docker scout quickview --local polifarm-backend:latest
-          docker scout cves --local polifarm-backend:latest
+          docker scout quickview polifarm-backend:latest
+          docker scout cves polifarm-backend:latest
