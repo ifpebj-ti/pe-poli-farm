@@ -49,8 +49,8 @@ jobs:
           run: |
             curl -fsSL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh -o install-scout.sh
             sh install-scout.sh
-            docker scout quickview ghcr.io/ifpebj-ti/polifarm-frontend:latest
-            docker scout cves ghcr.io/ifpebj-ti/polifarm-frontend:latest
+            docker scout quickview local://ghcr.io/ifpebj-ti/polifarm-frontend:latest
+            docker scout cves local://ghcr.io/ifpebj-ti/polifarm-frontend:latest
 
   backend:
     name: Backend CI
@@ -70,7 +70,7 @@ jobs:
       - name: Run Build
         run: |
           cd backend
-          dotnet build --configuration Release
+          docker build -t ghcr.io/ifpebj-ti/polifarm-backend:latest .
           
       - name: Run Tests
         run: |
@@ -94,5 +94,5 @@ jobs:
         run: |
           curl -fsSL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh -o install-scout.sh
           sh install-scout.sh
-          docker scout quickview ghcr.io/ifpebj-ti/polifarm-backend:latest
-          docker scout cves ghcr.io/ifpebj-ti/polifarm-backend:latest
+          docker scout quickview local://ghcr.io/ifpebj-ti/polifarm-backend:latest
+          docker scout cves local://ghcr.io/ifpebj-ti/polifarm-backend:latest
