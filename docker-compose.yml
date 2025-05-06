@@ -1,7 +1,7 @@
 services:
   backend:
-    build: ./backend
-    # image: ghcr.io/ifpebj-ti/polifarm-backend:latest
+    # build: ./backend
+    image: ghcr.io/ifpebj-ti/polifarm-backend:latest
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - CONNECTION_STRING=Host=database;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
@@ -11,8 +11,8 @@ services:
       - app-network
 
   frontend:
-    build: ./frontend
-    # image: ghcr.io/ifpebj-ti/polifarm-frontend:latest
+    # build: ./frontend
+    image: ghcr.io/ifpebj-ti/polifarm-frontend:latest
     ports:
       - "3000:3000"
     networks:
