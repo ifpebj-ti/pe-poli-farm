@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { mySchema, typeMyschema } from '../schemas/schema';
 
 export function useCardLogin() {
-  const session = useSession();
+  // const session = useSession();
   const { push } = useRouter();
   const form = useForm<typeMyschema>({
     resolver: zodResolver(mySchema)

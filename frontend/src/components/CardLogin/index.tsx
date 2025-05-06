@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { FiMail, FiLock, FiArrowLeft } from 'react-icons/fi';
+import { FiMail, FiLock } from 'react-icons/fi';
 import { LuLoader } from 'react-icons/lu';
 
 import { Input } from '../ui/input';
