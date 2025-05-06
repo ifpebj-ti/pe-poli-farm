@@ -5,7 +5,7 @@ export const mySchema = z
     email: z
       .string({ required_error: 'Campo obrigatório' })
       .email('Email Inválido'),
-    password: z.string({ required_error: 'Campo obrigatório' })
+    // password: z.string({ required_error: 'Campo obrigatório' })
   })
   .required();
 
