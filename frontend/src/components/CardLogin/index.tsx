@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import Link from 'next/link';
 import { FiMail, FiLock } from 'react-icons/fi';
 import { LuLoader } from 'react-icons/lu';
@@ -17,9 +18,9 @@ import {
 } from '@/src/components/ui/form';
 import { Label } from '../ui/label';
 import { PasswordInput } from '@/src/components/ui/passwordInput';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { mySchema, typeMyschema } from './schemas/schema';
+// import { zodResolver } from '@hookform/resolvers/zod';
+// import { useForm } from 'react-hook-form';
+// import { mySchema, typeMyschema } from './schemas/schema';
 import { useCardLogin } from './hooks/useCardLogin'
 
 export function CardLogin() {
