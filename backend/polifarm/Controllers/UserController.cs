@@ -1,6 +1,7 @@
 ﻿using Application.Usecases.User;
 using Domain.Dtos.User;
 using Domain.Errors;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using prontuario.WebApi.Validators.User;
 using System.ComponentModel.DataAnnotations;
@@ -23,6 +24,7 @@ namespace WebApi.Controllers
         /// <response code="400">Erro na operação</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="409">Erro de conflito</response>
+        [AllowAnonymous]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
