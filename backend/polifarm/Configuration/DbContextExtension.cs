@@ -9,7 +9,12 @@ namespace Webapi.Configuration
         {
             services.AddDbContext<PolifarmDbContext>(options =>
             {
-                options.UseNpgsql(Environment.GetEnvironmentVariable("CONNECTION_STRING"),
+                var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+
+                if (string.IsNullOrEmpty(connectionString))
+                    throw new InvalidOperationException("A variável de ambiente CONNECTION_STRING não foi encontrada ou está vazia.");
+
+                options.UseNpgsql(connectionString,
                     sql => sql.MigrationsAssembly("WebApi"));
             });
 
