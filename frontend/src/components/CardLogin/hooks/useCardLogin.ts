@@ -27,8 +27,10 @@ export function useCardLogin() {
     const response = await FindUserByEmail(data.email);
     console.log('response', response);
     
+    // if (response?.status === 200) {
     if (response) {
-      toast.success('Login efetuado com sucesso');
+      // toast.success('Login efetuado com sucesso');
+      toast.success('Usuário encontrado com sucesso!');
       setJsonText(JSON.stringify(response, null, 2));
       // if (session.data?.user?.firstAccess === 'False') {
       //   push('/novaSenha');
