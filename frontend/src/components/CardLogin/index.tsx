@@ -2,7 +2,7 @@
 
 import React from 'react';
 // import Link from 'next/link';
-import { FiMail } from 'react-icons/fi';
+import { FiArrowLeft, FiLock, FiMail } from 'react-icons/fi';
 import { LuLoader } from 'react-icons/lu';
 
 import { Input } from '../ui/input';
@@ -18,30 +18,31 @@ import {
 } from '@/src/components/ui/form';
 import { Label } from '../ui/label';
 // import { PasswordInput } from '@/src/components/ui/passwordInput';
-// import { zodResolver } from '@hookform/resolvers/zod';
-// import { useForm } from 'react-hook-form';
-// import { mySchema, typeMyschema } from './schemas/schema';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { mySchema, typeMyschema } from './schemas/schema';
 import { useCardLogin } from './hooks/useCardLogin'
+import { PasswordInput } from '../ui/passwordInput';
+import Link from 'next/link';
 
 export function CardLogin() {
-  const { form, submitForm, JsonText } = useCardLogin();
-  // const form = useForm<typeMyschema>({
-  //   resolver: zodResolver(mySchema),
-  //   defaultValues: {
-  //     email: '',
-  //     password: '',
-  //   },
-  // });
+  const { submitForm } = useCardLogin();
+  const form = useForm<typeMyschema>({
+    resolver: zodResolver(mySchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
 
   return (
     <Card className="flex flex-col justify-between bg-[#BED6EF] w-[478px] p-[30px] rounded-[20px] absolute right-[150px] self-center border-gray-600">
-      {/* <button className="w-fit text-xl">
-        <FiArrowLeft />
-      </button> */}
+      <button className="w-fit text-xl">
+        <FiArrowLeft color='black'/>
+      </button>
       <CardHeader className="p-0">
         <CardTitle className="text-black text-3xl font-medium my-10">
-          {/* Acesso ao Sistema */}
-          Busque um Usuário
+          Acesso ao Sistema
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0">
@@ -71,12 +72,12 @@ export function CardLogin() {
                   </FormControl>
                   <FormMessage className='text-red-600' />
                   <p className="text-[13px] text-black font-medium">
-                    Insira o endereço de e-mail do usuário que você deseja buscar
+                    Insira seu endereço de e-mail
                   </p>
                 </FormItem>
               )}
             />
-            {/* <FormField
+            <FormField
               control={form.control}
               name="password"
               render={({ field: controlField, fieldState }) => (
@@ -112,10 +113,7 @@ export function CardLogin() {
                   </FormControl>
                 </FormItem>
               )}
-            /> */}
-            <p className='text-black'>
-              {JsonText}
-            </p>
+            />
             <Button
               className="bg-blue-800 w-full text-lg rounded-4xl cursor-pointer"
               type="submit"

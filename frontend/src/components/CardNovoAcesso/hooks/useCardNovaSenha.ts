@@ -1,37 +1,32 @@
-import { signIn, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
+// import { PutUser } from '@/services/UserService';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { mySchema, typeMyschema } from '../schemas/schema';
-import { useState } from 'react';
-// import { FindUserByEmail } from '@/src/services/UserService';
 
-export function useCardLogin() {
+export function useCardNovaSenha() {
   const session = useSession();
-  const [JsonText, setJsonText] = useState('');
   const { push } = useRouter();
   const form = useForm<typeMyschema>({
     resolver: zodResolver(mySchema)
   });
 
   const submitForm: SubmitHandler<typeMyschema> = async (data) => {
-    const response = await signIn('credentials', {
+    const dataForBack = {
       email: data.email,
-      password: data.password,
-      redirect: false
-    });
+      accessCode: data.accessCode,
+      password: data.password
+    };
 
-    if (response?.status === 200) {
-    if (response) {
-      toast.success('Login efetuado com sucesso');
-      toast.success('Usuário encontrado com sucesso!');
-      setJsonText(JSON.stringify(response, null, 2));
-      if (session.data?.user?.firstAccess === 'False') {
-        push('/novaSenha');
-      } else if (
+    const result = await PutUser(dataForBack);
+
+    if (result.status === 200) {
+      toast.success('Senha alterada com sucesso');
+      if (
         session.data?.user.role === 'ADMIN' ||
         session.data?.user.role === 'RECEPTIONTEAM'
       ) {
@@ -43,17 +38,13 @@ export function useCardLogin() {
       } else {
         push('/equipeMultiprofissional');
       }
-      push('/out')
     } else {
-      toast.error('Usuário ou senha inválidos');
-      toast.error('Usuário não encontrado');
-
+      toast.error('Erro ao alterar a senha');
     }
-  };}
+  };
 
   return {
     form,
-    submitForm,
-    JsonText
+    submitForm
   };
 }
