@@ -1,3 +1,5 @@
+import React from "react";
+
 import CardNovoAcesso from "@/src/components/CardNovoAcesso";
 export default function NovaSenha() {
   return (

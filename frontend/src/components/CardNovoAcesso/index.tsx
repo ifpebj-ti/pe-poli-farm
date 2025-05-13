@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { useRouter } from 'next/navigation';
 import { FiMail, FiLock } from 'react-icons/fi';
 import { FiArrowLeft } from 'react-icons/fi';
@@ -25,7 +26,7 @@ export default function CardNovoAcesso() {
 
   return (
     <Card className="flex flex-col justify-between bg-[#BED6EF] w-[478px] p-[30px] rounded-[20px] absolute right-[150px] self-center border-gray-600">
-        <button className="w-fit text-xl">
+        <button className="w-fit text-xl" onClick={() => router.push('/')}>
           <FiArrowLeft color='black'/>
         </button>
         <CardHeader className="p-0">
