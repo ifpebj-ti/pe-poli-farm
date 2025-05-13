@@ -113,7 +113,7 @@ export function CardLogin() {
                 </FormItem>
               )}
             /> */}
-            <p>
+            <p className='text-black'>
               {JsonText}
             </p>
             <Button
