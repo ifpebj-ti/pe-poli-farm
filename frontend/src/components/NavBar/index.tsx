@@ -1,14 +1,27 @@
+'use client';
+
 import React from 'react';
+import { useState } from 'react';
 import { Avatar, Box, IconButton, Stack, Toolbar, Typography } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import MenuIcon from '@mui/icons-material/Menu';
 import { FiLogOut } from 'react-icons/fi';
+import Sidebar from '../SideBar';
 
 
 export default function NavBar() {
-  const Nome = "Nome do Usuário";
-  const Cargo = "Cargo do Usuário";
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const handleDrawer = () => {
+    if (sidebarOpen) {
+      setSidebarOpen(false);
+      return;
+    }
+    setSidebarOpen(true);
+  };
+
  return (
+  <>
     <Box sx={{ flexGrow: 1, width: '100%' }}>
       <AppBar position="static" sx={{ backgroundColor: '#7AACDE', paddingY: 2 }}>
         <Toolbar>
@@ -17,6 +30,7 @@ export default function NavBar() {
             edge="start"
             aria-label="menu"
             sx={{ mr: 2, color: '#1351B4' }}
+            onClick={handleDrawer}
           >
             <MenuIcon />
           </IconButton>
@@ -29,13 +43,13 @@ export default function NavBar() {
             </Typography>
           </Stack>
           <Box sx={{ flexGrow: 0, display: 'flex', flexDirection: 'row', alignItems: 'center', color: 'black' }}>
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" sx={{marginRight:1.5}}/>
+            <Avatar alt="Remy Sharp" sx={{marginRight:1.5}}/>
             <Stack direction="column" sx={{ flexGrow: 1 }}>
-                <Typography variant="subtitle1" component="div" sx={{ flexGrow: 1 }}>
-                    {Nome}
+                <Typography variant="subtitle1" component="div" sx={{ flexGrow: 1, fontWeight: 'bold' }}>
+                    Nome do Usuário
                 </Typography>
                 <Typography variant="subtitle2" component="div" sx={{ flexGrow: 1 }}>
-                    {Cargo}
+                    Cargo do Usuário
                 </Typography>
             </Stack>
             <IconButton
@@ -51,5 +65,7 @@ export default function NavBar() {
         </Toolbar>
       </AppBar>
     </Box>
+    <Sidebar open={sidebarOpen} onClose={handleDrawer} />
+  </>
   );
 }
