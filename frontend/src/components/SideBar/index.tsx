@@ -63,6 +63,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
               color="inherit"
               aria-label="menu"
               sx={{ ml: 2, mr: 2, color: '#1351B4' }}
+              onClick={onClose}
             >
                 <CloseIcon />
             </IconButton>
