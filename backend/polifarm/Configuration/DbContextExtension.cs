@@ -9,7 +9,7 @@ namespace Webapi.Configuration
         {
             services.AddDbContext<PolifarmDbContext>(options =>
             {
-                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"),
+                options.UseNpgsql(Environment.GetEnvironmentVariable("CONNECTION_STRING"),
                     sql => sql.MigrationsAssembly("WebApi"));
             });
 
