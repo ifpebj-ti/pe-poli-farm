@@ -23,8 +23,6 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
-    <Folder Include="Validators\" />
-    <Folder Include="ResponseModels\" />
   </ItemGroup>
 
   <ItemGroup>

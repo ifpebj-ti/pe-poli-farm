@@ -1,5 +1,6 @@
 ﻿using Application.Gateways;
 using Application.Usecases.Auth;
+using Application.Usecases.Patient;
 using Application.Usecases.User;
 using Infra.Gateways;
 
@@ -17,6 +18,14 @@ namespace Webapi.Configuration
 
             // Profiles
             services.AddScoped<IProfileRepositoryGateway, ProfileRepositoryGateway>();
+
+            //Patient
+            services.AddScoped<IGatewayPatient, PatientRepositoryGateway>();
+            services.AddScoped<CreatePatientUseCase>();
+            services.AddScoped<UpdatePatientStatusUseCase>();
+            services.AddScoped<FindAllPatientUseCase>();
+            services.AddScoped<UpdatePatientUseCase>();
+            services.AddScoped<FindPatientByIdUseCase>();
 
             // Auth
             services.AddScoped<LoginUseCase>();
