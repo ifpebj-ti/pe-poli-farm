@@ -9,8 +9,8 @@ namespace WebApi.Configuration
     {
         public static IServiceCollection AddAuthenticationExtension(this IServiceCollection services, IConfiguration configuration)
         {
-            var jwtSettings = configuration.GetSection("JWT_SETTINGS");
-            var key = jwtSettings["SECRET"]!;
+            // var jwtSettings = configuration.GetSection("JWTSETTINGS");
+            var key = "iS2!aZ239#gb39#3aNgio3g0g239#3aN239#*3gsS#*aZgbi";
 
             services.AddAuthentication(options =>
             {
