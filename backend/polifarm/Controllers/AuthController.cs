@@ -106,7 +106,6 @@ namespace WebApi.Controllers
         /// <response code="400">Erro na operação</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="404">Recurso não encontrado</response>
-        [AllowAnonymous]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

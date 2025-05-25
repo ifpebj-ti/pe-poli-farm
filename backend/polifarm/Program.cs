@@ -17,8 +17,8 @@ builder.Services.AddCorsExtension();
 builder.Services.AddIocDependencies();
 builder.Services.AddSwaggerExtension();
 builder.Services.AddDbContextExtension(builder.Configuration);
-//builder.Services.AddAuthenticationExtension(builder.Configuration);
-//builder.Services.AddAuthorization();
+builder.Services.AddAuthenticationExtension(builder.Configuration);
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
