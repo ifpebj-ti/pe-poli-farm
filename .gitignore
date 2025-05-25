@@ -1,0 +1,6 @@
+﻿################################################################################
+# Este arquivo .gitignore foi criado automaticamente pelo Microsoft(R) Visual Studio.
+################################################################################
+
+/backend/polifarm/polifarm.db-shm
+/backend/polifarm/polifarm.db-wal

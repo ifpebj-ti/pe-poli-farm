@@ -1,5 +1,6 @@
 ﻿using Domain.Entites.AccessCode;
 using Domain.Entites.Profile;
+using Domain.Entities.Notes;
 using Domain.ValuesObjects;
 using System;
 using System.Collections.Generic;
@@ -49,5 +50,7 @@ namespace Domain.Entites.User
         public ProfileEntity Profile { get; private set; } = null!;
         public Guid ProfileId { get; private set; }
         public AccessCodeEntity AccessCode { get; private set; } = null!;
+        public ICollection<NotesEntity> NotesEntity { get; private set; }
+
     }
 }

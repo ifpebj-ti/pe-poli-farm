@@ -2,6 +2,8 @@
 using Domain.Entites.AccessCode;
 using Domain.Entites.Profile;
 using Domain.Entites.User;
+using Domain.Entities.Patient;
+using Domain.Entities.Service;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -17,6 +19,9 @@ namespace Infra.Database
         public DbSet<UserEntity> Users { get; private set; }
         public DbSet<ProfileEntity> Profiles { get; private set; }
         public DbSet<AccessCodeEntity> AccessCodes { get; private set; }
+        public DbSet<PatientEntity> Patients { get; private set; }
+        public DbSet<ServiceEntity> Services { get; private set; }
+
 
         public PolifarmDbContext(DbContextOptions<PolifarmDbContext> options) : base(options)
         {

@@ -58,6 +58,12 @@ namespace Infra.Database.Sqlite.EntityFramework.EntitiesConfiguration
                 .WithOne(u => u.User)
                 .HasForeignKey<AccessCodeEntity>(u => u.UserId)// Um usuário tem um código de acesso
                 .OnDelete(DeleteBehavior.Cascade); // Quando um usuário for deletado, seu AccessCode também será deletado
+
+            // Relacionamento com Notes (um para muitos)
+            builder.HasMany(u => u.NotesEntity)
+                .WithOne(n => n.User)
+                .HasForeignKey(n => n.UserId)
+                .OnDelete(DeleteBehavior.Cascade); // Quando um usuário for deletado, suas notas também serão deletadas
         }
     }
 }

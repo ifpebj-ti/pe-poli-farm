@@ -9,8 +9,7 @@ namespace WebApi.Configuration
     {
         public static IServiceCollection AddAuthenticationExtension(this IServiceCollection services, IConfiguration configuration)
         {
-            // var jwtSettings = configuration.GetSection("JWTSETTINGS");
-            var key = "iS2!aZ239#gb39#3aNgio3g0g239#3aN239#*3gsS#*aZgbi";
+            var jwtSettings = configuration.GetSection("JWT_SETTINGS");
 
             services.AddAuthentication(options =>
             {
@@ -25,7 +24,7 @@ namespace WebApi.Configuration
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.GetValue<string>("SECRET")!))
                 };
             });
 
