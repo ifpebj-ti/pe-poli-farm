@@ -9,9 +9,9 @@ namespace Webapi.Configuration
         {
             services.AddDbContext<PolifarmDbContext>(options =>
             {
-                options.UseNpgsql(Environment.GetEnvironmentVariable("CONNECTION_STRING"),
-                    sql => sql.MigrationsAssembly("WebApi"));
-            });
+                options.UseSqlite("Data Source=./polifarm.db",
+                sql => sql.MigrationsAssembly("WebApi"));
+                        });
 
             return services;
         }
