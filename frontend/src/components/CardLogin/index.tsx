@@ -37,9 +37,6 @@ export function CardLogin() {
 
   return (
     <Card className="flex flex-col justify-between bg-[#BED6EF] w-[478px] p-[30px] rounded-[20px] absolute right-[150px] self-center border-gray-600">
-      <button className="w-fit text-xl">
-        <FiArrowLeft color='black'/>
-      </button>
       <CardHeader className="p-0">
         <CardTitle className="text-black text-3xl font-medium my-10">
           Acesso ao Sistema
@@ -125,7 +122,7 @@ export function CardLogin() {
                   Carregando...
                 </>
               )}
-              {!form.formState.isSubmitting && 'Buscar'}
+              {!form.formState.isSubmitting && 'Entrar'}
             </Button>
           </form>
         </Form>

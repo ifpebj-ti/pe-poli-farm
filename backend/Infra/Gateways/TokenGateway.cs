@@ -15,7 +15,11 @@ namespace Infra.Gateways
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = configuration.GetValue<string>("JWT_SETTINGS:SECRET");
-            if (key is null) return null;
+            var issuer = configuration.GetValue<string>("JWT_SETTINGS:ISS");
+            var audience = configuration.GetValue<string>("JWT_SETTINGS:AUD");
+            if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(issuer) || string.IsNullOrWhiteSpace(audience))
+                return null;
+
             var keyEncoded = Encoding.ASCII.GetBytes(key);
             var tokenDescriptor = new SecurityTokenDescriptor()
             {
@@ -30,6 +34,8 @@ namespace Infra.Gateways
                     new("active", user.Active.ToString()),
                 }),
                 Expires = DateTime.UtcNow.AddHours(8),
+                Issuer = issuer,
+                Audience = audience,
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(keyEncoded), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);

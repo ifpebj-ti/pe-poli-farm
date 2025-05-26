@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { mySchema, typeMyschema } from '../schemas/schema';
+import { PutUser } from '@/src/services/UserService';
 
 export function useCardNovaSenha() {
   const session = useSession();

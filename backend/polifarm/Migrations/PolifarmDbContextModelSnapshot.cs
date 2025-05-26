@@ -172,6 +172,588 @@ namespace WebApi.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Address.AddressEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("City")
+                        .HasMaxLength(60)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Neighborhood")
+                        .HasMaxLength(40)
+                        .HasColumnType("TEXT");
+
+                    b.Property<long?>("Number")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("PatientId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Street")
+                        .HasMaxLength(150)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.ComplexProperty<Dictionary<string, object>>("Cep", "Domain.Entities.Address.AddressEntity.Cep#CEP", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .HasMaxLength(11)
+                                .HasColumnType("TEXT");
+                        });
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PatientId")
+                        .IsUnique();
+
+                    b.ToTable("Addresses", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.Anamnese.AnamneseEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("Allergies")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AllergiesType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("AntecPathological")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AntecPathologicalType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("BloodPressure")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("BloodType")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("Diabetes")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Glucose")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("HeartRate")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Height")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("MedicalHypothesis")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("MedicalRecordId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("MedicationInUseType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("MedicationsInUse")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("NecesPsicobio")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("PreviousSurgeries")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RespiratoryRate")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Saturation")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SignsAndSymptoms")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Temperature")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("UseOfProthesis")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Weight")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("TEXT");
+
+                    b.ComplexProperty<Dictionary<string, object>>("ClassificationStatus", "Domain.Entities.Anamnese.AnamneseEntity.ClassificationStatus#ClassificationStatus", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("TEXT");
+                        });
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MedicalRecordId")
+                        .IsUnique();
+
+                    b.ToTable("AnamneseEntity");
+                });
+
+            modelBuilder.Entity("Domain.Entities.EmergencyContactDetails.EmergencyContactDetailsEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(150)
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("PatientId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.ComplexProperty<Dictionary<string, object>>("Phone", "Domain.Entities.EmergencyContactDetails.EmergencyContactDetailsEntity.Phone#Phone", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .HasMaxLength(15)
+                                .HasColumnType("TEXT");
+                        });
+
+                    b.ComplexProperty<Dictionary<string, object>>("Relationship", "Domain.Entities.EmergencyContactDetails.EmergencyContactDetailsEntity.Relationship#Relationship", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .HasMaxLength(30)
+                                .HasColumnType("TEXT");
+                        });
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("EmergencyContactDetails", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.HealthAndDisease.HealthAndDiseaseEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("FamilyAVC")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("FamilyAlzheimer")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("FamilyCA")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("FamilyDM")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("FamilyHAS")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("FamilyIAM")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("MedicalRecordId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("OwnAVC")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("OwnAlzheimer")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("OwnCA")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("OwnDM")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("OwnHAS")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("OwnIAM")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MedicalRecordId")
+                        .IsUnique();
+
+                    b.ToTable("HealthAndDiseaseEntity");
+                });
+
+            modelBuilder.Entity("Domain.Entities.MedicalRecord.MedicalRecordEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("ServiceId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.ComplexProperty<Dictionary<string, object>>("Status", "Domain.Entities.MedicalRecord.MedicalRecordEntity.Status#MedicalRecordStatus", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasMaxLength(20)
+                                .HasColumnType("TEXT");
+                        });
+
+                    b.ComplexProperty<Dictionary<string, object>>("StatusInCaseOfAdmission", "Domain.Entities.MedicalRecord.MedicalRecordEntity.StatusInCaseOfAdmission#MedicalRecordStatus", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .HasMaxLength(20)
+                                .HasColumnType("TEXT");
+                        });
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ServiceId")
+                        .IsUnique();
+
+                    b.ToTable("MedicalRecords", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.Notes.NotesEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("PatientId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PatientId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notes", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.Patient.PatientEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("BirthDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("MotherName")
+                        .HasMaxLength(150)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SocialName")
+                        .HasMaxLength(150)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.ComplexProperty<Dictionary<string, object>>("Cpf", "Domain.Entities.Patient.PatientEntity.Cpf#CPF", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasMaxLength(15)
+                                .HasColumnType("TEXT");
+                        });
+
+                    b.ComplexProperty<Dictionary<string, object>>("Phone", "Domain.Entities.Patient.PatientEntity.Phone#Phone", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .HasMaxLength(15)
+                                .HasColumnType("TEXT");
+                        });
+
+                    b.ComplexProperty<Dictionary<string, object>>("Rg", "Domain.Entities.Patient.PatientEntity.Rg#RG", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .HasMaxLength(15)
+                                .HasColumnType("TEXT");
+                        });
+
+                    b.ComplexProperty<Dictionary<string, object>>("Status", "Domain.Entities.Patient.PatientEntity.Status#PatientStatus", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .HasMaxLength(30)
+                                .HasColumnType("TEXT");
+                        });
+
+                    b.ComplexProperty<Dictionary<string, object>>("Sus", "Domain.Entities.Patient.PatientEntity.Sus#SUS", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .HasMaxLength(15)
+                                .HasColumnType("TEXT");
+                        });
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Patients", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.PatientExams.PatientExamsEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("ExecutionDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("MedicalRecordId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("PrescriptionDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MedicalRecordId");
+
+                    b.ToTable("PatientExamsEntity");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Service.ServiceEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("PatientId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("ServiceDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ServiceStatus")
+                        .HasMaxLength(15)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("Services", (string)null);
+                });
+
+            modelBuilder.Entity("prontuario.Domain.Entities.PatientMedication.PatientMedicationEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("ExecutionDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("MedicalRecordId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("PrescriptionDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MedicalRecordId");
+
+                    b.ToTable("PatientMedicationEntity");
+                });
+
             modelBuilder.Entity("Domain.Entites.AccessCode.AccessCodeEntity", b =>
                 {
                     b.HasOne("Domain.Entites.User.UserEntity", "User")
@@ -194,6 +776,111 @@ namespace WebApi.Migrations
                     b.Navigation("Profile");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Address.AddressEntity", b =>
+                {
+                    b.HasOne("Domain.Entities.Patient.PatientEntity", "Patient")
+                        .WithOne("AddressEntity")
+                        .HasForeignKey("Domain.Entities.Address.AddressEntity", "PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Anamnese.AnamneseEntity", b =>
+                {
+                    b.HasOne("Domain.Entities.MedicalRecord.MedicalRecordEntity", "MedicalRecord")
+                        .WithOne("Anamnese")
+                        .HasForeignKey("Domain.Entities.Anamnese.AnamneseEntity", "MedicalRecordId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("MedicalRecord");
+                });
+
+            modelBuilder.Entity("Domain.Entities.EmergencyContactDetails.EmergencyContactDetailsEntity", b =>
+                {
+                    b.HasOne("Domain.Entities.Patient.PatientEntity", "Patient")
+                        .WithMany("EmergencyContactDetailsEntity")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("Domain.Entities.HealthAndDisease.HealthAndDiseaseEntity", b =>
+                {
+                    b.HasOne("Domain.Entities.MedicalRecord.MedicalRecordEntity", "MedicalRecord")
+                        .WithOne("HealthAndDisease")
+                        .HasForeignKey("Domain.Entities.HealthAndDisease.HealthAndDiseaseEntity", "MedicalRecordId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MedicalRecord");
+                });
+
+            modelBuilder.Entity("Domain.Entities.MedicalRecord.MedicalRecordEntity", b =>
+                {
+                    b.HasOne("Domain.Entities.Service.ServiceEntity", "Service")
+                        .WithOne("MedicalRecordEntity")
+                        .HasForeignKey("Domain.Entities.MedicalRecord.MedicalRecordEntity", "ServiceId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Service");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Notes.NotesEntity", b =>
+                {
+                    b.HasOne("Domain.Entities.Patient.PatientEntity", "Patient")
+                        .WithMany("NotesEntity")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entites.User.UserEntity", "User")
+                        .WithMany("NotesEntity")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Patient");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Entities.PatientExams.PatientExamsEntity", b =>
+                {
+                    b.HasOne("Domain.Entities.MedicalRecord.MedicalRecordEntity", "MedicalRecord")
+                        .WithMany("PatientExams")
+                        .HasForeignKey("MedicalRecordId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MedicalRecord");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Service.ServiceEntity", b =>
+                {
+                    b.HasOne("Domain.Entities.Patient.PatientEntity", "PatientEntity")
+                        .WithMany("ServicesEntity")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PatientEntity");
+                });
+
+            modelBuilder.Entity("prontuario.Domain.Entities.PatientMedication.PatientMedicationEntity", b =>
+                {
+                    b.HasOne("Domain.Entities.MedicalRecord.MedicalRecordEntity", "MedicalRecord")
+                        .WithMany("PatientMedications")
+                        .HasForeignKey("MedicalRecordId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MedicalRecord");
+                });
+
             modelBuilder.Entity("Domain.Entites.Profile.ProfileEntity", b =>
                 {
                     b.Navigation("Users");
@@ -203,6 +890,37 @@ namespace WebApi.Migrations
                 {
                     b.Navigation("AccessCode")
                         .IsRequired();
+
+                    b.Navigation("NotesEntity");
+                });
+
+            modelBuilder.Entity("Domain.Entities.MedicalRecord.MedicalRecordEntity", b =>
+                {
+                    b.Navigation("Anamnese");
+
+                    b.Navigation("HealthAndDisease")
+                        .IsRequired();
+
+                    b.Navigation("PatientExams");
+
+                    b.Navigation("PatientMedications");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Patient.PatientEntity", b =>
+                {
+                    b.Navigation("AddressEntity")
+                        .IsRequired();
+
+                    b.Navigation("EmergencyContactDetailsEntity");
+
+                    b.Navigation("NotesEntity");
+
+                    b.Navigation("ServicesEntity");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Service.ServiceEntity", b =>
+                {
+                    b.Navigation("MedicalRecordEntity");
                 });
 #pragma warning restore 612, 618
         }
