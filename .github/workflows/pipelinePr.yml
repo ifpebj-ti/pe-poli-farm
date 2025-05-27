@@ -43,7 +43,7 @@ jobs:
             curl -fsSL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh -o install-scout.sh
             sh install-scout.sh
             docker scout quickview polifarm-frontend:latest
-            docker scout cves "--only-severity critical --exit-code 0 polifarm-frontend:latest || exit 0"
+            docker scout cves "--only-severity critical --exit-code 1 polifarm-frontend:latest || exit 0"
 
   backend:
     name: Backend CI
