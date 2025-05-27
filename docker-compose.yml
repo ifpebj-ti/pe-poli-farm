@@ -8,7 +8,12 @@ services:
     ports:
       - "8080:8080"
     networks:
-      - app-network
+      - backend-network
+      - frontend-network
+    depends_on:
+      database:
+        condition: service_healthy
+    restart: unless-stopped
 
   frontend:
     # build: ./frontend
@@ -16,10 +21,11 @@ services:
     ports:
       - "3000:3000"
     networks:
-      - app-network
+      - frontend-network
+    restart: unless-stopped
 
   database:
-    image: postgres:latest
+    image: postgres:17
     environment:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
@@ -29,12 +35,20 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
     networks:
-      - app-network
+      - backend-network
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
 
 volumes:
   db_data:
     driver: local
 
 networks:
-  app-network:
+  backend-network:
+    driver: bridge
+  frontend-network:
     driver: bridge
