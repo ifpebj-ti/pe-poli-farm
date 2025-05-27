@@ -7,9 +7,11 @@ import AppBar from '@mui/material/AppBar';
 import MenuIcon from '@mui/icons-material/Menu';
 import { FiLogOut } from 'react-icons/fi';
 import Sidebar from '../SideBar';
+import { useRouter } from 'next/navigation';
 
 
 export default function NavBar() {
+  const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleDrawer = () => {
@@ -58,6 +60,7 @@ export default function NavBar() {
               color="inherit"
               aria-label="menu"
                 sx={{ ml: 2 }}
+              onClick={() => { router.push('/'); localStorage.removeItem('UserAuth') }} // Ajuste a rota de logout conforme necessário
             >
                 <FiLogOut />
             </IconButton>
