@@ -5,6 +5,7 @@ using Domain.Entites.User;
 using Domain.Entities.Patient;
 using Domain.Entities.Service;
 using Microsoft.EntityFrameworkCore;
+using prontuario.Domain.Entities.PatientMedication;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,7 @@ namespace Infra.Database
         public DbSet<AccessCodeEntity> AccessCodes { get; private set; }
         public DbSet<PatientEntity> Patients { get; private set; }
         public DbSet<ServiceEntity> Services { get; private set; }
+        public DbSet<PatientPrescriptionEntity> Prescriptions { get; private set; }
 
 
         public PolifarmDbContext(DbContextOptions<PolifarmDbContext> options) : base(options)

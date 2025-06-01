@@ -1,5 +1,7 @@
 ﻿using Domain.Entites;
+using Domain.Entites.User;
 using Domain.Entities.MedicalRecord;
+using prontuario.Domain.Dtos.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,21 +10,28 @@ using System.Threading.Tasks;
 
 namespace prontuario.Domain.Entities.PatientMedication
 {
-    public class PatientMedicationEntity : BaseEntity
+    public class PatientPrescriptionEntity : BaseEntity
     {
         public DateTime PrescriptionDate { get; private set; }
         public DateTime? ExecutionDate { get; private set; }
-        public string Description { get; private set; } = string.Empty;
+        public string Posology { get; private set; } = string.Empty;
         public Guid MedicalRecordId { get; private set; }
+        public Guid ProfessionalId { get; private set; }
+        public UserEntity Professional { get; set; } = null!;
         public MedicalRecordEntity MedicalRecord { get; set; } = null!;
+        public string MedicationName { get; private set; } = string.Empty;
+        public string Type { get; private set; } = string.Empty;
 
-        public PatientMedicationEntity(Guid id, DateTime prescriptionDate, DateTime? executionDate, string description, Guid medicalRecordId)
+        public PatientPrescriptionEntity(Guid id, DateTime prescriptionDate, DateTime? executionDate, string posology, Guid medicalRecordId, Guid professionalId, string medicationName, string type)
         {
             Id = id;
             PrescriptionDate = prescriptionDate;
             ExecutionDate = executionDate;
-            Description = description;
+            Posology = posology;
             MedicalRecordId = medicalRecordId;
+            ProfessionalId = professionalId;
+            Type = type;
+            MedicationName = medicationName;
         }
         public void FinalizeMedication(DateTime executionDate)
         {

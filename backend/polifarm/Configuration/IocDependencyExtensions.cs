@@ -1,6 +1,7 @@
 ﻿using Application.Gateways;
 using Application.Usecases.Auth;
 using Application.Usecases.Patient;
+using Application.Usecases.Prescription;
 using Application.Usecases.Service;
 using Application.Usecases.User;
 using Infra.Gateways;
@@ -28,6 +29,10 @@ namespace Webapi.Configuration
             services.AddScoped<FindAllPatientUseCase>();
             services.AddScoped<UpdatePatientUseCase>();
             services.AddScoped<FindPatientByIdUseCase>();
+
+            //Medical Record
+            services.AddScoped<IPrescriptionRepository, PrescriptionRepository>();
+            services.AddScoped<AddPrescriptionUseCase>();
 
             //Service
             services.AddScoped<IServiceGateway, ServiceRepositoryGateway>();

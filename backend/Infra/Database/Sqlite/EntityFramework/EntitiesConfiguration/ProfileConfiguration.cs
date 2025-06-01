@@ -19,6 +19,7 @@ namespace Infra.Database.Sqlite.EntityFramework.EntitiesConfiguration
             // Configuração da propriedade Role
             builder.ComplexProperty(p => p.Role)
                 .Property(p => p.Value)
+                .HasColumnName("Role_Value")
                 .IsRequired(); // Assumindo que a propriedade Role é obrigatória
 
             // Relacionamento com User (um para muitos)

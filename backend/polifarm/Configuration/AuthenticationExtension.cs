@@ -22,6 +22,8 @@ namespace WebApi.Configuration
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
+                    ValidAudience = jwtSettings.GetValue<string>("AUD")!,
+                    ValidIssuer = jwtSettings.GetValue<string>("ISS")!,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.GetValue<string>("SECRET")!))
@@ -35,6 +37,5 @@ namespace WebApi.Configuration
 
             return services;
         }
-
     }
 }
