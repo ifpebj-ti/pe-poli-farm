@@ -2,7 +2,7 @@
 import { useRouter } from 'next/navigation'; // Para redirecionamento
 import { SubmitHandler } from 'react-hook-form';
 import { toast } from 'react-toastify'; // Para notificações
-import { typeMyschema } from '../schemas/mySchema'; // Importa o tipo do schema
+import { typeMyschema } from '../schemas/schema'; // Importa o tipo do schema
 import { jwtDecode } from 'jwt-decode';
 import { MyJwtPayload } from '@/src/lib/jwtUtils';
 import { Login } from '@/src/services/AuthService';
