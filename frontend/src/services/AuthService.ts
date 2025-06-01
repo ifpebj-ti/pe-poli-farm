@@ -17,3 +17,20 @@ export async function Login(email: string, password: string) {
     throw new Error('Erro desconhecido ao realizar login');
   }
 }
+
+export async function NewPassword(
+  email: string,
+  password: string,
+  acessCode: string,
+) {
+  try {
+    const response = await api.put(`/Auth`, {
+      email,
+      password,
+      acessCode,
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+}
