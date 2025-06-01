@@ -47,6 +47,10 @@ export function useCardNovaSenha() {
           const apiError = error.response.data;
           const statusCode = error.response.status;
 
+          console.error('Resposta de erro da API (data):', apiError);
+          console.error('Status Code da API:', statusCode);
+          console.error('Headers da resposta da API:', error.response.headers);
+
           let errorMessage = 'Falha ao alterar a senha.';
 
           if (statusCode === 400 && apiError?.errors) {

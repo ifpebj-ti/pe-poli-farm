@@ -23,7 +23,7 @@ namespace WebApi.Configuration
                     ValidAudience = configuration.GetValue<string>("JWT_SETTINGS:AUD")!,
                     ValidIssuer = configuration.GetValue<string>("JWT_SETTINGS:ISS")!,
                     ValidateIssuer = true,
-                    ValidateAudience = true,
+                    ValidateAudience = false,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.GetValue<string>("SECRET")!))

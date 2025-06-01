@@ -46,6 +46,7 @@ export default function CardNovoAcesso() {
                     <div className="flex items-center gap-x-[10px] p-[10px] border-[1px] bg-gray-200 rounded-sm border-gray-900">
                       <FiMail className="text-xl text-black" />
                       <Input
+                        id='email'
                         type="email"
                         placeholder="Email"
                         {...field}
@@ -68,6 +69,7 @@ export default function CardNovoAcesso() {
                     <div className="flex items-center gap-x-[10px] p-[10px] border-[1px] bg-gray-200 rounded-sm border-gray-900">
                       <FiLock className="h-5 w-5 mx-2 my-auto" color='black'/>
                       <Input
+                        id='accessCode'
                         type="text"
                         placeholder="Código de Acesso"
                         {...field}
@@ -90,6 +92,7 @@ export default function CardNovoAcesso() {
                     <div className="flex items-center gap-x-[10px] p-[10px] border-[1px] bg-gray-200 rounded-sm border-gray-900">
                       <FiLock className="h-5 w-5 mx-2 my-auto" color='black' />
                       <PasswordInput
+                        id='password'
                         type="password"
                         placeholder="Senha"
                         {...field}
