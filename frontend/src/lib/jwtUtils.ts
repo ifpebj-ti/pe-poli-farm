@@ -1,14 +1,14 @@
 export interface MyJwtPayload {
-  unique_name: String,
-  role: String,
-  email: String,
-  userId: String,
-  position: String,
-  firstAccess: String,
-  active: String,
-  "nbf": Number,
-  "exp": Number,
-  "iat": Number,
-  "iss": String,
-  "aud": String
+  unique_name: string,
+  role: string,
+  email: string,
+  userId: string,
+  position: string,
+  firstAccess: string,
+  active: string,
+  "nbf": number,
+  "exp": number,
+  "iat": number,
+  "iss": string,
+  "aud": string
 }

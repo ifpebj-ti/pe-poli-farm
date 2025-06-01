@@ -3,8 +3,6 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
 // import { PutUser } from '@/services/UserService';
-
-import { yupResolver } from '@hookform/resolvers/yup';
 import { mySchema, typeMyschema } from '../schemas/schema';
 import { AxiosError } from 'axios';
 import { NewPassword } from '@/src/services/AuthService';
@@ -41,7 +39,7 @@ export function useCardNovaSenha() {
         const errorMessage = errorData?.message || errorData?.title || `Erro ao alterar senha. Resposta inesperada.`;
         toast.error(`Falha ao alterar senha: ${errorMessage}`);
       }
-    } catch (error: any) { 
+    } catch (error) { 
       console.error('Erro ao tentar alterar a senha:', error);
 
       if (error instanceof AxiosError) {

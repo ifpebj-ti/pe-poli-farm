@@ -58,7 +58,7 @@ export function useCardLogin() {
           toast.error(`Falha no login: ${errorMessage}`);
         }
       }
-    } catch (error: any) { 
+    } catch (error) { 
       console.error('Erro ao tentar fazer login:', error);
 
       if (error instanceof AxiosError) {

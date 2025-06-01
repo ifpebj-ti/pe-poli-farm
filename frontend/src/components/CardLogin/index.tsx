@@ -2,7 +2,7 @@
 
 import React from 'react';
 // import Link from 'next/link';
-import { FiArrowLeft, FiLock, FiMail } from 'react-icons/fi';
+import { FiLock, FiMail } from 'react-icons/fi';
 import { LuLoader } from 'react-icons/lu';
 
 import { Input } from '../ui/input';

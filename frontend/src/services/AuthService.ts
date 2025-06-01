@@ -23,14 +23,11 @@ export async function NewPassword(
   password: string,
   acessCode: string,
 ) {
-  try {
-    const response = await api.put(`/Auth`, {
-      email,
-      password,
-      acessCode,
-    });
-    return response;
-  } catch (error) {
-    throw error;
-  }
+  const response = await api.put(`/Auth`, {
+    email,
+    password,
+    acessCode,
+  });
+  return response;
+
 }
