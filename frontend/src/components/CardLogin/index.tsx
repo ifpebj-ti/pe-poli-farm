@@ -1,14 +1,17 @@
 'use client';
 
-import React from 'react';
 // import Link from 'next/link';
+import Link from 'next/link';
+import { useForm } from 'react-hook-form';
 import { FiLock, FiMail } from 'react-icons/fi';
 import { LuLoader } from 'react-icons/lu';
 
-import { Input } from '../ui/input';
-
-import { Button } from '../ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle
+} from '@/src/components/ui/card';
 import {
   Form,
   FormControl,
@@ -16,14 +19,16 @@ import {
   FormItem,
   FormMessage
 } from '@/src/components/ui/form';
-import { Label } from '../ui/label';
+
 // import { PasswordInput } from '@/src/components/ui/passwordInput';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { mySchema, typeMyschema } from './schemas/schema';
-import { useCardLogin } from './hooks/useCardLogin'
+
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
 import { PasswordInput } from '../ui/passwordInput';
-import Link from 'next/link';
+import { useCardLogin } from './hooks/useCardLogin';
+import { mySchema, typeMyschema } from './schemas/schema';
 
 export function CardLogin() {
   const { submitForm } = useCardLogin();
@@ -31,8 +36,8 @@ export function CardLogin() {
     resolver: zodResolver(mySchema),
     defaultValues: {
       email: '',
-      password: '',
-    },
+      password: ''
+    }
   });
 
   return (
@@ -67,7 +72,7 @@ export function CardLogin() {
                       />
                     </div>
                   </FormControl>
-                  <FormMessage className='text-red-600' />
+                  <FormMessage className="text-red-600" />
                   <p className="text-[13px] text-black font-medium">
                     Insira seu endereço de e-mail
                   </p>

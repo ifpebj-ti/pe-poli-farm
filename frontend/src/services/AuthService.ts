@@ -36,7 +36,7 @@ export async function NewPassword(
 
   // 3. Configurar os cabeçalhos da requisição
   const headers = {
-    Authorization: `Bearer ${token}`,
+    Authorization: `Bearer ${token}`
   };
 
   try {

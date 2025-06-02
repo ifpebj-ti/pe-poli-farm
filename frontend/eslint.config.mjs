@@ -1,28 +1,50 @@
-import { defineConfig } from "eslint/config";
-import globals from "globals";
-import js from "@eslint/js";
-import tseslint from "typescript-eslint";
-import pluginReact from "eslint-plugin-react";
+import { FlatCompat } from '@eslint/eslintrc';
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
 
-export default defineConfig([
-  { files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"] },
-  {
-    files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
-    languageOptions: { globals: globals.browser },
-  },
-  {
-    files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
-    plugins: { js },
-    extends: ["js/recommended"],
-  },
-  tseslint.configs.recommended,
-  pluginReact.configs.flat.recommended,
-  {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const compat = new FlatCompat({
+  baseDirectory: __dirname
+});
+
+const eslintConfig = [
+  ...compat.config({
+    extends: [
+      'next/core-web-vitals',
+      'next/typescript',
+      'plugin:prettier/recommended',
+      'prettier'
+    ],
+    plugins: ['eslint-plugin-import-helpers'],
     rules: {
-      "no-unused-vars": "warn",
-      "no-undef": "warn",
-      camelcase: "warn",
-      "no-empty": "warn",
-    },
-  },
-]);
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
+      'react/react-in-jsx-scope': 'off',
+      'prettier/prettier': [
+        'error',
+        {
+          endOfLine: 'auto'
+        }
+      ],
+      'import-helpers/order-imports': [
+        'warn',
+        {
+          newlinesBetween: 'always',
+          groups: [
+            ['/^react/', '/^next/', '/@next/'],
+            '/components/',
+            'module',
+            '/^@shared/',
+            '/absolute/',
+            ['parent', 'sibling', 'index']
+          ],
+          alphabetize: { order: 'asc', ignoreCase: true }
+        }
+      ]
+    }
+  })
+];
+
+export default eslintConfig;

@@ -1,37 +1,38 @@
-import { Box, Button, Paper, Typography } from '@mui/material';
-import React from 'react';
-import PersonIcon from '@mui/icons-material/Person';
+import { cloneElement } from 'react';
+
+import AssessmentIcon from '@mui/icons-material/Assessment';
 import BadgeIcon from '@mui/icons-material/Badge';
 import DescriptionIcon from '@mui/icons-material/Description';
+import PersonIcon from '@mui/icons-material/Person';
 import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
-import AssessmentIcon from '@mui/icons-material/Assessment';
+import { Box, Button, Paper, Typography } from '@mui/material';
 
 const menuItems = [
   {
     text: 'Pacientes',
     icon: <PersonIcon fontSize="large" />,
-    link: '/pacientes',
+    link: '/pacientes'
   },
   {
     text: 'Atendimento',
     icon: <BadgeIcon fontSize="large" />,
-    link: '/atendimento',
+    link: '/atendimento'
   },
   {
     text: 'Histórico',
     icon: <DescriptionIcon fontSize="large" />,
-    link: '/historico',
+    link: '/historico'
   },
   {
     text: 'Acompanhamento',
     icon: <SupervisedUserCircleIcon fontSize="large" />,
-    link: '/acompanhamento',
+    link: '/acompanhamento'
   },
   {
     text: 'Relatório do Paciente',
     icon: <AssessmentIcon fontSize="large" />,
-    link: '/relatorio-paciente',
-  },
+    link: '/relatorio-paciente'
+  }
 ];
 
 export default function MenuInicio() {
