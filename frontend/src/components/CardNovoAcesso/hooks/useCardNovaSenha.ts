@@ -39,7 +39,7 @@ export function useCardNovaSenha() {
         console.log('Resposta da nova senha:', response.data);
 
         // Redireciona para a página de login
-        router.push('/login'); // Ou '/signin', dependendo da sua rota de login
+        router.push('/Inicio'); // Ou '/signin', dependendo da sua rota de login
       } else {
         // Se a API retornar 200 OK, mas com um corpo que indica erro lógico (sem token, por exemplo)
         const errorData = response.data;
@@ -56,6 +56,10 @@ export function useCardNovaSenha() {
         if (error.response) {
           const apiError = error.response.data;
           const statusCode = error.response.status;
+
+          console.error('Resposta de erro da API (data):', apiError);
+          console.error('Status Code da API:', statusCode);
+          console.error('Headers da resposta da API:', error.response.headers);
 
           let errorMessage = 'Falha ao alterar a senha.';
 

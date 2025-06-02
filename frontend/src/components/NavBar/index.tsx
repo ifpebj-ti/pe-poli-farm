@@ -76,7 +76,7 @@ export default function NavBar() {
                 <Typography
                   variant="subtitle1"
                   component="div"
-                  sx={{ flexGrow: 1, fontWeight: 'bold' }}
+                  sx={{ flexGrow: 1, fontWeight: '600' }}
                 >
                   Nome do Usuário
                 </Typography>

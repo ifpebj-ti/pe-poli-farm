@@ -1,11 +1,22 @@
-import MenuInicio from '@/src/components/MenuInicio';
-import NavBar from '@/src/components/NavBar';
+// import CardEstatistica from "@/src/components/CardEstatistica";
+// import AgendamentoCard from "@/src/components/Cardagendamento";
+// import PacientesHeader from "@/src/components/Headerpacientes";
+// import MenuInicio from "@/src/components/MenuInicio";
+// import MeusDadosForm from "@/src/components/Meusdados/page";
+// import NavBar from "@/src/components/NavBar";
+// import { Card } from "@mui/material";
+// import TabelaPacientes from "@/src/components/TabelaPacientes";
+import { Box } from '@mui/material';
 
 export default function Teste() {
   return (
-    <>
-      <NavBar />
-      <MenuInicio />
-    </>
+    <Box sx={{ backgroundColor: 'white', minHeight: '100vh' }}>
+      {/* <NavBar />
+    <MenuInicio />
+    <AgendamentoCard />
+    <CardEstatistica />
+    <PacientesHeader />
+    <TabelaPacientes /> */}
+    </Box>
   );
 }

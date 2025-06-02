@@ -42,7 +42,6 @@ export default function MenuInicio() {
         display: 'flex',
         justifyContent: 'space-between',
         gap: 2, // Espaçamento entre os cartões
-        padding: 2,
         flexWrap: 'wrap', // Permite que os itens quebrem a linha em telas menores
         backgroundColor: 'background.default', // Cor de fundo do menu
         width: '100%' // Largura total do menu
@@ -53,7 +52,7 @@ export default function MenuInicio() {
           key={index}
           elevation={2} // Controla a sombra do cartão
           sx={{
-            width: '15%', // Largura fixa para cada cartão
+            width: '17%', // Largura fixa para cada cartão
             boxShadow: 2, // Sombra do cartão
             '&:hover': {
               elevation: 4,
