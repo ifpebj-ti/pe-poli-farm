@@ -4,7 +4,7 @@ import AgendamentoCard from '@/src/components/Cardagendamento';
 import CardEstatistica from '@/src/components/CardEstatistica';
 import MenuInicio from '@/src/components/MenuInicio';
 import NavBar from '@/src/components/NavBar';
-import { Box, Container, Grid, Stack } from '@mui/material';
+import { Box, Container, Grid, Stack, Typography } from '@mui/material';
 import React from 'react';
 
 export default function Inicio() {
@@ -12,6 +12,9 @@ export default function Inicio() {
     <Box sx={{ backgroundColor: 'white', minHeight: '100vh', minWidth: '100%' }}>
         <NavBar />
         <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
+            <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: '500', color: 'black' }}>
+                Inicio
+            </Typography>
             <MenuInicio />
 
             {/* Usando Grid v2. Note que a prop "item" foi removida dos filhos. */}

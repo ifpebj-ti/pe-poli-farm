@@ -47,7 +47,7 @@ export default function NavBar() {
           <Box sx={{ flexGrow: 0, display: 'flex', flexDirection: 'row', alignItems: 'center', color: 'black' }}>
             <Avatar alt="Remy Sharp" sx={{marginRight:1.5}}/>
             <Stack direction="column" sx={{ flexGrow: 1 }}>
-                <Typography variant="subtitle1" component="div" sx={{ flexGrow: 1, fontWeight: 'bold' }}>
+                <Typography variant="subtitle1" component="div" sx={{ flexGrow: 1, fontWeight: '600' }}>
                     Nome do Usuário
                 </Typography>
                 <Typography variant="subtitle2" component="div" sx={{ flexGrow: 1 }}>
