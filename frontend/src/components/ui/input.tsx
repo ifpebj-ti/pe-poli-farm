@@ -1,8 +1,8 @@
-import { cn } from '@/src/lib/utils';
 import * as React from 'react';
 
+import { cn } from '@/src/lib/utils';
+
 const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<'input'>>(
-  // eslint-disable-next-line react/prop-types
   ({ className, type, ...props }, ref) => {
     return (
       <input

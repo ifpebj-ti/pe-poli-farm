@@ -1,12 +1,9 @@
 'use client';
 
-import React from 'react';
 import { useRouter } from 'next/navigation';
 import { FiMail, FiLock } from 'react-icons/fi';
 import { FiArrowLeft } from 'react-icons/fi';
 import { LuLoader } from 'react-icons/lu';
-
-import { Input } from '../ui/input';
 
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
@@ -17,6 +14,7 @@ import {
   FormItem,
   FormMessage
 } from '../ui/form';
+import { Input } from '../ui/input';
 import { PasswordInput } from '../ui/passwordInput';
 import { useCardNovaSenha } from './hooks/useCardNovaSenha';
 
@@ -26,17 +24,20 @@ export default function CardNovoAcesso() {
 
   return (
     <Card className="flex flex-col justify-between bg-[#BED6EF] w-[478px] p-[30px] rounded-[20px] absolute right-[150px] self-center border-gray-600">
-        <button className="w-fit text-xl" onClick={() => router.push('/')}>
-          <FiArrowLeft color='black'/>
-        </button>
-        <CardHeader className="p-0">
-          <CardTitle className="text-black text-3xl font-medium my-10">
-            Acesso ao Sistema
-          </CardTitle>
+      <button className="w-fit text-xl" onClick={() => router.push('/')}>
+        <FiArrowLeft color="black" />
+      </button>
+      <CardHeader className="p-0">
+        <CardTitle className="text-black text-3xl font-medium my-10">
+          Acesso ao Sistema
+        </CardTitle>
       </CardHeader>
       <CardContent className="p-0">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(submitForm)} className="flex flex-col gap-5">
+          <form
+            onSubmit={form.handleSubmit(submitForm)}
+            className="flex flex-col gap-5"
+          >
             <FormField
               control={form.control}
               name="email"
@@ -53,7 +54,7 @@ export default function CardNovoAcesso() {
                       />
                     </div>
                   </FormControl>
-                  <FormMessage className='text-black'>
+                  <FormMessage className="text-black">
                     Digite seu endereço de e-mail
                   </FormMessage>
                 </FormItem>
@@ -66,7 +67,7 @@ export default function CardNovoAcesso() {
                 <FormItem>
                   <FormControl>
                     <div className="flex items-center gap-x-[10px] p-[10px] border-[1px] bg-gray-200 rounded-sm border-gray-900">
-                      <FiLock className="h-5 w-5 mx-2 my-auto" color='black'/>
+                      <FiLock className="h-5 w-5 mx-2 my-auto" color="black" />
                       <Input
                         type="text"
                         placeholder="Código de Acesso"
@@ -75,7 +76,7 @@ export default function CardNovoAcesso() {
                       />
                     </div>
                   </FormControl>
-                  <FormMessage className='text-black'>
+                  <FormMessage className="text-black">
                     Digite seu código de acesso
                   </FormMessage>
                 </FormItem>
@@ -88,7 +89,7 @@ export default function CardNovoAcesso() {
                 <FormItem>
                   <FormControl>
                     <div className="flex items-center gap-x-[10px] p-[10px] border-[1px] bg-gray-200 rounded-sm border-gray-900">
-                      <FiLock className="h-5 w-5 mx-2 my-auto" color='black' />
+                      <FiLock className="h-5 w-5 mx-2 my-auto" color="black" />
                       <PasswordInput
                         type="password"
                         placeholder="Senha"
@@ -97,7 +98,7 @@ export default function CardNovoAcesso() {
                       />
                     </div>
                   </FormControl>
-                  <FormMessage className='text-black'>
+                  <FormMessage className="text-black">
                     Digite sua senha
                   </FormMessage>
                 </FormItem>
@@ -110,7 +111,7 @@ export default function CardNovoAcesso() {
                 <FormItem>
                   <FormControl>
                     <div className="flex items-center gap-x-[10px] p-[10px] border-[1px] bg-gray-200 rounded-sm border-gray-900">
-                      <FiLock className="h-5 w-5 mx-2 my-auto" color='black'/>
+                      <FiLock className="h-5 w-5 mx-2 my-auto" color="black" />
                       <PasswordInput
                         type="password"
                         placeholder="Repetir a Senha"
@@ -119,7 +120,7 @@ export default function CardNovoAcesso() {
                       />
                     </div>
                   </FormControl>
-                  <FormMessage className='text-black'>
+                  <FormMessage className="text-black">
                     Repita sua senha
                   </FormMessage>
                 </FormItem>
