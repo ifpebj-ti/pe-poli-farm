@@ -21,7 +21,7 @@ export async function Login(email: string, password: string) {
 export async function NewPassword(
   email: string,
   password: string,
-  acessCode: string,
+  acessCode: string
 ) {
   // 1. Obter o token do localStorage
   const token = localStorage.getItem('UserAuth');
@@ -36,18 +36,22 @@ export async function NewPassword(
 
   // 3. Configurar os cabeçalhos da requisição
   const headers = {
-    Authorization: `Bearer ${token}`,
+    Authorization: `Bearer ${token}`
   };
 
   try {
     // 4. Realizar a requisição PUT com os cabeçalhos
-    const response = await api.put(`/Auth`, {
-      email,
-      password,
-      acessCode,
-    }, {
-      headers, // Adiciona os cabeçalhos à requisição
-    });
+    const response = await api.put(
+      `/Auth`,
+      {
+        email,
+        password,
+        acessCode
+      },
+      {
+        headers // Adiciona os cabeçalhos à requisição
+      }
+    );
 
     return response;
   } catch (error) {
