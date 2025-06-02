@@ -6,17 +6,17 @@
 // import NavBar from "@/src/components/NavBar";
 // import { Card } from "@mui/material";
 // import TabelaPacientes from "@/src/components/TabelaPacientes";
-import { Box } from "@mui/material";
-import React from "react";
+import { Box } from '@mui/material';
 
 export default function Teste() {
-  return (<Box sx={{ backgroundColor: 'white', minHeight: '100vh'}}>
-    {/* <NavBar />
+  return (
+    <Box sx={{ backgroundColor: 'white', minHeight: '100vh' }}>
+      {/* <NavBar />
     <MenuInicio />
     <AgendamentoCard />
     <CardEstatistica />
     <PacientesHeader />
     <TabelaPacientes /> */}
-  </Box>
+    </Box>
   );
 }

@@ -1,5 +1,4 @@
 'use client';
-import React from 'react';
 import {
   Box,
   Button,
@@ -11,14 +10,14 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography,
+  Typography
 } from '@mui/material';
 
 const pacientes = Array.from({ length: 7 }, () => ({
   nome: `Nome Paciente`,
   nomeMae: 'Nome da mãe',
   idade: '36 anos e 2 meses',
-  entrada: '13:00',
+  entrada: '13:00'
 }));
 
 export default function TabelaPacientes() {
@@ -60,8 +59,8 @@ export default function TabelaPacientes() {
                         minWidth: 120,
                         height: 30,
                         '&:hover': {
-                          backgroundColor: '#0f479e',
-                        },
+                          backgroundColor: '#0f479e'
+                        }
                       }}
                     >
                       Ver prontuário

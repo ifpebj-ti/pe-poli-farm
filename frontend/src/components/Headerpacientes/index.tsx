@@ -1,15 +1,14 @@
 'use client';
 
-import React from 'react';
+import SearchIcon from '@mui/icons-material/Search';
 import {
   Box,
   Typography,
   TextField,
   InputAdornment,
   IconButton,
-  Button,
+  Button
 } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
 
 export default function PacientesHeader() {
   return (
@@ -21,7 +20,7 @@ export default function PacientesHeader() {
         px: 6,
         pt: 6,
         backgroundColor: '#fff',
-        fontFamily: 'Roboto, sans-serif',
+        fontFamily: 'Roboto, sans-serif'
       }}
     >
       {/* Título */}
@@ -30,7 +29,7 @@ export default function PacientesHeader() {
         sx={{
           color: '#000',
           fontWeight: 400,
-          fontFamily: 'Roboto, sans-serif',
+          fontFamily: 'Roboto, sans-serif'
         }}
       >
         Pacientes
@@ -42,7 +41,7 @@ export default function PacientesHeader() {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'flex-end',
-          gap: 2,
+          gap: 2
         }}
       >
         <TextField
@@ -55,11 +54,11 @@ export default function PacientesHeader() {
             '& .MuiOutlinedInput-root': {
               height: 50,
               borderRadius: '8px',
-              fontFamily: 'Roboto, sans-serif',
+              fontFamily: 'Roboto, sans-serif'
             },
             '& .MuiOutlinedInput-notchedOutline': {
-              borderColor: '#ccc',
-            },
+              borderColor: '#ccc'
+            }
           }}
           InputProps={{
             endAdornment: (
@@ -68,7 +67,7 @@ export default function PacientesHeader() {
                   <SearchIcon sx={{ color: '#1351B4', fontSize: 20 }} />
                 </IconButton>
               </InputAdornment>
-            ),
+            )
           }}
         />
 
@@ -86,8 +85,8 @@ export default function PacientesHeader() {
             minWidth: 90,
             '&:hover': {
               borderColor: '#0f479e',
-              backgroundColor: '#f0f7ff',
-            },
+              backgroundColor: '#f0f7ff'
+            }
           }}
         >
           Voltar

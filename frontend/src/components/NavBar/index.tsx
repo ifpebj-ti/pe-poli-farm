@@ -60,13 +60,25 @@ export default function NavBar() {
                 sx={{ flexGrow: 1 }}
               >
                 Controle consultas e dados de pacientes
-            </Typography>
-          </Stack>
-          <Box sx={{ flexGrow: 0, display: 'flex', flexDirection: 'row', alignItems: 'center', color: 'black' }}>
-            <Avatar alt="Remy Sharp" sx={{marginRight:1.5}}/>
-            <Stack direction="column" sx={{ flexGrow: 1 }}>
-                <Typography variant="subtitle1" component="div" sx={{ flexGrow: 1, fontWeight: '600' }}>
-                    Nome do Usuário
+              </Typography>
+            </Stack>
+            <Box
+              sx={{
+                flexGrow: 0,
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                color: 'black'
+              }}
+            >
+              <Avatar alt="Remy Sharp" sx={{ marginRight: 1.5 }} />
+              <Stack direction="column" sx={{ flexGrow: 1 }}>
+                <Typography
+                  variant="subtitle1"
+                  component="div"
+                  sx={{ flexGrow: 1, fontWeight: '600' }}
+                >
+                  Nome do Usuário
                 </Typography>
                 <Typography
                   variant="subtitle2"
