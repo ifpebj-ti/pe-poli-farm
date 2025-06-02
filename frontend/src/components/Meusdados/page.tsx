@@ -38,9 +38,9 @@ export default function MeusDadosForm() {
     <Box
       sx={{
         maxWidth: 500,
-        margin: 'auto',
         mt: 5,
         px: 2,
+        mx: 8,
         display: 'flex',
         flexDirection: 'column',
         gap: 2,
