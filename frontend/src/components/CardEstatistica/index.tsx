@@ -24,8 +24,8 @@ export default function CardEstatistica() {
       elevation={3} 
       sx={{ 
         padding: 3, 
-        maxWidth: '30%', // Largura máxima para o card
-        maxHeight: '30%', // Altura máxima para o card
+        maxWidth: '100%', // Largura máxima para o card
+        maxHeight: '100%', // Altura máxima para o card
         margin: 'auto' // Centraliza o card na página
       }}
     >

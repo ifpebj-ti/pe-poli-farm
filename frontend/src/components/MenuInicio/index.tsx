@@ -52,7 +52,7 @@ export default function MenuInicio() {
             key={index}
             elevation={2} // Controla a sombra do cartão
             sx={{
-                width: "15%", // Largura fixa para cada cartão
+                width: "17%", // Largura fixa para cada cartão
                 boxShadow: 2, // Sombra do cartão
                 '&:hover': {
                 elevation: 4,
