@@ -1,7 +1,7 @@
 'use client';
 import React from "react";
 import NavBar from "@/src/components/NavBar";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import MeusDadosForm from "@/src/components/Meusdados/page";
 
 export default function MeusDados() {
