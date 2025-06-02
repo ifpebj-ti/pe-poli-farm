@@ -46,7 +46,7 @@ export default function MeusDadosForm() {
       }}
     >
       <Typography
-      variant="h5"
+      variant="h4"
       sx={{ color: '#000'}}
       >
       Meus Dados
