@@ -4,7 +4,7 @@ import AgendamentoCard from '@/src/components/Cardagendamento';
 import CardEstatistica from '@/src/components/CardEstatistica';
 import MenuInicio from '@/src/components/MenuInicio';
 import NavBar from '@/src/components/NavBar';
-import { Box, Container, Grid, Stack, Typography } from '@mui/material';
+import { Box, Container, Grid, Typography } from '@mui/material';
 import React from 'react';
 
 export default function Inicio() {

@@ -1,5 +1,5 @@
 'use client';
-
+import React from 'react';
 import {
   Box,
   Button,
@@ -14,7 +14,7 @@ import {
   Typography,
 } from '@mui/material';
 
-const pacientes = Array.from({ length: 7 }, (_, i) => ({
+const pacientes = Array.from({ length: 7 }, () => ({
   nome: `Nome Paciente`,
   nomeMae: 'Nome da mãe',
   idade: '36 anos e 2 meses',
