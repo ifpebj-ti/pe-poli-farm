@@ -1,5 +1,6 @@
 'use client';
 
+import BreadCrumb from '@/src/components/BreadCrumb';
 import AgendamentoCard from '@/src/components/Cardagendamento';
 import CardEstatistica from '@/src/components/CardEstatistica';
 import MenuInicio from '@/src/components/MenuInicio';
@@ -8,17 +9,25 @@ import NavBar from '@/src/components/NavBar';
 import { Box, Container, Grid, Typography } from '@mui/material';
 
 export default function Inicio() {
+  const linkList = [
+    {
+      label: 'Página Inicial',
+      href: '#'
+    }
+  ];
+
   return (
     <Box
       sx={{ backgroundColor: 'white', minHeight: '100vh', minWidth: '100%' }}
     >
       <NavBar />
       <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
+        <BreadCrumb {...{ linkList }} />
         <Typography
           variant="h4"
           component="h1"
           gutterBottom
-          sx={{ fontWeight: '500', color: 'black' }}
+          sx={{ fontWeight: '500', color: 'black', marginTop: '24px' }}
         >
           Inicio
         </Typography>
