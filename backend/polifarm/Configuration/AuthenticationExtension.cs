@@ -20,8 +20,6 @@ namespace WebApi.Configuration
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidAudience = configuration.GetValue<string>("JWT_SETTINGS:AUD")!,
-                    ValidIssuer = configuration.GetValue<string>("JWT_SETTINGS:ISS")!,
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidAudience = jwtSettings.GetValue<string>("AUD")!,

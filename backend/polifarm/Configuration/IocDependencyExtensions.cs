@@ -1,4 +1,5 @@
 ﻿using Application.Gateways;
+using Application.Usecases.Appointment;
 using Application.Usecases.Auth;
 using Application.Usecases.Patient;
 using Application.Usecases.Prescription;
@@ -38,6 +39,12 @@ namespace Webapi.Configuration
             services.AddScoped<IServiceGateway, ServiceRepositoryGateway>();
             services.AddScoped<InitializeServiceUseCase>();
             services.AddScoped<FindAllServicesByPatientIdUseCase>();
+
+            //Appointment
+            services.AddScoped<IAppointmentRepository, AppointmentRepositoryGateway>();
+            services.AddScoped<CreateAppointmentUseCase>();
+            services.AddScoped<GetAppointmentsUseCase>();
+            services.AddScoped<UpdateAppointmentStatusUseCase>();
 
             // Auth
             services.AddScoped<LoginUseCase>();
