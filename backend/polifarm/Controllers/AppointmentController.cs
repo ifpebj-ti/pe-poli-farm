@@ -5,6 +5,7 @@ using Domain.Enums;
 using Domain.Errors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.ResponseModels.Appointment;
 
 namespace WebApi.Controllers
 {
@@ -55,7 +56,7 @@ namespace WebApi.Controllers
                     : BadRequest();
             }
 
-            return Ok(result.Data);
+            return Ok(AppointmentResponseModels.CreateAppointmentListResponse(result.Data!));
         }
 
         /// <summary>

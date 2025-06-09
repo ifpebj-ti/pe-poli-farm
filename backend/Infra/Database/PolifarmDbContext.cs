@@ -3,6 +3,7 @@ using Domain.Entites.AccessCode;
 using Domain.Entites.Appointment;
 using Domain.Entites.Profile;
 using Domain.Entites.User;
+using Domain.Entities.Notes;
 using Domain.Entities.Patient;
 using Domain.Entities.Service;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,7 @@ namespace Infra.Database
         public DbSet<ServiceEntity> Services { get; private set; }
         public DbSet<PatientPrescriptionEntity> Prescriptions { get; private set; }
         public DbSet<AppointmentEntity> Appointments { get; private set; }
+        public DbSet<NotesEntity> Notes { get; private set; }
 
         public PolifarmDbContext(DbContextOptions<PolifarmDbContext> options) : base(options)
         {

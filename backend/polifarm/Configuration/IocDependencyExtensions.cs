@@ -1,10 +1,13 @@
 ﻿using Application.Gateways;
 using Application.Usecases.Appointment;
 using Application.Usecases.Auth;
+using Application.Usecases.Note;
 using Application.Usecases.Patient;
 using Application.Usecases.Prescription;
 using Application.Usecases.Service;
 using Application.Usecases.User;
+using Domain.Entites;
+using Domain.Entities.Notes;
 using Infra.Gateways;
 using prontuario.Application.Usecases.Service;
 
@@ -30,6 +33,12 @@ namespace Webapi.Configuration
             services.AddScoped<FindAllPatientUseCase>();
             services.AddScoped<UpdatePatientUseCase>();
             services.AddScoped<FindPatientByIdUseCase>();
+            services.AddScoped<AddNoteUseCase>();
+            services.AddScoped<RemoveNoteUseCase>();
+
+            //Notes
+            services.AddScoped<INotesRepositoryGateway, NotesRepositoryGateway>();
+            services.AddScoped<GetNotesUseCase>();
 
             //Medical Record
             services.AddScoped<IPrescriptionRepository, PrescriptionRepository>();
@@ -52,6 +61,7 @@ namespace Webapi.Configuration
             // Outros serviços
             services.AddScoped<IBcryptGateway, BcryptServiceGateway>();
             services.AddScoped<ITokenGateway, TokenGateway>();
+            services.AddScoped(typeof(IGenericRepositoryGateway<>), typeof(GenericRepositoryGateway<>));
         }
     }
 }
