@@ -1,5 +1,7 @@
 import { getServerSession } from 'next-auth';
+
 import { redirect } from 'next/navigation';
+
 import { ReactNode } from 'react';
 
 // import { MenuComponent } from '../../components/NavBar/MenuComponente';

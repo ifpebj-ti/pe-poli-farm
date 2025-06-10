@@ -7,7 +7,7 @@ import {
   TextField,
   InputAdornment,
   IconButton,
-  Button,
+  Button
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -21,7 +21,7 @@ export default function NovoAtendimentoHeader() {
         px: 6,
         pt: 6,
         backgroundColor: '#fff',
-        fontFamily: 'Roboto, sans-serif',
+        fontFamily: 'Roboto, sans-serif'
       }}
     >
       {/* Título */}
@@ -30,7 +30,7 @@ export default function NovoAtendimentoHeader() {
         sx={{
           color: '#000',
           fontWeight: 400,
-          fontFamily: 'Roboto, sans-serif',
+          fontFamily: 'Roboto, sans-serif'
         }}
       >
         Novo Atendimento
@@ -42,7 +42,7 @@ export default function NovoAtendimentoHeader() {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'flex-end',
-          gap: 2,
+          gap: 2
         }}
       >
         <TextField
@@ -55,11 +55,11 @@ export default function NovoAtendimentoHeader() {
             '& .MuiOutlinedInput-root': {
               height: 50,
               borderRadius: '8px',
-              fontFamily: 'Roboto, sans-serif',
+              fontFamily: 'Roboto, sans-serif'
             },
             '& .MuiOutlinedInput-notchedOutline': {
-              borderColor: '#ccc',
-            },
+              borderColor: '#ccc'
+            }
           }}
           InputProps={{
             endAdornment: (
@@ -68,7 +68,7 @@ export default function NovoAtendimentoHeader() {
                   <SearchIcon sx={{ color: '#1351B4', fontSize: 20 }} />
                 </IconButton>
               </InputAdornment>
-            ),
+            )
           }}
         />
 
@@ -86,8 +86,8 @@ export default function NovoAtendimentoHeader() {
             minWidth: 90,
             '&:hover': {
               borderColor: '#0f479e',
-              backgroundColor: '#f0f7ff',
-            },
+              backgroundColor: '#f0f7ff'
+            }
           }}
         >
           Voltar

@@ -11,7 +11,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography,
+  Typography
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
@@ -19,7 +19,7 @@ const pacientes = Array.from({ length: 7 }, () => ({
   nome: `Nome Paciente`,
   nomeMae: 'Nome da mãe',
   idade: '36 anos e 2 meses',
-  entrada: '13:00',
+  entrada: '13:00'
 }));
 
 export default function TabelaNovoAtendimento() {
@@ -61,8 +61,8 @@ export default function TabelaNovoAtendimento() {
                         minWidth: 120,
                         height: 30,
                         '&:hover': {
-                          backgroundColor: '#0f479e',
-                        },
+                          backgroundColor: '#0f479e'
+                        }
                       }}
                     >
                       Ver prontuário
@@ -92,8 +92,8 @@ export default function TabelaNovoAtendimento() {
               paddingY: 0.8,
               '&:hover': {
                 backgroundColor: 'rgba(19, 81, 180, 0.04)',
-                borderColor: '#1351B4',
-              },
+                borderColor: '#1351B4'
+              }
             }}
           >
             Novo Paciente
