@@ -1,7 +1,7 @@
 import FormDadosPaciente from '@/src/components/FormDadosPaciente';
 import NavBar from '@/src/components/NavBar';
+
 import { Box } from '@mui/material';
-import React from 'react';
 
 export default function NovoPaciente() {
   return (

@@ -32,7 +32,7 @@ export default function NovoAtendimentoHeader() {
           fontFamily: 'Roboto, sans-serif'
         }}
       >
-        Pacientes
+        Novo Atendimento
       </Typography>
 
       {/* Campo de busca e botão */}

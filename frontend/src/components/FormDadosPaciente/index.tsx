@@ -1,6 +1,5 @@
-import React from 'react';
-
 // Importando componentes do Material-UI
+import AddIcon from '@mui/icons-material/Add'; // Ícone para o botão "Novo Contato"
 import {
   Box,
   Breadcrumbs,
@@ -11,7 +10,6 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add'; // Ícone para o botão "Novo Contato"
 
 // --- Componente da Página ---
 const FormDadosPaciente = () => {
