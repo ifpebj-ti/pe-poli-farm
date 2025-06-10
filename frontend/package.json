@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prepare": "husky"
+    "prepare": "cd .. && husky frontend/.husky"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
@@ -37,6 +37,8 @@
     "zod": "^3.25.42"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
