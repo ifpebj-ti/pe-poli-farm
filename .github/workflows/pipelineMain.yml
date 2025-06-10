@@ -115,7 +115,7 @@ jobs:
             tags: ghcr.io/ifpebj-ti/polifarm-backend:$TAG
 
   create-release:
-    name: 3. Criar release
+    name: Criar release
     runs-on: ubuntu-latest
     needs: prepare-tag
     env:
