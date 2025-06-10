@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import React from 'react';
 import Providers from "./providers";
+import ThemeRegistry from "../theme/ThemeRegistry";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,6 +14,8 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
+
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -29,9 +32,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Providers>
-          {children}
-        </Providers>
+        <ThemeRegistry>
+          <Providers>
+            {children}
+          </Providers>
+        </ThemeRegistry>
       </body>
     </html>
   );
