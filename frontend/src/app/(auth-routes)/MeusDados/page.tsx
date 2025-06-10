@@ -1,6 +1,6 @@
 'use client';
 import BreadCrumb from '@/src/components/BreadCrumb';
-import MeusDadosForm from '@/src/components/Meusdados/page';
+import MeusDadosForm from '@/src/components/Meusdados';
 import NavBar from '@/src/components/NavBar';
 
 import { Box } from '@mui/material';
