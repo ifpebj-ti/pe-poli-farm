@@ -1,14 +1,14 @@
 import BreadCrumb from '@/src/components/BreadCrumb';
-import PacientesHeader from '@/src/components/Headerpacientes';
+import HistoricoExamesHeader from '@/src/components/Headers/HeaderHistoricoExames';
 import NavBar from '@/src/components/NavBar';
-import TabelaPacientes from '@/src/components/TabelaPacientes';
+import TabelaHistoricoExames from '@/src/components/Tabelas/TabelaHistoricoExames';
 
 import { Box } from '@mui/material';
 
-export default function Pacientes() {
+export default function HistoricoExames() {
   const linkList = [
     {
-      label: 'Pacientes',
+      label: 'Histórico de Exames',
       href: '#'
     }
   ];
@@ -21,8 +21,8 @@ export default function Pacientes() {
       <Box sx={{ mt: 4, ml: 6 }}>
         <BreadCrumb {...{ linkList }} />
       </Box>
-      <PacientesHeader />
-      <TabelaPacientes />
+      <HistoricoExamesHeader />
+      <TabelaHistoricoExames />
     </Box>
   );
 }

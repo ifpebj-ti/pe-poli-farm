@@ -23,10 +23,10 @@ import {
 // import { PasswordInput } from '@/src/components/ui/passwordInput';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
-import { PasswordInput } from '../ui/passwordInput';
+import { Button } from '../../ui/button';
+import { Input } from '../../ui/input';
+import { Label } from '../../ui/label';
+import { PasswordInput } from '../../ui/passwordInput';
 import { useCardLogin } from './hooks/useCardLogin';
 import { mySchema, typeMyschema } from './schemas/schema';
 

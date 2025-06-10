@@ -5,17 +5,17 @@ import { FiMail, FiLock } from 'react-icons/fi';
 import { FiArrowLeft } from 'react-icons/fi';
 import { LuLoader } from 'react-icons/lu';
 
-import { Button } from '../ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Button } from '../../ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage
-} from '../ui/form';
-import { Input } from '../ui/input';
-import { PasswordInput } from '../ui/passwordInput';
+} from '../../ui/form';
+import { Input } from '../../ui/input';
+import { PasswordInput } from '../../ui/passwordInput';
 import { useCardNovaSenha } from './hooks/useCardNovaSenha';
 
 export default function CardNovoAcesso() {
