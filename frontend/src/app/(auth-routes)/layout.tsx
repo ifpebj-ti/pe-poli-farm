@@ -1,8 +1,6 @@
-import React from 'react';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { ReactNode } from 'react';
-
 
 // import { MenuComponent } from '../../components/NavBar/MenuComponente';
 // import { UserComponent } from '../../components/NavBar/PerfilComponente';
@@ -21,8 +19,7 @@ export default async function PrivateLayout({
 
   return (
     <>
-      <header>
-      </header>
+      <header></header>
       <main className="p-[30px]">{children}</main>
     </>
   );
