@@ -1,6 +1,12 @@
-'use client'
+'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
+
+import CloseIcon from '@mui/icons-material/Close';
+import HomeIcon from '@mui/icons-material/Home';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import LogoutIcon from '@mui/icons-material/Logout';
+import PersonIcon from '@mui/icons-material/Person';
 import {
   Avatar,
   Box,
@@ -13,13 +19,8 @@ import {
   ListItemIcon,
   ListItemText,
   Stack,
-  Typography,
+  Typography
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import HomeIcon from '@mui/icons-material/Home';
-import PersonIcon from '@mui/icons-material/Person';
-import LogoutIcon from '@mui/icons-material/Logout';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
 interface SidebarProps {
   open: boolean;
@@ -41,21 +42,44 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'space-between',
+          justifyContent: 'space-between'
         }}
         role="presentation"
       >
         {/* Top Section */}
         <Box>
-          <Box sx={{ flexGrow: 0, display: 'flex', flexDirection: 'row', alignItems: 'center', color: 'black', paddingTop: 3, paddingLeft: 2, paddingBottom: 3  }}>
-            <Avatar alt="Remy Sharp" src="globe.svg" sx={{marginRight:1.5}}/>
+          <Box
+            sx={{
+              flexGrow: 0,
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              color: 'black',
+              paddingTop: 3,
+              paddingLeft: 2,
+              paddingBottom: 3
+            }}
+          >
+            <Avatar
+              alt="Remy Sharp"
+              src="globe.svg"
+              sx={{ marginRight: 1.5 }}
+            />
             <Stack direction="column" sx={{ flexGrow: 1 }}>
-                <Typography variant="subtitle1" component="div" sx={{ flexGrow: 1, fontWeight: 'bold' }}>
-                    Nome do Usuário
-                </Typography>
-                <Typography variant="subtitle2" component="div" sx={{ flexGrow: 1,  }}>
-                    Cargo do Usuário
-                </Typography>
+              <Typography
+                variant="subtitle1"
+                component="div"
+                sx={{ flexGrow: 1, fontWeight: 'bold' }}
+              >
+                Nome do Usuário
+              </Typography>
+              <Typography
+                variant="subtitle2"
+                component="div"
+                sx={{ flexGrow: 1 }}
+              >
+                Cargo do Usuário
+              </Typography>
             </Stack>
             <IconButton
               size="large"
@@ -65,7 +89,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
               sx={{ ml: 2, mr: 2, color: '#1351B4' }}
               onClick={onClose}
             >
-                <CloseIcon />
+              <CloseIcon />
             </IconButton>
           </Box>
           <Divider />
@@ -81,9 +105,9 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
                     backgroundColor: 'primary.main',
                     color: 'white',
                     '& .MuiListItemIcon-root, & .MuiListItemText-primary': {
-                      color: 'white',
-                    },
-                  },
+                      color: 'white'
+                    }
+                  }
                 }}
               >
                 <ListItemIcon>
@@ -105,9 +129,9 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
                     backgroundColor: 'primary.main',
                     color: 'white',
                     '& .MuiListItemIcon-root, & .MuiListItemText-primary': {
-                      color: 'white',
-                    },
-                  },
+                      color: 'white'
+                    }
+                  }
                 }}
               >
                 <ListItemIcon>

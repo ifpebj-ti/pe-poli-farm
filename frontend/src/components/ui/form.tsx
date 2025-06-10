@@ -10,11 +10,11 @@ import {
   useFormContext
 } from 'react-hook-form';
 
-import { Label } from './label';
-
 import { cn } from '@/src/lib/utils';
 import * as LabelPrimitive from '@radix-ui/react-label';
 import { Slot } from '@radix-ui/react-slot';
+
+import { Label } from './label';
 
 const Form = FormProvider;
 
@@ -90,7 +90,6 @@ FormItem.displayName = 'FormItem';
 const FormLabel = React.forwardRef<
   React.ElementRef<typeof LabelPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>
-  // eslint-disable-next-line react/prop-types
 >(({ className, ...props }, ref) => {
   const { error, formItemId } = useFormField();
 
