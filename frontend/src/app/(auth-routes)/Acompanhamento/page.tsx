@@ -1,14 +1,14 @@
-'use client';
 import BreadCrumb from '@/src/components/BreadCrumb';
-import MeusDadosForm from '@/src/components/Meusdados';
+import AcompanhamentoHeader from '@/src/components/Headers/HeaderAcompanhamento';
 import NavBar from '@/src/components/NavBar';
+import TabelaAcompanhamento from '@/src/components/Tabelas/TabelaAcompanhamento';
 
 import { Box } from '@mui/material';
 
-export default function MeusDados() {
+export default function Acompanhamento() {
   const linkList = [
     {
-      label: 'Meus Dados',
+      label: 'Acompanhamento',
       href: '#'
     }
   ];
@@ -18,10 +18,11 @@ export default function MeusDados() {
       sx={{ backgroundColor: 'white', minHeight: '100vh', minWidth: '100%' }}
     >
       <NavBar />
-      <Box sx={{ mt: 4, ml: 10 }}>
+      <Box sx={{ mt: 4, ml: 6 }}>
         <BreadCrumb {...{ linkList }} />
       </Box>
-      <MeusDadosForm />
+      <AcompanhamentoHeader />
+      <TabelaAcompanhamento />
     </Box>
   );
 }

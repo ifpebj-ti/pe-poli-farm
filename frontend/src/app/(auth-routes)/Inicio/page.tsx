@@ -1,8 +1,8 @@
 'use client';
 
 import BreadCrumb from '@/src/components/BreadCrumb';
-import AgendamentoCard from '@/src/components/Cardagendamento';
-import CardEstatistica from '@/src/components/CardEstatistica';
+import AgendamentoCard from '@/src/components/Cards/Cardagendamento';
+import CardEstatistica from '@/src/components/Cards/CardEstatistica';
 import MenuInicio from '@/src/components/MenuInicio';
 import NavBar from '@/src/components/NavBar';
 
