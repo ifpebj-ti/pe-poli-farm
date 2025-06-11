@@ -1,6 +1,7 @@
 ﻿using Application.Gateways;
 using Application.Usecases.Appointment;
 using Application.Usecases.Auth;
+using Application.Usecases.MedicalCertificate;
 using Application.Usecases.Note;
 using Application.Usecases.Patient;
 using Application.Usecases.Prescription;
@@ -42,7 +43,10 @@ namespace Webapi.Configuration
 
             //Medical Record
             services.AddScoped<IPrescriptionRepository, PrescriptionRepository>();
+            services.AddScoped<IMedicalCertificateRepositoryGateway, MedicalCertificateRepositoryGateway>();
             services.AddScoped<AddPrescriptionUseCase>();
+            services.AddScoped<CreateMedicalCertificateUseCase>();
+            services.AddScoped<GetMedicalCertificateUseCase>();
 
             //Service
             services.AddScoped<IServiceGateway, ServiceRepositoryGateway>();
