@@ -9,11 +9,11 @@ namespace Webapi.Configuration
         {
             services.AddDbContext<PolifarmDbContext>(options =>
             {
-                options.UseSqlite("Data Source=./polifarm.db",
+                options.UseNpgsql(configuration.GetValue<string>("CONNECTION_STRING"),
                     sql => sql.MigrationsAssembly("WebApi"));
             });
 
-            return services;
-        }
+        return services;
     }
+}
 }
