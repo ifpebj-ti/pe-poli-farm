@@ -41,7 +41,10 @@ namespace Infra.Gateways
 
         public async Task<List<AppointmentEntity>> GetWithFiltersAsync(AppointmentFilterDTO filters, CancellationToken cancellationToken = default)
         {
-            var query = context.Appointments.Include(ap => ap.Patient).Include(ap => ap.Professional).AsQueryable();
+            var query = context.Appointments
+                .Include(ap => ap.Patient)
+                .Include(ap => ap.Professional)
+                .AsQueryable();
 
             if (filters.PatientId.HasValue)
                 query = query.Where(x => x.PatientId == filters.PatientId.Value);
