@@ -3,8 +3,6 @@ using WebApi.ResponseModels.HealthAndDisease;
 using WebApi.ResponseModels.PatientMedications;
 using WebApi.ResponseModels.Anamnese;
 using WebApi.ResponseModels.MedicalRecord;
-using WebApi.ResponseModels.PatientMedications;
-using WebApi.ResponseModels.MedicalRecord;
 
 namespace WebApi.ResponseModels.MedicalRecord;
 
@@ -13,7 +11,7 @@ public class MedicalRecordResponseModels
     public static MedicalRecordResponse CreateCompleteMedicalRecordResponse(MedicalRecordEntity medicalRecordEntity)
     {
         var patientMedicationsResponse = medicalRecordEntity.PatientMedications?.Select(medication =>
-            PatientMedicationResponseModels.CreatePatientExamsResponse(medication)
+            PatientPrescriptionResponseModels.CreatePatientExamsResponse(medication)
         ).ToList();
 
         var healthAndDiseaseResponse = medicalRecordEntity.HealthAndDisease == null

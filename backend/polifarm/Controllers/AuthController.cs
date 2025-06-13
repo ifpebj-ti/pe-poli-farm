@@ -42,11 +42,9 @@ namespace WebApi.Controllers
 
             if (!useCaseResult.IsSuccess)
             {
-                // Construindo a URL dinamicamente
                 var endpointUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.Path}";
                 useCaseResult.ErrorDetails!.Type = endpointUrl;
 
-                // Retornando erro apropriado
                 return useCaseResult.ErrorDetails?.Status is 400
                     ? BadRequest(useCaseResult.ErrorDetails)
                     : NotFound(useCaseResult.ErrorDetails);

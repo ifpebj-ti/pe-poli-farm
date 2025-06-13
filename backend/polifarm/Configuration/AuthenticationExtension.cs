@@ -20,10 +20,10 @@ namespace WebApi.Configuration
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidAudience = configuration.GetValue<string>("JWT_SETTINGS:AUD")!,
-                    ValidIssuer = configuration.GetValue<string>("JWT_SETTINGS:ISS")!,
                     ValidateIssuer = true,
-                    ValidateAudience = false,
+                    ValidateAudience = true,
+                    ValidAudience = jwtSettings.GetValue<string>("AUD")!,
+                    ValidIssuer = jwtSettings.GetValue<string>("ISS")!,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.GetValue<string>("SECRET")!))
@@ -37,6 +37,5 @@ namespace WebApi.Configuration
 
             return services;
         }
-
     }
 }
