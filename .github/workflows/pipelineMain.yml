@@ -1,17 +1,74 @@
 name: Production CI/CD
 
 on:
-  push:
-    branches:
-      - main
+  pull_request:
+    types: [closed]         
+    branches: [ "main" ]
 
 jobs:
+  prepare-tag:
+    name: Preparar nova tag
+    runs-on: ubuntu-latest
+    outputs:
+      new_tag: ${{ steps.nova_tag.outputs.nova_tag }}
+      tipo:    ${{ steps.tipo.outputs.tipo }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar GitHub CLI
+        run: sudo apt-get install -y gh
+
+      - name: Extrair tipo de mudança da PR
+        id: tipo
+        run: |
+          echo "${{ github.event.pull_request.body }}" > body.txt
+      
+          tipo=""
+          if grep -q "\[x\] marco-no-projeto" body.txt; then
+            tipo="marco-no-projeto"
+          elif grep -q "\[x\] nova-feature" body.txt; then
+            tipo="nova-feature"
+          elif grep -q "\[x\] bug-fix" body.txt; then
+            tipo="bug-fix"
+          else
+            echo "Nenhuma opção marcada corretamente em 'tipo:'"
+          fi
+          
+          echo "tipo=$tipo" >> "$GITHUB_OUTPUT"
+
+      - name: Obter a última tag da release
+        id: ultima
+        run: |
+          gh auth setup-git
+          tag=$(gh release list --limit 1 --json tagName --jq '.[0].tagName')
+          if [[ -z "$tag" ]]; then tag="0.0.0"; fi
+          echo "tag_atual=$tag" >> "$GITHUB_OUTPUT"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Calcular nova tag
+        id: nova_tag
+        run: |
+          IFS='.' read -r major minor patch <<< "${{ steps.ultima.outputs.tag_atual }}"
+          case "${{ steps.tipo.outputs.tipo }}" in
+            bug-fix)           patch=$((patch + 1));;
+            nova-feature)      minor=$((minor + 1)); patch=0;;
+            marco-no-projeto)  major=$((major + 1)); minor=0; patch=0;;
+          esac
+          nova_tag="${major}.${minor}.${patch}"
+          echo "Nova tag: $nova_tag"
+          echo "nova_tag=$nova_tag" >> "$GITHUB_OUTPUT"
+  
   frontend:
       name: Frontend CI/CD
       runs-on: ubuntu-latest
+      needs: prepare-tag
       permissions:
         contents: write
         packages: write
+      env:
+        TAG: ${{ needs.prepare-tag.outputs.new_tag }}
   
       steps:
         - uses: actions/checkout@v4
@@ -28,14 +85,17 @@ jobs:
           with:
             context: ./frontend/
             push: true
-            tags: ghcr.io/ifpebj-ti/polifarm-frontend:latest
+            tags: ghcr.io/ifpebj-ti/polifarm-frontend:$TAG
             
   backend:
       name: Backend CI/CD
       runs-on: ubuntu-latest
+      needs: prepare-tag
       permissions:
         contents: write
         packages: write
+      env:
+        TAG: ${{ needs.prepare-tag.outputs.new_tag }}
   
       steps:
         - uses: actions/checkout@v4
@@ -52,4 +112,26 @@ jobs:
           with:
             context: ./backend/
             push: true
-            tags: ghcr.io/ifpebj-ti/polifarm-backend:latest
+            tags: ghcr.io/ifpebj-ti/polifarm-backend:$TAG
+
+  create-release:
+    name: Criar release
+    runs-on: ubuntu-latest
+    needs: prepare-tag
+    env:
+      NEW_TAG: ${{ needs.prepare-tag.outputs.new_tag }}
+      TIPO:    ${{ needs.prepare-tag.outputs.tipo }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Publicar release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.NEW_TAG }}
+          name: Release ${{ env.NEW_TAG }}
+          generate_release_notes: true
+          body: |
+            Release gerada automaticamente a partir da Pull Request #${{ github.event.pull_request.number }}
+            Tipo de mudança: ${{ env.TIPO }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}

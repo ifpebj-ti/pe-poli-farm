@@ -1,10 +1,9 @@
 // src/theme/ThemeRegistry.tsx
 'use client';
 
-import * as React from 'react';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 import CssBaseline from '@mui/material/CssBaseline';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 // Aqui você pode criar seu tema customizado do MUI se quiser
 // Por enquanto, vamos usar o padrão

@@ -1,4 +1,7 @@
-﻿using Application.Usecases.Patient;
+﻿using Application.Usecases.Note;
+using Application.Usecases.Patient;
+using Domain.Dtos;
+using Domain.Dtos.Note;
 using Domain.Dtos.Patient;
 using Domain.Errors;
 using Domain.ValuesObjects;
@@ -7,8 +10,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.ResponseModels;
+using WebApi.ResponseModels.Note;
 using WebApi.ResponseModels.Patient;
 using WebApi.ResponseModels.Utils;
+using WebApi.Validators.Note;
 using WebApi.Validators.Patient;
 
 namespace WebApi.Controllers
@@ -65,7 +70,6 @@ namespace WebApi.Controllers
 
             if (result.IsFailure)
             {
-                // Construindo a URL dinamicamente
                 var endpointUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.Path}";
                 result.ErrorDetails!.Type = endpointUrl;
 
@@ -97,7 +101,6 @@ namespace WebApi.Controllers
 
             if (result.IsFailure)
             {
-                // Construindo a URL dinamicamente
                 var endpointUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.Path}";
                 result.ErrorDetails!.Type = endpointUrl;
 
@@ -141,7 +144,6 @@ namespace WebApi.Controllers
 
             if (result.IsFailure)
             {
-                // Construindo a URL dinamicamente
                 var endpointUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.Path}";
                 result.ErrorDetails!.Type = endpointUrl;
 
@@ -151,6 +153,89 @@ namespace WebApi.Controllers
             }
             _logger.LogInformation("Pacientes recuperados com sucesso");
             return Ok(UtilsResponseModel.CreateFindAllListPatientPagedResponse(result.Data, pageNumber, pageSize));
+        }
+
+        /// <summary>
+        /// Lista Nota com base em filtros
+        /// </summary>
+        [HttpGet("Notes")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> GetNotes(
+            [FromQuery] NotesFilterDTO filters,
+            [FromServices] GetNotesUseCase getNotesUseCase
+        )
+        {
+            var result = await getNotesUseCase.Execute(filters);
+
+            if (result.IsFailure)
+            {
+                var endpointUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.Path}";
+                result.ErrorDetails!.Type = endpointUrl;
+
+                return result.ErrorDetails?.Status == 404
+                    ? NotFound(result.ErrorDetails)
+                    : BadRequest();
+            }
+
+            _logger.LogInformation("Notas recuperadas com sucesso");
+            return Ok(NoteResponseModels.CreateNoteResponseList(result.Data!));
+        }   
+
+        /// <summary>
+        /// Adiciona Nota a um paciente
+        /// </summary>
+        [HttpPost("AddNote")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<MessageSuccessResponseModel>> AddNote([FromBody] CreateNotesDTO data, [FromServices] AddNoteUseCase addPatientNoteUseCase)
+        {
+            var validator = new CreatePatientNoteValidador();
+            var validationResult = await validator.ValidateAsync(data);
+            if (!validationResult.IsValid)
+            {
+                return new BadRequestObjectResult(ResultPattern<string>.BadRequest(validationResult.ToString()));
+                throw new ValidationException(validationResult.ToString());
+            }
+
+            var result = await addPatientNoteUseCase.Execute(data);
+
+            if (result.IsFailure)
+            {
+                return BadRequest(result.ErrorDetails?.Title);
+            }
+
+            _logger.LogInformation("Nota adicionada com sucesso ao paciente");
+            return Ok(new MessageSuccessResponseModel(result.Message!));
+        }
+
+        /// <summary>
+        /// Remove Nota de um paciente
+        /// </summary>
+        [HttpDelete("RemoveNote/{noteId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<MessageSuccessResponseModel>> RemoveNote([FromRoute] Guid noteId, [FromServices] RemoveNoteUseCase removePatientNoteUseCase)
+        {
+            var result = await removePatientNoteUseCase.Execute(noteId);
+
+            if (result.IsFailure)
+            {
+                var endpointUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.Path}";
+                result.ErrorDetails!.Type = endpointUrl;
+
+                return result.ErrorDetails?.Status == 404
+                    ? NotFound(result.ErrorDetails)
+                    : BadRequest();
+            }
+
+            _logger.LogInformation("Nota removida com sucesso do paciente");
+            return Ok(new MessageSuccessResponseModel(result.Message!));
         }
     }
 }

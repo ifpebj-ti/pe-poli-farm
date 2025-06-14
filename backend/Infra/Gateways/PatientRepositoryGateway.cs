@@ -106,6 +106,8 @@ namespace Infra.Gateways
                 .Include(p => p.AddressEntity)
                 .Include(p => p.EmergencyContactDetailsEntity)
                 .Include(p => p.ServicesEntity)
+                .ThenInclude(s => s.MedicalRecordEntity)
+                .ThenInclude(mr => mr.PatientMedications)
                 .Where(p => p.Cpf.Value == cpf)
                 .FirstOrDefaultAsync();
             return patient;

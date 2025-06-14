@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prepare": "husky"
+    "prepare": "cd .. && husky frontend/.husky"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
@@ -23,6 +23,7 @@
     "@tanstack/react-query-devtools": "^5.75.2",
     "axios": "^1.9.0",
     "class-variance-authority": "^0.7.1",
+    "date-fns": "^4.1.0",
     "jwt-decode": "^4.0.0",
     "next": "15.2.4",
     "next-auth": "^4.24.11",
@@ -36,6 +37,8 @@
     "zod": "^3.25.42"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",

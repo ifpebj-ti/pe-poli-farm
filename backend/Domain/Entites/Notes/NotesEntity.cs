@@ -12,12 +12,12 @@ public class NotesEntity : BaseEntity
     public PatientEntity Patient { get; private set; }
     public UserEntity User { get; private set; }
     public NotesEntity() { }
-    public NotesEntity(Guid id, string description, DateTime createdAt, PatientEntity patient, UserEntity user)
+    public NotesEntity(Guid id, string description, DateTime createdAt, Guid patientId, Guid ProfessionalId)
     {
         this.Id = id;
         this.Description = description;
         this.CreatedAt = createdAt;
-        this.Patient = patient;
-        this.User = user;
+        this.PatientId = patientId;
+        this.UserId = ProfessionalId;
     }
 }
