@@ -39,6 +39,7 @@ namespace WebApi.ResponseModels.Patient
                 .WithSus(entity.Sus.Value)
                 .WithStatus(entity.Status.Value)
                 .WithMotherName(entity.MotherName)
+                .WithServices(entity.ServicesEntity?.Select(ServiceResponseModel.CreateCompleteService).ToList())
                 .WithAddress(AddressResponseFactory.CreateCompleteAddressResponse(entity.AddressEntity))
                 .WithEmergencyContactDetails(entity.EmergencyContactDetailsEntity.Select(EmergencyContactDetailsResponseFactory.CreateCompleteEmergencyContactDetailsResponse)
                     .ToList())

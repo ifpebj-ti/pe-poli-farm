@@ -20,3 +20,17 @@ export async function PutUser(data: {
 
   return response.data;
 }
+
+export async function PostUser(data: {
+  name: string;
+  email: string;
+  cpf: string;
+  position: string;
+  profile: {
+    role: string;
+  };
+}) {
+  const response = await api.post('/User', data);
+
+  return response.data;
+}

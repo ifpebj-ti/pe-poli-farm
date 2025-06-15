@@ -12,7 +12,7 @@ public class MedicalRecordResponseBuilder
     private string? _statusInCaseOfAdmission;
     private AnamneseResponse? _anamnese;
     private HealthAndDiseaseResponse? _healthAndDisease;
-    private List<PatientMedicationResponse>? _patientMedications;
+    private List<PatientPrescriptionResponse>? _patientMedications;
 
     public MedicalRecordResponseBuilder WithId(Guid id)
     {
@@ -44,7 +44,7 @@ public class MedicalRecordResponseBuilder
         return this;
     }
 
-    public MedicalRecordResponseBuilder WithPatientMedications(List<PatientMedicationResponse>? patientMedications)
+    public MedicalRecordResponseBuilder WithPatientMedications(List<PatientPrescriptionResponse>? patientMedications)
     {
         _patientMedications = patientMedications;
         return this;
