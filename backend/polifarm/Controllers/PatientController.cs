@@ -95,7 +95,7 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<PatientResponse>> FindByCPF([FromRoute] string patientCPF, [FromServices] FindPatientByIdUseCase findPatientByIdUseCase)
+        public async Task<ActionResult<PatientResponse>> FindByCPF([FromRoute] string patientCPF, [FromServices] FindPatientByCpfUseCase findPatientByIdUseCase)
         {
             var result = await findPatientByIdUseCase.Execute(patientCPF);
 

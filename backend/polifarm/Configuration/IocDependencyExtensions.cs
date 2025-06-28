@@ -34,7 +34,7 @@ namespace Webapi.Configuration
             services.AddScoped<UpdatePatientStatusUseCase>();
             services.AddScoped<FindAllPatientUseCase>();
             services.AddScoped<UpdatePatientUseCase>();
-            services.AddScoped<FindPatientByIdUseCase>();
+            services.AddScoped<FindPatientByCpfUseCase>();
             services.AddScoped<AddNoteUseCase>();
             services.AddScoped<RemoveNoteUseCase>();
 

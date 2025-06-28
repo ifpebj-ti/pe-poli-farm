@@ -5,6 +5,8 @@ using Domain.Entites.MedicalCertificate;
 using Domain.Entites.Profile;
 using Domain.Entites.Referral;
 using Domain.Entites.User;
+using Domain.Entities.Anamnese;
+using Domain.Entities.MedicalRecord;
 using Domain.Entities.Notes;
 using Domain.Entities.Patient;
 using Domain.Entities.Service;
@@ -31,6 +33,8 @@ namespace Infra.Database
         public DbSet<NotesEntity> Notes { get; private set; }
         public DbSet<MedicalCertificateEntity> MedicalCertificates { get; private set; }
         public DbSet<ReferralEntity> Referrals { get; private set; }
+        public DbSet<MedicalRecordEntity> MedicalRecords { get; private set; }
+        public DbSet<AnamneseEntity> Anamnesis { get; private set; }
 
         public PolifarmDbContext(DbContextOptions<PolifarmDbContext> options) : base(options)
         {
