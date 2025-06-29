@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Serilog;
 using System;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
 using Webapi.Configuration;
 using WebApi.Config;
 using WebApi.Configuration;
@@ -8,7 +10,27 @@ using Microsoft.EntityFrameworkCore;
 using Infra.Database;
 using polifarm.Infra.Database;
 
+var serviceName = "dice-server";
+var serviceVersion = "1.0.0";
+
 var builder = WebApplication.CreateBuilder(args);
+
+// add prometheus exporter
+builder.Services.AddOpenTelemetry()
+    .ConfigureResource(resource => resource.AddService(
+        serviceName: serviceName,
+        serviceVersion: serviceVersion))
+    .WithMetrics(metricsOptions =>
+        metricsOptions
+            .AddMeter("teste")
+            .AddAspNetCoreInstrumentation()
+            .AddRuntimeInstrumentation()
+            .AddProcessInstrumentation()
+            .AddOtlpExporter(opts =>
+            {
+                opts.Endpoint = new Uri(builder.Configuration["Otel:Endpoint"]);
+            })
+    );
 
 // Add services to the container.
 
