@@ -1,10 +1,17 @@
 ﻿using Domain.Entites;
 using Domain.Entites.AccessCode;
+using Domain.Entites.Appointment;
+using Domain.Entites.MedicalCertificate;
 using Domain.Entites.Profile;
+using Domain.Entites.Referral;
 using Domain.Entites.User;
+using Domain.Entities.Anamnese;
+using Domain.Entities.MedicalRecord;
+using Domain.Entities.Notes;
 using Domain.Entities.Patient;
 using Domain.Entities.Service;
 using Microsoft.EntityFrameworkCore;
+using prontuario.Domain.Entities.PatientMedication;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +28,13 @@ namespace Infra.Database
         public DbSet<AccessCodeEntity> AccessCodes { get; private set; }
         public DbSet<PatientEntity> Patients { get; private set; }
         public DbSet<ServiceEntity> Services { get; private set; }
-
+        public DbSet<PatientPrescriptionEntity> Prescriptions { get; private set; }
+        public DbSet<AppointmentEntity> Appointments { get; private set; }
+        public DbSet<NotesEntity> Notes { get; private set; }
+        public DbSet<MedicalCertificateEntity> MedicalCertificates { get; private set; }
+        public DbSet<ReferralEntity> Referrals { get; private set; }
+        public DbSet<MedicalRecordEntity> MedicalRecords { get; private set; }
+        public DbSet<AnamneseEntity> Anamnesis { get; private set; }
 
         public PolifarmDbContext(DbContextOptions<PolifarmDbContext> options) : base(options)
         {

@@ -8,8 +8,8 @@ public class NotesEntityBuilder
     private Guid _id;
     private string _description;
     private DateTime _createdAt;
-    private PatientEntity _patient;
-    private UserEntity _user;
+    private Guid _patientId;
+    private Guid _professionalId;
 
     public NotesEntityBuilder WithId(Guid id)
     {
@@ -29,20 +29,20 @@ public class NotesEntityBuilder
         return this;
     }
 
-    public NotesEntityBuilder WithPatient(PatientEntity patient)
+    public NotesEntityBuilder WithPatientId(Guid patientId)
     {
-        _patient = patient;
+        _patientId = patientId;
         return this;
     }
 
-    public NotesEntityBuilder WithUser(UserEntity user)
+    public NotesEntityBuilder WithProfessionalId(Guid professionalId)
     {
-        _user = user;
+        _professionalId = professionalId;
         return this;
     }
 
     public NotesEntity Build()
     {
-        return new NotesEntity(_id, _description, _createdAt, _patient, _user);
+        return new NotesEntity(_id, _description, _createdAt, _patientId, _professionalId);
     }
 }

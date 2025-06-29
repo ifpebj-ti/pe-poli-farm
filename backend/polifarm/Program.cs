@@ -1,9 +1,14 @@
 using Microsoft.AspNetCore.Authorization;
+using Serilog;
+using System;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using Webapi.Configuration;
 using WebApi.Config;
 using WebApi.Configuration;
+using Microsoft.EntityFrameworkCore;
+using Infra.Database;
+using polifarm.Infra.Database;
 
 var serviceName = "dice-server";
 var serviceVersion = "1.0.0";
@@ -41,6 +46,7 @@ builder.Services.AddSwaggerExtension();
 builder.Services.AddDbContextExtension(builder.Configuration);
 builder.Services.AddAuthenticationExtension(builder.Configuration);
 builder.Services.AddAuthorization();
+builder.Host.AddSerilogLogging(builder.Configuration);
 
 var app = builder.Build();
 
@@ -50,6 +56,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+Log.Information("Executando Migrations");
+using var scope = app.Services.CreateScope();
+var dbContext = scope.ServiceProvider.GetRequiredService<PolifarmDbContext>();
+dbContext.Database.Migrate();
+PolifarmDbInitializer.Initialize(dbContext);
 
 app.UseCors("CorsPolicy");
 

@@ -14,7 +14,7 @@ public class MedicalRecordEntity : BaseEntity
     public MedicalRecordStatus StatusInCaseOfAdmission { get; private set; }
     public AnamneseEntity? Anamnese { get; set; }
     public ICollection<PatientExamsEntity> PatientExams { get; set; } = new List<PatientExamsEntity>();
-    public ICollection<PatientMedicationEntity> PatientMedications { get; set; } = new List<PatientMedicationEntity>();
+    public ICollection<PatientPrescriptionEntity> PatientMedications { get; set; } = new List<PatientPrescriptionEntity>();
     public HealthAndDiseaseEntity HealthAndDisease { get; private set; } = null!;
     public Guid ServiceId { get; private set; }
     public ServiceEntity Service { get; private set; } = null!;
