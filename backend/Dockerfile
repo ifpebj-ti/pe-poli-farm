@@ -6,6 +6,7 @@ COPY ./polifarm/WebApi.csproj ./polifarm/
 COPY ./Application/Application.csproj ./Application/
 COPY ./Domain/Domain.csproj ./Domain/
 COPY ./Infra/Infra.csproj ./Infra/
+COPY ./Tests/Tests.csproj ./Tests/
 
 RUN dotnet restore
 
