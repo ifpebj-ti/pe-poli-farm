@@ -10,6 +10,7 @@ services:
     networks:
       - backend-network
       - frontend-network
+      - observability-network
     depends_on:
       database:
         condition: service_healthy
@@ -22,6 +23,7 @@ services:
       - "3000:3000"
     networks:
       - frontend-network
+      - observability-network
     restart: unless-stopped
 
   database:
@@ -43,12 +45,81 @@ services:
       retries: 5
     restart: unless-stopped
 
+  portainer:
+    image: portainer/portainer-ce:latest
+    ports:
+      - "9000:9000"
+    volumes:
+      - portainer_data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+  
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    volumes:
+      - ./config/otel-collector-config.yml:/etc/otel-collector-config.yml
+    command: ["--config", "/etc/otel-collector-config.yml"]
+    ports:
+      - "4317:4317"  # gRPC endpoint for OTLP
+      # - "8888:8888"  # Prometheus exporter endpoint
+      - "8889:8889"  # Prometheus exporter endpoint
+      - "13133:13133"  # Health check endpoint
+    networks:
+      - observability-network
+    restart: unless-stopped
+  
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    networks:
+      - observability-network
+    restart: unless-stopped
+ 
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: grafana
+    ports:
+      - '3050:3000'
+    volumes:
+      - grafana_data:/var/lib/grafana
+    restart: unless-stopped
+    networks:
+      - observability-network
+
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:v1.5.0
+    container_name: node_exporter
+    command: '--path.rootfs=/host'
+    pid: host
+    restart: unless-stopped
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    networks:
+      - observability-network
+
 volumes:
   db_data:
+    driver: local
+  portainer_data:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
     driver: local
 
 networks:
   backend-network:
     driver: bridge
   frontend-network:
+    driver: bridge
+  observability-network:
     driver: bridge

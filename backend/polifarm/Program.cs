@@ -1,9 +1,31 @@
 using Microsoft.AspNetCore.Authorization;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
 using Webapi.Configuration;
 using WebApi.Config;
 using WebApi.Configuration;
 
+var serviceName = "dice-server";
+var serviceVersion = "1.0.0";
+
 var builder = WebApplication.CreateBuilder(args);
+
+// add prometheus exporter
+builder.Services.AddOpenTelemetry()
+    .ConfigureResource(resource => resource.AddService(
+        serviceName: serviceName,
+        serviceVersion: serviceVersion))
+    .WithMetrics(metricsOptions =>
+        metricsOptions
+            .AddMeter("teste")
+            .AddAspNetCoreInstrumentation()
+            .AddRuntimeInstrumentation()
+            .AddProcessInstrumentation()
+            .AddOtlpExporter(opts =>
+            {
+                opts.Endpoint = new Uri(builder.Configuration["Otel:Endpoint"]);
+            })
+    );
 
 // Add services to the container.
 
