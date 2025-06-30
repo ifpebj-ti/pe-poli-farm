@@ -52,6 +52,7 @@ public static class PolifarmDbInitializer
             var enfermeiro = context.Profiles.First(p => p.Role.Value == RoleType.NURSE.ToString());
 
             var accessCode = new AccessCodeEntity(new Guid(), "1Y0OBOCFIJ", true, false, DateTime.Now.AddDays(30));
+            var accessCode2 = new AccessCodeEntity(new Guid(), "2Y0OBOCFIK", true, false, DateTime.Now.AddDays(30));
 
             context.Users.AddRange(
                 new UserEntity(
@@ -74,7 +75,7 @@ public static class PolifarmDbInitializer
                     firstAccess: true,
                     active: true,
                     profile: enfermeiro,
-                    accessCode: accessCode
+                    accessCode: accessCode2
                 )
             );
 
