@@ -19,7 +19,7 @@ builder.Services.AddSwaggerExtension();
 builder.Services.AddDbContextExtension(builder.Configuration);
 builder.Services.AddAuthenticationExtension(builder.Configuration);
 builder.Services.AddAuthorization();
-builder.Host.AddSerilogLogging();
+builder.Host.AddSerilogLogging(builder.Configuration);
 
 var app = builder.Build();
 

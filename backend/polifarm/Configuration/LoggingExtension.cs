@@ -13,7 +13,7 @@ namespace WebApi.Configuration
             {
                 configuration
                     .WriteTo.Console()
-                    .WriteTo.GrafanaLoki(config.GetValue<string>("LOKI_URL")!)
+                    // .WriteTo.GrafanaLoki(config.GetValue<string>("LOKI_URL")!)
                     .Enrich.WithProperty("Application", "Polifarm")
                     .Enrich.FromLogContext();
             });

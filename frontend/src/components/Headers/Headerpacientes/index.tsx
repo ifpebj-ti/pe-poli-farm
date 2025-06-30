@@ -1,5 +1,7 @@
 'use client';
 
+import { ChangeEvent } from 'react';
+
 import SearchIcon from '@mui/icons-material/Search';
 import {
   Box,
@@ -10,7 +12,15 @@ import {
   Button
 } from '@mui/material';
 
-export default function PacientesHeader() {
+type PacientesHeaderProps = {
+  termoBusca: string;
+  onBuscaChange: (e: ChangeEvent<HTMLInputElement>) => void; // Função que recebe um evento de um input
+};
+
+export default function PacientesHeader({
+  termoBusca,
+  onBuscaChange
+}: PacientesHeaderProps) {
   return (
     <Box
       sx={{
@@ -47,6 +57,8 @@ export default function PacientesHeader() {
         <TextField
           placeholder="Pesquise pacientes"
           size="small"
+          value={termoBusca}
+          onChange={onBuscaChange}
           sx={{
             backgroundColor: '#f8f8f8',
             minWidth: 400,

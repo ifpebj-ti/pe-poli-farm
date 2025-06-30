@@ -1,4 +1,5 @@
 'use client';
+import { Patient } from '@/src/lib/pacientes';
 import {
   Box,
   Button,
@@ -13,14 +14,11 @@ import {
   Typography
 } from '@mui/material';
 
-const pacientes = Array.from({ length: 7 }, () => ({
-  nome: `Nome Paciente`,
-  nomeMae: 'Nome da mãe',
-  idade: '36 anos e 2 meses',
-  entrada: '13:00'
-}));
+interface TabelaPacientesProps {
+  pacientes: Patient[];
+}
 
-export default function TabelaPacientes() {
+export default function TabelaPacientes({ pacientes }: TabelaPacientesProps) {
   return (
     <Box sx={{ px: 4, pt: 3, display: 'flex', justifyContent: 'center' }}>
       <Box sx={{ width: '100%', maxWidth: 1100 }}>
@@ -41,12 +39,18 @@ export default function TabelaPacientes() {
                 <TableRow key={index}>
                   <TableCell sx={{ paddingY: 1 }}>
                     <Typography sx={{ color: '#1351B4', cursor: 'pointer' }}>
-                      {paciente.nome}
+                      {paciente.name}
                     </Typography>
                   </TableCell>
-                  <TableCell sx={{ paddingY: 1 }}>{paciente.nomeMae}</TableCell>
-                  <TableCell sx={{ paddingY: 1 }}>{paciente.idade}</TableCell>
-                  <TableCell sx={{ paddingY: 1 }}>{paciente.entrada}</TableCell>
+                  <TableCell sx={{ paddingY: 1 }}>
+                    {paciente.motherName}
+                  </TableCell>
+                  <TableCell sx={{ paddingY: 1 }}>
+                    {paciente.birthDate}
+                  </TableCell>
+                  <TableCell sx={{ paddingY: 1 }}>
+                    {paciente.services[0].serviceDate}
+                  </TableCell>
                   <TableCell align="right" sx={{ paddingY: 1 }}>
                     <Button
                       variant="contained"
