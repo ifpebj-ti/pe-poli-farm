@@ -8,10 +8,10 @@ namespace Webapi.Configuration
         public static IServiceCollection AddDbContextExtension(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<PolifarmDbContext>(options =>
-            {
-                options.UseSqlite("Data Source=./polifarm.db",
-                    sql => sql.MigrationsAssembly("WebApi"));
-            });
+        {
+            options.UseSqlite("Data Source=./polifarm.db",
+                sql => sql.MigrationsAssembly("WebApi"));
+        });
 
         return services;
     }

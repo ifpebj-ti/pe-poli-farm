@@ -6,7 +6,7 @@ using Domain.ValuesObjects;
 
 namespace Application.Usecases.Patient;
 
-public class FindPatientByIdUseCase(IGatewayPatient gatewayPatient)
+public class FindPatientByCpfUseCase(IGatewayPatient gatewayPatient)
 {
     public async Task<ResultPattern<PatientEntity?>> Execute(string patientCPF)
     {
