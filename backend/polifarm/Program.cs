@@ -1,14 +1,16 @@
+using Infra.Database;
 using Microsoft.AspNetCore.Authorization;
-using Serilog;
-using System;
+using Microsoft.EntityFrameworkCore;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using OpenTelemetry.Logs;
+using Grafana.OpenTelemetry;
+using polifarm.Infra.Database;
+using System;
 using Webapi.Configuration;
 using WebApi.Config;
 using WebApi.Configuration;
-using Microsoft.EntityFrameworkCore;
-using Infra.Database;
-using polifarm.Infra.Database;
 
 var serviceName = "dice-server";
 var serviceVersion = "1.0.0";
@@ -30,8 +32,25 @@ builder.Services.AddOpenTelemetry()
             {
                 opts.Endpoint = new Uri(builder.Configuration["Otel:Endpoint"]);
             })
+    ).WithTracing((traceBuilder) =>
+        traceBuilder
+            .AddSource("teste")
+            .AddAspNetCoreInstrumentation()
+            .AddConsoleExporter()
+            .UseGrafana()
     );
 
+builder.Logging.AddOpenTelemetry(options =>
+{
+    options.SetResourceBuilder(ResourceBuilder.CreateDefault()
+        .AddService(serviceName, serviceVersion: serviceVersion));
+    options.IncludeFormattedMessage = true;
+    options.IncludeScopes = true;
+    options.ParseStateValues = true;
+    options.AttachLogsToActivityEvent();
+    options.AddConsoleExporter();
+    options.UseGrafana();
+});
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -46,7 +65,6 @@ builder.Services.AddSwaggerExtension();
 builder.Services.AddDbContextExtension(builder.Configuration);
 builder.Services.AddAuthenticationExtension(builder.Configuration);
 builder.Services.AddAuthorization();
-builder.Host.AddSerilogLogging(builder.Configuration);
 
 var app = builder.Build();
 
@@ -57,7 +75,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-Log.Information("Executando Migrations");
+// Log.Information("Executando Migrations");
 using var scope = app.Services.CreateScope();
 var dbContext = scope.ServiceProvider.GetRequiredService<PolifarmDbContext>();
 dbContext.Database.Migrate();
