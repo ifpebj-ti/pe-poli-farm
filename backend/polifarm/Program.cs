@@ -11,6 +11,7 @@ using System;
 using Webapi.Configuration;
 using WebApi.Config;
 using WebApi.Configuration;
+using Application.Gateways;
 
 var serviceName = "dice-server";
 var serviceVersion = "1.0.0";
@@ -79,7 +80,8 @@ if (app.Environment.IsDevelopment())
 using var scope = app.Services.CreateScope();
 var dbContext = scope.ServiceProvider.GetRequiredService<PolifarmDbContext>();
 dbContext.Database.Migrate();
-PolifarmDbInitializer.Initialize(dbContext);
+var bcrypt = scope.ServiceProvider.GetRequiredService<IBcryptGateway>();
+PolifarmDbInitializer.Initialize(dbContext, bcrypt);
 
 app.UseCors("CorsPolicy");
 

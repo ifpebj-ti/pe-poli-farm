@@ -1,4 +1,5 @@
-﻿using Domain.Entites.AccessCode;
+﻿using Application.Gateways;
+using Domain.Entites.AccessCode;
 using Domain.Entites.Profile;
 using Domain.Entites.User;
 using Domain.Entities.Address;
@@ -11,6 +12,7 @@ using Domain.Entities.Service;
 using Domain.Enums;
 using Domain.ValuesObjects;
 using Infra.Database;
+using Infra.Gateways;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.EntityFrameworkCore;
 using prontuario.Domain.ValuesObjects;
@@ -19,7 +21,7 @@ namespace polifarm.Infra.Database;
 
 public static class PolifarmDbInitializer
 {
-    public static void Initialize(PolifarmDbContext context)
+    public static void Initialize(PolifarmDbContext context, IBcryptGateway bcrypt)
     {
         // Perfis: Médico, Enfermeiro, Recepcionista
         if (!context.Profiles.Any())
@@ -60,8 +62,8 @@ public static class PolifarmDbInitializer
                     email: new Email("joao.silva@polifarm.com"),
                     cpf: new CPF("111.222.333-44"),
                     position: new Positions(PositionType.DOCTOR.ToString()),
-                    password: "joao.silva@polifarm.com_111.222.333-44",
-                    firstAccess: false,
+                    password: bcrypt.GenerateHashPassword("Oi@12345"),
+                    firstAccess: true,
                     active: true,
                     profile: medico,
                     accessCode: accessCodeJoao
@@ -71,8 +73,8 @@ public static class PolifarmDbInitializer
                     email: new Email("maria.souza@polifarm.com"),
                     cpf: new CPF("555.666.777-88"),
                     position: new Positions(PositionType.NURSE.ToString()),
-                    password: "maria.souza@polifarm.com_555.666.777-88",
-                    firstAccess: false,
+                    password: bcrypt.GenerateHashPassword("Oi@12345"),
+                    firstAccess: true,
                     active: true,
                     profile: enfermeiro,
                     accessCode: accessCodeMaria

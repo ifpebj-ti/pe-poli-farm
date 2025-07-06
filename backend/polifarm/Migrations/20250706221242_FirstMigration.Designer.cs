@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace WebApi.Migrations
 {
     [DbContext(typeof(PolifarmDbContext))]
-    [Migration("20250703124554_FirstMigration")]
+    [Migration("20250706221242_FirstMigration")]
     partial class FirstMigration
     {
         /// <inheritdoc />
