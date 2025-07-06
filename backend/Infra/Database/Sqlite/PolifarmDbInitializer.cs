@@ -51,7 +51,8 @@ public static class PolifarmDbInitializer
             var medico = context.Profiles.First(p => p.Role.Value == RoleType.DOCTOR.ToString());
             var enfermeiro = context.Profiles.First(p => p.Role.Value == RoleType.NURSE.ToString());
 
-            var accessCode = new AccessCodeEntity(new Guid(), "1Y0OBOCFIJ", true, false, DateTime.Now.AddDays(30));
+            var accessCodeJoao = new AccessCodeEntity(new Guid(), "1Y0OBOCFIK", true, false, DateTime.Now.AddDays(30));
+            var accessCodeMaria = new AccessCodeEntity(new Guid(), "1Y0OBOCFIJ", true, false, DateTime.Now.AddDays(30));
 
             context.Users.AddRange(
                 new UserEntity(
@@ -59,22 +60,22 @@ public static class PolifarmDbInitializer
                     email: new Email("joao.silva@polifarm.com"),
                     cpf: new CPF("111.222.333-44"),
                     position: new Positions(PositionType.DOCTOR.ToString()),
-                    password: "$12$pnkLEtde0gJkKAmuEnm14.uOThDIGO4t5AdqgTdDm2iudTQ0p75GO",
-                    firstAccess: true,
+                    password: "joao.silva@polifarm.com_111.222.333-44",
+                    firstAccess: false,
                     active: true,
                     profile: medico,
-                    accessCode: accessCode
+                    accessCode: accessCodeJoao
                 ),
                 new UserEntity(
                     name: "Enf. Maria Souza",
                     email: new Email("maria.souza@polifarm.com"),
                     cpf: new CPF("555.666.777-88"),
                     position: new Positions(PositionType.NURSE.ToString()),
-                    password: "$12$pnkLEtde0gJkKAmuEnm14.uOThDIGO4t5AdqgTdDm2iudTQ0p75GO",
-                    firstAccess: true,
+                    password: "maria.souza@polifarm.com_555.666.777-88",
+                    firstAccess: false,
                     active: true,
                     profile: enfermeiro,
-                    accessCode: accessCode
+                    accessCode: accessCodeMaria
                 )
             );
 
