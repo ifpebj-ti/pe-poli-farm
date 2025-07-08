@@ -22,6 +22,7 @@ namespace Infra.Gateways
         {
             var entity = await context.Set<T>().FindAsync(id);
             context.Remove(entity!);
+            await context.SaveChangesAsync();
         }
 
         public async Task<List<T>> GetAllAsync()

@@ -10,5 +10,5 @@ public record MedicalRecordResponse(
     string? StatusInCaseOfAdmission,
     AnamneseResponse? Anamnese,
     HealthAndDiseaseResponse? HealthAndDisease,
-    List<PatientMedicationResponse>? PatientMedications
+    List<PatientPrescriptionResponse>? PatientMedications
 );
