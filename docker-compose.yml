@@ -25,6 +25,10 @@ services:
     # image: ghcr.io/ifpebj-ti/polifarm-frontend:latest
     ports:
       - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_BASE_URL=${NEXT_PUBLIC_BASE_URL}
+      - NEXTAUTH_URL=${NEXTAUTH_URL}
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
     networks:
       - frontend-network
       - observability-network
@@ -150,6 +154,18 @@ services:
       - /:/rootfs:ro
     networks:
       - observability-network
+    
+  npm:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: npm
+    restart: unless-stopped
+    ports:
+      - "80:80" # Tráfego HTTP público
+      - "443:443" # Tráfego HTTPS público
+      - "81:81" # Interface de administração do NPM
+    volumes:
+      - npm_data:/data
+      - npm_letsencrypt:/etc/letsencrypt
 
 volumes:
   db_data:
@@ -161,6 +177,10 @@ volumes:
   grafana_data:
     driver: local
   tempo_data:
+    driver: local
+  npm_data:
+    driver: local
+  npm_letsencrypt:
     driver: local
 
 networks:
