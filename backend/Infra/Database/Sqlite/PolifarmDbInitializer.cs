@@ -1,4 +1,5 @@
-﻿using Domain.Entites.AccessCode;
+﻿using Application.Gateways;
+using Domain.Entites.AccessCode;
 using Domain.Entites.Profile;
 using Domain.Entites.User;
 using Domain.Entities.Address;
@@ -11,6 +12,7 @@ using Domain.Entities.Service;
 using Domain.Enums;
 using Domain.ValuesObjects;
 using Infra.Database;
+using Infra.Gateways;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.EntityFrameworkCore;
 using prontuario.Domain.ValuesObjects;
@@ -19,7 +21,7 @@ namespace polifarm.Infra.Database;
 
 public static class PolifarmDbInitializer
 {
-    public static void Initialize(PolifarmDbContext context)
+    public static void Initialize(PolifarmDbContext context, IBcryptGateway bcrypt)
     {
         // Perfis: Médico, Enfermeiro, Recepcionista
         if (!context.Profiles.Any())
@@ -51,7 +53,8 @@ public static class PolifarmDbInitializer
             var medico = context.Profiles.First(p => p.Role.Value == RoleType.DOCTOR.ToString());
             var enfermeiro = context.Profiles.First(p => p.Role.Value == RoleType.NURSE.ToString());
 
-            var accessCode = new AccessCodeEntity(new Guid(), "1Y0OBOCFIJ", true, false, DateTime.Now.AddDays(30));
+            var accessCodeJoao = new AccessCodeEntity(new Guid(), "1Y0OBOCFIK", true, false, DateTime.Now.AddDays(30));
+            var accessCodeMaria = new AccessCodeEntity(new Guid(), "1Y0OBOCFIJ", true, false, DateTime.Now.AddDays(30));
 
             context.Users.AddRange(
                 new UserEntity(
@@ -59,22 +62,22 @@ public static class PolifarmDbInitializer
                     email: new Email("joao.silva@polifarm.com"),
                     cpf: new CPF("111.222.333-44"),
                     position: new Positions(PositionType.DOCTOR.ToString()),
-                    password: "hashedpassword",
+                    password: bcrypt.GenerateHashPassword("Oi@12345"),
                     firstAccess: true,
                     active: true,
                     profile: medico,
-                    accessCode: accessCode
+                    accessCode: accessCodeJoao
                 ),
                 new UserEntity(
                     name: "Enf. Maria Souza",
                     email: new Email("maria.souza@polifarm.com"),
                     cpf: new CPF("555.666.777-88"),
                     position: new Positions(PositionType.NURSE.ToString()),
-                    password: "hashedpassword",
+                    password: bcrypt.GenerateHashPassword("Oi@12345"),
                     firstAccess: true,
                     active: true,
                     profile: enfermeiro,
-                    accessCode: accessCode
+                    accessCode: accessCodeMaria
                 )
             );
 

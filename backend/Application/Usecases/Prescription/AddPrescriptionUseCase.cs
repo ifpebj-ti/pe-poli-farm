@@ -1,4 +1,5 @@
-﻿using Application.Gateways;
+﻿using Application.Factories;
+using Application.Gateways;
 using Domain.Dtos.Prescription;
 using Domain.Errors;
 using Domain.Exceptions;
@@ -23,7 +24,7 @@ namespace Application.Usecases.Prescription
                 return ResultPattern<string>.FailureResult("Profissinal não encontrado", 404);
 
             try { 
-                var prescription = Application.Factories.PrescriptionFactory.CreatePrescription(data);
+                var prescription = PrescriptionFactory.CreatePrescription(data);
                 await prescriptionRepository.Create(prescription);
                 return ResultPattern<string>.SuccessResult("Prescrição adicionada com sucesso");
             }

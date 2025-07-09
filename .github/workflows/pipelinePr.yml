@@ -13,6 +13,9 @@ jobs:
   
       steps:
         - uses: actions/checkout@v4
+          with:
+            fetch-depth: 0
+            
         - uses: actions/setup-node@v3
           with:
             node-version: '18'
@@ -26,6 +29,21 @@ jobs:
           run: |
             cd frontend
             npm run lint
+
+        - name: Run Scan SonarQube
+          uses: SonarSource/sonarqube-scan-action@v5
+          env:
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+            SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          with:
+            projectBaseDir: frontend
+
+          # If you wish to fail your job when the Quality Gate is red, uncomment the
+          # following lines. This would typically be used to fail a deployment.
+          # - uses: SonarSource/sonarqube-quality-gate-action@v1
+          #   timeout-minutes: 5
+          #   env:
+          #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
             
         - name: Run Build
           run: |
@@ -59,6 +77,40 @@ jobs:
         run: |
           cd backend
           dotnet restore
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'zulu' # Alternative distribution options are available.
+          
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
+        with:
+          path: ~\.sonar\cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+          
+      - name: Cache SonarQube scanner
+        id: cache-sonar-scanner
+        uses: actions/cache@v4
+        with:
+          path: .\.sonar\scanner
+          key: ${{ runner.os }}-sonar-scanner
+          restore-keys: ${{ runner.os }}-sonar-scanner
+          
+      - name: Install SonarQube scanner
+        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ./.sonar/scanner
+          dotnet tool update dotnet-sonarscanner --tool-path ./.sonar/scanner
+          
+      - name: Build and analyze
+        working-directory: ./backend
+        run: |
+          ../.sonar/scanner/dotnet-sonarscanner begin /k:"pe-poli-farm-back" /d:sonar.token="${{ secrets.SONAR_TOKEN_BACK }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL_BACK }}"
+          dotnet build --no-incremental
+          ../.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN_BACK }}"
 
       - name: Run Build
         run: |

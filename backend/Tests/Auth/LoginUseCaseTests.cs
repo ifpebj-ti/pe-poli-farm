@@ -7,7 +7,7 @@ using Domain.Entities.User;
 using Domain.Enums;
 using Domain.ValuesObjects;
 using FluentAssertions;
-using Microsoft.Extensions.Logging;
+// using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using System.Threading.Tasks;
@@ -17,7 +17,7 @@ namespace Tests.Auth
 {
     public class LoginUseCaseTests
     {
-        private readonly ILogger<LoginUseCase> _logger;
+        // private readonly ILogger<LoginUseCase> _logger;
         private readonly IUserRepositoryGateway _userRepository;
         private readonly IBcryptGateway _bcryptGateway;
         private readonly ITokenGateway _tokenGateway;
@@ -26,13 +26,13 @@ namespace Tests.Auth
         public LoginUseCaseTests()
         {
             // Substituindo todas as dependências por mocks
-            _logger = Substitute.For<ILogger<LoginUseCase>>();
+            // _logger = Substitute.For<ILogger<LoginUseCase>>();
             _userRepository = Substitute.For<IUserRepositoryGateway>();
             _bcryptGateway = Substitute.For<IBcryptGateway>();
             _tokenGateway = Substitute.For<ITokenGateway>();
 
             // Instanciando o caso de uso com os mocks
-            _useCase = new LoginUseCase(_logger, _userRepository, _bcryptGateway, _tokenGateway);
+            _useCase = new LoginUseCase(_userRepository, _bcryptGateway, _tokenGateway);
         }
 
         // Método auxiliar para criar um usuário fake para os testes
