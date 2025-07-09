@@ -9,7 +9,7 @@
                 options.AddPolicy(name: "CorsPolicy",
                     options =>
                     {
-                        options.WithOrigins("http://localhost:3000", "http://4.201.224.218:3000")
+                        options.WithOrigins("http://localhost:3000", "http://4.201.224.218:3000", "http://frontend:3000", "http://prontusvitale.tech")
                             .AllowAnyHeader()
                             .AllowAnyMethod();
                     });
