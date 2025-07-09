@@ -12,31 +12,30 @@ using Webapi.Configuration;
 using WebApi.Config;
 using WebApi.Configuration;
 using Application.Gateways;
-
-var serviceName = "dice-server";
-var serviceVersion = "1.0.0";
+using Npgsql;
+using WebApi.Tracing;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // add prometheus exporter
 builder.Services.AddOpenTelemetry()
     .ConfigureResource(resource => resource.AddService(
-        serviceName: serviceName,
-        serviceVersion: serviceVersion))
+        serviceName: OpenTelemetryExtensions.ServiceName,
+        serviceVersion: OpenTelemetryExtensions.ServiceVersion))
     .WithMetrics(metricsOptions =>
         metricsOptions
-            .AddMeter("teste")
+            .AddMeter(OpenTelemetryExtensions.ServiceName)
             .AddAspNetCoreInstrumentation()
+            .AddHttpClientInstrumentation()
             .AddRuntimeInstrumentation()
             .AddProcessInstrumentation()
-            .AddOtlpExporter(opts =>
-            {
-                opts.Endpoint = new Uri(builder.Configuration["Otel:Endpoint"]);
-            })
+            .UseGrafana()
     ).WithTracing((traceBuilder) =>
         traceBuilder
-            .AddSource("teste")
+            .AddSource(OpenTelemetryExtensions.ServiceName)
             .AddAspNetCoreInstrumentation()
+            .AddHttpClientInstrumentation()
+            .AddNpgsql()
             .AddConsoleExporter()
             .UseGrafana()
     );
@@ -44,7 +43,7 @@ builder.Services.AddOpenTelemetry()
 builder.Logging.AddOpenTelemetry(options =>
 {
     options.SetResourceBuilder(ResourceBuilder.CreateDefault()
-        .AddService(serviceName, serviceVersion: serviceVersion));
+        .AddService(serviceName: OpenTelemetryExtensions.ServiceName, serviceVersion: OpenTelemetryExtensions.ServiceVersion));
     options.IncludeFormattedMessage = true;
     options.IncludeScopes = true;
     options.ParseStateValues = true;
