@@ -102,15 +102,15 @@ jobs:
       - name: Install SonarQube scanner
         if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
         run: |
-          mkdir -p ./.sonar/scanner # <--- USE O COMANDO DO BASH
+          mkdir -p ./.sonar/scanner
           dotnet tool update dotnet-sonarscanner --tool-path ./.sonar/scanner
           
       - name: Build and analyze
         working-directory: ./backend
         run: |
-          ../.sonar/scanner/dotnet-sonarscanner begin /k:"pe-poli-farm-back" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
+          ../.sonar/scanner/dotnet-sonarscanner begin /k:"pe-poli-farm-back" /d:sonar.token="${{ secrets.SONAR_TOKEN_BACK }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL_BACK }}"
           dotnet build --no-incremental
-          ../.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          ../.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN_BACK }}"
 
       - name: Run Build
         run: |
