@@ -33,7 +33,7 @@ services:
     networks:
       - frontend-network
       - observability-network
-      - management-net
+      - management-network
     restart: unless-stopped
 
   database:
@@ -75,7 +75,7 @@ networks:
     driver: bridge
   frontend-network:
     driver: bridge
-  observability-net:
+  observability-network:
     external: true
-  management-net:
+  management-network:
     external: true

@@ -3,11 +3,11 @@ services:
     image: grafana/loki:3.4.2
     container_name: loki
     ports:
-      - '{$PORT_MACHINE_LOKI}:3100'
+      - '${PORT_MACHINE_LOKI}:3100'
     networks:
       - observability-network
     volumes:
-      - ./config/loki-config.yaml:/etc/loki/local-config.yaml
+      - ${HOME_PATH}/config/loki-config.yaml:/etc/loki/local-config.yaml
     command: -config.file=/etc/loki/local-config.yaml
     restart: unless-stopped
 
@@ -20,7 +20,7 @@ services:
     networks:
       - observability-network
     volumes:
-      - ./config/config.alloy:/etc/alloy/config.alloy
+      - ${HOME_PATH}/config/config.alloy:/etc/alloy/config.alloy
     command: run --server.http.listen-addr=0.0.0.0:12345 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy
     depends_on:
       - loki
@@ -37,7 +37,7 @@ services:
       - '--enable-feature=exemplar-storage'
       - '--enable-feature=native-histograms'
     volumes:
-      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ${HOME_PATH}/config/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
     networks:
       - observability-network
@@ -48,7 +48,7 @@ services:
     container_name: tempo
     command: [ "-config.file=/etc/tempo.yaml" ]
     volumes:
-      - ./config/tempo.yaml:/etc/tempo.yaml
+      - ${HOME_PATH}/config/tempo.yaml:/etc/tempo.yaml
       - tempo_data:/var/tempo
     ports:
       - '${PORT_MACHINE_TEMPO}:3200'
@@ -63,7 +63,7 @@ services:
       - '${PORT_MACHINE_GRAFANA}:3000'
     volumes:
       - grafana_data:/var/lib/grafana
-      - ./config/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+      - ${HOME_PATH}/config/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
     restart: unless-stopped
     networks:
       - observability-network
