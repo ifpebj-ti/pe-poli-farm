@@ -85,7 +85,7 @@ jobs:
           with:
             context: ./frontend/
             push: true
-            tags: ghcr.io/ifpebj-ti/polifarm-frontend:$TAG , ghcr.io/ifpebj-ti/polifarm-frontend:latest
+            tags: ghcr.io/ifpebj-ti/polifarm-frontend:${{ env.TAG }} , ghcr.io/ifpebj-ti/polifarm-frontend:latest
 
         - name: Trigger Portainer webhook to update Frontend service
           run: curl -X POST ${{ secrets.PORTAINER_WEBHOOK_FRONTEND }}
@@ -115,7 +115,7 @@ jobs:
           with:
             context: ./backend/
             push: true
-            tags: ghcr.io/ifpebj-ti/polifarm-backend:$TAG , ghcr.io/ifpebj-ti/polifarm-backend:$latest
+            tags: ghcr.io/ifpebj-ti/polifarm-backend:${{ env.TAG }} , ghcr.io/ifpebj-ti/polifarm-backend:$latest
 
         - name: Trigger Portainer webhook to update Backend service
           run: curl -X POST ${{ secrets.PORTAINER_WEBHOOK_BACKEND }}
