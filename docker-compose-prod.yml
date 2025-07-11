@@ -1,0 +1,81 @@
+services:
+  backend:
+    build: ./backend
+    # image: ghcr.io/ifpebj-ti/polifarm-backend:latest
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - CONNECTION_STRING=Host=database;Port=${PORT_MACHINE_POSTGRES};Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      - JWT_SETTINGS__SECRET=${JWT_SETTINGS__SECRET}
+      - JWT_SETTINGS__ISS=${JWT_SETTINGS__ISS}
+      - JWT_SETTINGS__AUD=${JWT_SETTINGS__AUD}
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://alloy:4317
+    ports:
+      - '${PORT_MACHINE_BACKEND}:8080'
+    networks:
+      - backend-network
+      - frontend-network
+      - observability-network
+    depends_on:
+      database:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    # image: ghcr.io/ifpebj-ti/polifarm-frontend:latest
+    ports:
+      - '${PORT_MACHINE_FRONTEND}:3000'
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - NEXT_PUBLIC_BASE_URL=${NEXT_PUBLIC_BASE_URL}
+      - NEXTAUTH_URL=${NEXTAUTH_URL}
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+    networks:
+      - frontend-network
+      - observability-network
+      - management-net
+    restart: unless-stopped
+
+  database:
+    image: postgres:17
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - '${PORT_MACHINE_POSTGRES}:5432'
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - backend-network
+      - observability-network
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    ports:
+      - "9000:9000"
+    volumes:
+      - portainer_data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+  
+
+volumes:
+  db_data:
+    driver: local
+
+networks:
+  backend-network:
+    driver: bridge
+  frontend-network:
+    driver: bridge
+  observability-net:
+    external: true
+  management-net:
+    external: true
