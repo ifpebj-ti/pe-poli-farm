@@ -2,12 +2,8 @@ import { getSession } from 'next-auth/react';
 
 import axios from 'axios';
 
-// const api = axios.create({
-//   baseURL: 'http://localhost:5226/api'
-// });
-
-export const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BASE_URL
+const api = axios.create({
+  baseURL: 'http://localhost:5226/api'
 });
 
 api.interceptors.request.use(
