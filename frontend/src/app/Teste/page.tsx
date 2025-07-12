@@ -10,7 +10,7 @@
 //import TelaConsulta from '@/src/components/Consulta';
 import { Box } from '@mui/material';
 
-import TelaAgendamento from '../(auth-routes)/TelaAgendamento/page';
+import ConsultaCompletaPage from '../(auth-routes)/TelaConsulta/page';
 
 //import ConsultaCompletaPage from "../(auth-routes)/TelaConsulta/page";
 //import TelaAgendamento from '@/src/components/Agendamento';
@@ -25,7 +25,7 @@ export default function Teste() {
     <PacientesHeader />
     <TabelaPacientes /> 
     <ConsultaCompletaPage />*/}
-      <TelaAgendamento />
+      <ConsultaCompletaPage />
     </Box>
   );
 }
