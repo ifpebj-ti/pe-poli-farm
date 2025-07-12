@@ -17,48 +17,14 @@ using WebApi.Tracing;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// add prometheus exporter
-builder.Services.AddOpenTelemetry()
-    .ConfigureResource(resource => resource.AddService(
-        serviceName: OpenTelemetryExtensions.ServiceName,
-        serviceVersion: OpenTelemetryExtensions.ServiceVersion))
-    .WithMetrics(metricsOptions =>
-        metricsOptions
-            .AddMeter(OpenTelemetryExtensions.ServiceName)
-            .AddAspNetCoreInstrumentation()
-            .AddHttpClientInstrumentation()
-            .AddRuntimeInstrumentation()
-            .AddProcessInstrumentation()
-            .UseGrafana()
-    ).WithTracing((traceBuilder) =>
-        traceBuilder
-            .AddSource(OpenTelemetryExtensions.ServiceName)
-            .AddAspNetCoreInstrumentation()
-            .AddHttpClientInstrumentation()
-            .AddNpgsql()
-            .AddConsoleExporter()
-            .UseGrafana()
-    );
-
-builder.Logging.AddOpenTelemetry(options =>
-{
-    options.SetResourceBuilder(ResourceBuilder.CreateDefault()
-        .AddService(serviceName: OpenTelemetryExtensions.ServiceName, serviceVersion: OpenTelemetryExtensions.ServiceVersion));
-    options.IncludeFormattedMessage = true;
-    options.IncludeScopes = true;
-    options.ParseStateValues = true;
-    options.AttachLogsToActivityEvent();
-    options.AddConsoleExporter();
-    options.UseGrafana();
-});
 // Add services to the container.
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Extension methods
+builder.Services.AddObservability();
 builder.Services.AddCorsExtension();
 builder.Services.AddIocDependencies();
 builder.Services.AddSwaggerExtension();
@@ -75,12 +41,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// Log.Information("Executando Migrations");
-using var scope = app.Services.CreateScope();
-var dbContext = scope.ServiceProvider.GetRequiredService<PolifarmDbContext>();
-dbContext.Database.Migrate();
-var bcrypt = scope.ServiceProvider.GetRequiredService<IBcryptGateway>();
-PolifarmDbInitializer.Initialize(dbContext, bcrypt);
+app.ApplyMigrationsAndSeed();
 
 app.UseCors("CorsPolicy");
 
