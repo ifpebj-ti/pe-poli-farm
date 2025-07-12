@@ -8,10 +8,10 @@ namespace Webapi.Configuration
         public static IServiceCollection AddDbContextExtension(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<PolifarmDbContext>(options =>
-            {
-                options.UseNpgsql(configuration.GetValue<string>("CONNECTION_STRING"),
-                    sql => sql.MigrationsAssembly("WebApi"));
-            });
+        {
+            options.UseNpgsql(configuration.GetValue<string>("CONNECTION_STRING"),
+                sql => sql.MigrationsAssembly("WebApi"));
+        });
 
         return services;
     }

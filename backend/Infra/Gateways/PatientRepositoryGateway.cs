@@ -112,5 +112,21 @@ namespace Infra.Gateways
                 .FirstOrDefaultAsync();
             return patient;
         }
+
+        new public async Task<List<PatientEntity>> GetAllAsync()
+        {
+            var patients = await context.Patients
+                .Include(p => p.AddressEntity)
+                .Include(p => p.EmergencyContactDetailsEntity)
+                .Include(p => p.ServicesEntity)
+                    !.ThenInclude(s => s.MedicalRecordEntity)
+                    .ThenInclude(mr => mr!.Anamnese)
+                .Include(p => p.ServicesEntity)
+                    !.ThenInclude(s => s.MedicalRecordEntity)
+                    .ThenInclude(mr => mr!.HealthAndDisease)
+                .ToListAsync();
+
+            return patients;
+        }
     }
 }

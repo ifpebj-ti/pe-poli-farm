@@ -17,10 +17,14 @@ export default async function PrivateLayout({
     redirect('/');
   }
 
+  if (session.user.isUserUpdatePassword === 'false') {
+    redirect('/NovoAcesso');
+  }
+
   return (
     <>
       <header></header>
-      <main className="p-[30px]">{children}</main>
+      <main>{children}</main>
     </>
   );
 }

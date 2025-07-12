@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using prontuario.WebApi.Validators.User;
 using System.ComponentModel.DataAnnotations;
 using WebApi.ResponseModels;
+using WebApi.ResponseModels.User;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WebApi.Controllers
 {
@@ -55,6 +57,37 @@ namespace WebApi.Controllers
 
             _logger.LogInformation("Usuário criado com sucesso");
             return Ok(new MessageSuccessResponseModel(result.Message));
+        }
+        /// <summary>
+        /// Lista todos os usuarios do sistema
+        /// </summary>
+        /// <returns>Mensagem de sucesso na operação</returns>
+        /// <response code="200">List usuarios com Sucesso</response>
+        /// <response code="400">Erro na operação</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="409">Erro de conflito</response>
+        [AllowAnonymous]
+        [HttpGet("GetAll")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<IActionResult> ReturnsAllUsers([FromServices] ReturnsAllUsersUseCase returnsAllUsersUseCase)
+        {
+            var result = await returnsAllUsersUseCase.Execute();
+
+            if (result.IsFailure)
+            {
+                var endpointUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.Path}";
+                result.ErrorDetails!.Type = endpointUrl;
+
+                return result.ErrorDetails?.Status is 409
+                    ? Conflict(result.ErrorDetails)
+                    : BadRequest();
+            }
+
+            _logger.LogInformation("Usuário retornados com sucesso");
+            return Ok(UserResponseModel.CreateUserResponseList(result.Data!));
         }
     }
 }
