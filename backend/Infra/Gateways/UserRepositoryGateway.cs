@@ -12,6 +12,16 @@ namespace Infra.Gateways
 {
     public class UserRepositoryGateway(PolifarmDbContext context) : GenericRepositoryGateway<UserEntity>(context), IUserRepositoryGateway
     {
+
+        new public async Task<List<UserEntity>> GetAllAsync()
+        {
+            var users = await context.Users
+                .Include(u => u.Profile)
+                .ToListAsync();
+
+            return users;
+        }
+
         public async Task Create(UserEntity userEntity)
         {
             context.Users.Add(userEntity);

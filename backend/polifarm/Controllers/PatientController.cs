@@ -1,5 +1,6 @@
 ﻿using Application.Usecases.Note;
 using Application.Usecases.Patient;
+using Application.Usecases.User;
 using Domain.Dtos;
 using Domain.Dtos.Note;
 using Domain.Dtos.Patient;
@@ -12,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebApi.ResponseModels;
 using WebApi.ResponseModels.Note;
 using WebApi.ResponseModels.Patient;
+using WebApi.ResponseModels.User;
 using WebApi.ResponseModels.Utils;
 using WebApi.Validators.Note;
 using WebApi.Validators.Patient;
@@ -236,6 +238,37 @@ namespace WebApi.Controllers
 
             _logger.LogInformation("Nota removida com sucesso do paciente");
             return Ok(new MessageSuccessResponseModel(result.Message!));
+        }
+
+        /// <summary>
+        /// Retorna todos os pacientes cadastrados no sistema
+        /// </summary>
+        /// <returns>Pacientes retornados com sucesso</returns>
+        /// <response code="200">Pacientes retornados com Sucesso</response>
+        /// <response code="400">Erro na operação</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="404">Erro ao buscar paciente</response>
+        [HttpGet("GetAll")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<PatientResponse>> ReturnsAllPatients([FromServices] ReturnsAllPatientsUseCase returnsAllPatientsUseCase)
+        {
+            var result = await returnsAllPatientsUseCase.Execute();
+
+            if (result.IsFailure)
+            {
+                var endpointUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.Path}";
+                result.ErrorDetails!.Type = endpointUrl;
+
+                return result.ErrorDetails?.Status is 409
+                    ? Conflict(result.ErrorDetails)
+                    : BadRequest();
+            }
+
+            _logger.LogInformation("Pacientes retornados com sucesso");
+            return Ok(PatientResponseModel.CreatePatientResponseList(result.Data!));
         }
     }
 }
