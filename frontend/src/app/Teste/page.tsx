@@ -10,11 +10,11 @@
 //import TelaConsulta from '@/src/components/Consulta';
 import { Box } from '@mui/material';
 
+import TelaAgendamento from '../(auth-routes)/TelaAgendamento/page';
+
 //import ConsultaCompletaPage from "../(auth-routes)/TelaConsulta/page";
 //import TelaAgendamento from '@/src/components/Agendamento';
 //import NavBar from '@/src/components/NavBar';
-import ConsultaCompletaPage from '../(auth-routes)/TelaConsulta/page';
-
 export default function Teste() {
   return (
     <Box sx={{ backgroundColor: 'white', minHeight: '100vh' }}>
@@ -25,7 +25,7 @@ export default function Teste() {
     <PacientesHeader />
     <TabelaPacientes /> 
     <ConsultaCompletaPage />*/}
-      <ConsultaCompletaPage />
+      <TelaAgendamento />
     </Box>
   );
 }

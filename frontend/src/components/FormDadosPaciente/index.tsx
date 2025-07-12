@@ -31,7 +31,7 @@ export default function FormDadosPaciente() {
     <>
       <Container maxWidth="lg" sx={{ mt: 7, mb: 4 }}>
         <Box component="form" noValidate autoComplete="off">
-          {/* ✅ TOPO AJUSTADO */}
+          {/* TOPO AJUSTADO */}
           <Box
             sx={{
               display: 'flex',
@@ -85,24 +85,24 @@ export default function FormDadosPaciente() {
             </Box>
           </Box>
 
-          {/* Dados Pessoais */}
+          {/* Usando a sintaxe correta para o seu projeto */}
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextField label="Nome Completo" fullWidth required />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextField label="Nome Social" fullWidth />
             </Grid>
-            <Grid item xs={12} md={3}>
+            <Grid size={{ xs: 12, md: 3 }}>
               <TextField label="CPF" fullWidth required />
             </Grid>
-            <Grid item xs={12} md={3}>
+            <Grid size={{ xs: 12, md: 3 }}>
               <TextField label="SUS" fullWidth />
             </Grid>
-            <Grid item xs={12} md={3}>
+            <Grid size={{ xs: 12, md: 3 }}>
               <TextField label="RG" fullWidth />
             </Grid>
-            <Grid item xs={12} md={3}>
+            <Grid size={{ xs: 12, md: 3 }}>
               <TextField
                 label="Data de nascimento"
                 type="date"
@@ -110,10 +110,10 @@ export default function FormDadosPaciente() {
                 fullWidth
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextField label="Telefone" fullWidth />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextField label="Nome da mãe" fullWidth />
             </Grid>
           </Grid>
@@ -123,19 +123,19 @@ export default function FormDadosPaciente() {
             Endereço
           </Typography>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={2}>
+            <Grid size={{ xs: 12, md: 2 }}>
               <TextField label="CEP" fullWidth />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <TextField label="Cidade" fullWidth />
             </Grid>
-            <Grid item xs={12} md={3}>
+            <Grid size={{ xs: 12, md: 3 }}>
               <TextField label="Bairro" fullWidth />
             </Grid>
-            <Grid item xs={12} md={2}>
+            <Grid size={{ xs: 12, md: 2 }}>
               <TextField label="Rua" fullWidth />
             </Grid>
-            <Grid item xs={12} md={1}>
+            <Grid size={{ xs: 12, md: 1 }}>
               <TextField label="Nº" fullWidth />
             </Grid>
           </Grid>
@@ -145,13 +145,13 @@ export default function FormDadosPaciente() {
             Contato de Emergência
           </Typography>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={5}>
+            <Grid size={{ xs: 12, md: 5 }}>
               <TextField label="Nome" fullWidth />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <TextField label="Parentesco" fullWidth />
             </Grid>
-            <Grid item xs={12} md={3}>
+            <Grid size={{ xs: 12, md: 3 }}>
               <TextField label="Telefone" fullWidth />
             </Grid>
           </Grid>
