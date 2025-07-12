@@ -1,37 +1,56 @@
+using Infra.Database;
 using Microsoft.AspNetCore.Authorization;
-using Serilog;
-using System;
+using Microsoft.EntityFrameworkCore;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using OpenTelemetry.Logs;
+using Grafana.OpenTelemetry;
+using polifarm.Infra.Database;
+using System;
 using Webapi.Configuration;
 using WebApi.Config;
 using WebApi.Configuration;
-using Microsoft.EntityFrameworkCore;
-using Infra.Database;
-using polifarm.Infra.Database;
-
-var serviceName = "dice-server";
-var serviceVersion = "1.0.0";
+using Application.Gateways;
+using Npgsql;
+using WebApi.Tracing;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // add prometheus exporter
 builder.Services.AddOpenTelemetry()
     .ConfigureResource(resource => resource.AddService(
-        serviceName: serviceName,
-        serviceVersion: serviceVersion))
+        serviceName: OpenTelemetryExtensions.ServiceName,
+        serviceVersion: OpenTelemetryExtensions.ServiceVersion))
     .WithMetrics(metricsOptions =>
         metricsOptions
-            .AddMeter("teste")
+            .AddMeter(OpenTelemetryExtensions.ServiceName)
             .AddAspNetCoreInstrumentation()
+            .AddHttpClientInstrumentation()
             .AddRuntimeInstrumentation()
             .AddProcessInstrumentation()
-            .AddOtlpExporter(opts =>
-            {
-                opts.Endpoint = new Uri(builder.Configuration["Otel:Endpoint"]);
-            })
+            .UseGrafana()
+    ).WithTracing((traceBuilder) =>
+        traceBuilder
+            .AddSource(OpenTelemetryExtensions.ServiceName)
+            .AddAspNetCoreInstrumentation()
+            .AddHttpClientInstrumentation()
+            .AddNpgsql()
+            .AddConsoleExporter()
+            .UseGrafana()
     );
 
+builder.Logging.AddOpenTelemetry(options =>
+{
+    options.SetResourceBuilder(ResourceBuilder.CreateDefault()
+        .AddService(serviceName: OpenTelemetryExtensions.ServiceName, serviceVersion: OpenTelemetryExtensions.ServiceVersion));
+    options.IncludeFormattedMessage = true;
+    options.IncludeScopes = true;
+    options.ParseStateValues = true;
+    options.AttachLogsToActivityEvent();
+    options.AddConsoleExporter();
+    options.UseGrafana();
+});
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -46,7 +65,6 @@ builder.Services.AddSwaggerExtension();
 builder.Services.AddDbContextExtension(builder.Configuration);
 builder.Services.AddAuthenticationExtension(builder.Configuration);
 builder.Services.AddAuthorization();
-builder.Host.AddSerilogLogging(builder.Configuration);
 
 var app = builder.Build();
 
@@ -57,11 +75,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-Log.Information("Executando Migrations");
+// Log.Information("Executando Migrations");
 using var scope = app.Services.CreateScope();
 var dbContext = scope.ServiceProvider.GetRequiredService<PolifarmDbContext>();
 dbContext.Database.Migrate();
-PolifarmDbInitializer.Initialize(dbContext);
+var bcrypt = scope.ServiceProvider.GetRequiredService<IBcryptGateway>();
+PolifarmDbInitializer.Initialize(dbContext, bcrypt);
 
 app.UseCors("CorsPolicy");
 

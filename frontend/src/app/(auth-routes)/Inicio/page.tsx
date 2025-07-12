@@ -56,7 +56,7 @@ export default function Inicio() {
           gutterBottom
           sx={{ fontWeight: '500', color: 'black', marginTop: '24px' }}
         >
-          Inicio
+          Inicios
         </Typography>
         <MenuInicio />
 

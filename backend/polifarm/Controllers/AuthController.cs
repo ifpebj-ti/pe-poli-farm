@@ -10,6 +10,8 @@ using WebApi.ResponseModels;
 using WebApi.ResponseModels.Auth;
 using WebApi.ResponseModels.User;
 using WebApi.Validators.Auth;
+using WebApi.Tracing;
+using System.Diagnostics;
 
 namespace WebApi.Controllers
 {
@@ -33,6 +35,10 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<LoginResponse>> Login([FromBody] LoginDTO request, [FromServices] LoginUseCase loginUseCase)
         {
+            using var activity1 = OpenTelemetryExtensions.ActivitySource
+            .StartActivity("Authentication.Login", ActivityKind.Server);
+
+            activity1?.SetTag("user.email", request.Email);
             var validator = new AuthValidator();
             var validationResult = await validator.ValidateAsync(request);
             if (!validationResult.IsValid)
@@ -45,12 +51,17 @@ namespace WebApi.Controllers
                 var endpointUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.Path}";
                 useCaseResult.ErrorDetails!.Type = endpointUrl;
 
+                activity1?.SetStatus(ActivityStatusCode.Error, "Login falhou");
+                activity1?.SetTag("error.type", useCaseResult.ErrorDetails?.Title);
+
                 return useCaseResult.ErrorDetails?.Status is 400
                     ? BadRequest(useCaseResult.ErrorDetails)
                     : NotFound(useCaseResult.ErrorDetails);
             }
 
             logger.LogInformation($"Login realizado com sucesso");
+            activity1?.SetStatus(ActivityStatusCode.Ok, "Login successful");
+            activity1?.AddEvent(new ActivityEvent("Login successful, token generated."));
             return Ok(new LoginResponse(useCaseResult.Data!));
         }
 
