@@ -11,12 +11,12 @@ const menuItems = [
   {
     text: 'Pacientes',
     icon: <PersonIcon fontSize="large" />,
-    link: '/pacientes'
+    link: '/Pacientes'
   },
   {
     text: 'Atendimento',
     icon: <BadgeIcon fontSize="large" />,
-    link: '/atendimento'
+    link: '/NovoAtendimento'
   },
   {
     text: 'Histórico',
@@ -31,7 +31,7 @@ const menuItems = [
   {
     text: 'Relatório do Paciente',
     icon: <AssessmentIcon fontSize="large" />,
-    link: '/relatorio-paciente'
+    link: '/RelatorioPaciente'
   }
 ];
 

@@ -24,6 +24,7 @@ namespace Webapi.Configuration
             services.AddScoped<FindUserByEmail>();
             services.AddScoped<CreateUserUseCase>();
             services.AddScoped<UpdateUserPasswordUseCase>();
+            services.AddScoped<ReturnsAllUsersUseCase>();
 
             // Profiles
             services.AddScoped<IProfileRepositoryGateway, ProfileRepositoryGateway>();
@@ -37,6 +38,7 @@ namespace Webapi.Configuration
             services.AddScoped<FindPatientByCpfUseCase>();
             services.AddScoped<AddNoteUseCase>();
             services.AddScoped<RemoveNoteUseCase>();
+            services.AddScoped<ReturnsAllPatientsUseCase>();
 
             //Notes
             services.AddScoped<INotesRepositoryGateway, NotesRepositoryGateway>();

@@ -1,3 +1,5 @@
+import { getSession } from 'next-auth/react';
+
 import { AxiosError } from 'axios';
 
 import { api } from './api';
@@ -24,19 +26,15 @@ export async function NewPassword(
   accessCode: string
 ) {
   // 1. Obter o token do localStorage
-  const token = localStorage.getItem('UserAuth');
+  const session = await getSession();
 
-  // 2. Verificar se o token existe
-  if (!token) {
-    console.error('Token não encontrado no localStorage.');
-    // Você pode querer lançar um erro ou retornar null/false aqui,
-    // dependendo da sua lógica de tratamento de erro.
+  if (!session?.user?.accessToken) {
     throw new Error('Token de autenticação não encontrado.');
   }
 
   // 3. Configurar os cabeçalhos da requisição
   const headers = {
-    Authorization: `Bearer ${token}`
+    Authorization: `Bearer ${session.user.accessToken}`
   };
 
   try {

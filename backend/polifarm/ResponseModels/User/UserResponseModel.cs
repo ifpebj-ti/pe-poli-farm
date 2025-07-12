@@ -12,11 +12,13 @@ namespace WebApi.ResponseModels.User
                 user.Email.Value,
                 user.Cpf.Value,
                 user.Position.Value,
-                new ProfileResponse(
-                    user.Profile.Role
-                ),
-                user.AccessCode.Code
-                );
+                user.Profile.Role.Value
+            );
+        }
+
+        public static List<UserResponse> CreateUserResponseList(List<UserEntity> users)
+        {
+            return users.Select(CreateUserResponse).ToList();
         }
     }
 }

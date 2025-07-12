@@ -10,7 +10,7 @@ type decodeTokenType = {
   userId: string;
   active: boolean;
   email: string;
-  firstAccess: string;
+  IsUserUpdatePassword: boolean;
   position: string;
   role: string;
   unique_name: string;
@@ -37,31 +37,36 @@ export const nextAuthOptions: NextAuthOptions = {
       },
 
       async authorize(credentials) {
-        if (!credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error('Email e senha são obrigatórios');
+        }
+
+        try {
+          const response = (await Login(
+            credentials.email,
+            credentials.password
+          )) as AxiosResponse;
+
+          if (response.status === 200) {
+            const decodeToken: decodeTokenType = jwtDecode(response.data.token);
+            const user: User = {
+              id: decodeToken.userId,
+              active: decodeToken.active,
+              email: decodeToken.email,
+              isUserUpdatePassword: decodeToken.IsUserUpdatePassword,
+              position: decodeToken.position,
+              role: decodeToken.role,
+              unique_name: decodeToken.unique_name,
+              token: response.data.token
+            };
+            return user;
+          }
+
           return null;
+        } catch (error) {
+          console.error('Erro na autenticação:', error);
+          throw new Error('Credenciais inválidas');
         }
-
-        const response = (await Login(
-          credentials.email,
-          credentials.password
-        )) as AxiosResponse;
-
-        if (response.status === 200) {
-          const decodeToken: decodeTokenType = jwtDecode(response.data.token);
-          const user: User = {
-            id: decodeToken.userId,
-            active: decodeToken.active,
-            email: decodeToken.email,
-            firstAccess: decodeToken.firstAccess,
-            position: decodeToken.position,
-            role: decodeToken.role,
-            unique_name: decodeToken.unique_name,
-            token: response.data.token
-          };
-          return user;
-        }
-
-        return null;
       }
     })
   ],
@@ -75,7 +80,7 @@ export const nextAuthOptions: NextAuthOptions = {
         token.active = user.active;
         token.accessToken = user.token;
         token.email = user.email;
-        token.firstAccess = user.firstAccess;
+        token.IsUserUpdatePassword = user.isUserUpdatePassword;
         token.unique_name = user.unique_name;
         token.position = user.position;
         token.role = user.role;
@@ -88,7 +93,7 @@ export const nextAuthOptions: NextAuthOptions = {
       session.user.accessToken = token.accessToken;
       session.user.active = token.active;
       session.user.email = token.email;
-      session.user.firstAccess = token.firstAccess;
+      session.user.isUserUpdatePassword = token.isUserUpdatePassword;
       session.user.role = token.role;
       session.user.position = token.position as string;
       return session;

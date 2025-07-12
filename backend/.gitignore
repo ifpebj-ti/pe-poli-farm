@@ -67,7 +67,7 @@ artifacts/
 
 # Tye
 .tye/
-
+polifarm/polifarm.db
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt
 
@@ -486,3 +486,4 @@ $RECYCLE.BIN/
 # Database files
 /polifarm/polifarm.db-shm
 /polifarm/polifarm.db-wal
+/polifarm/polifarm.db

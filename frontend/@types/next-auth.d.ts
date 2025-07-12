@@ -8,7 +8,7 @@ declare module 'next-auth' {
       accessToken: string;
       active: boolean;
       email: string;
-      firstAccess: string;
+      isUserUpdatePassword: string;
       position: string;
       role: string;
       unique_name: string;
@@ -18,7 +18,7 @@ declare module 'next-auth' {
     id: string;
     active: boolean;
     email: string;
-    firstAccess: string;
+    isUserUpdatePassword: boolean;
     position?: string;
     role: string;
     token: string;
@@ -32,7 +32,7 @@ declare module 'next-auth/jwt' {
     accessToken: string;
     active: boolean;
     email: string;
-    firstAccess: string;
+    isUserUpdatePassword: string;
     position?: string;
     role: string;
     unique_name: string;

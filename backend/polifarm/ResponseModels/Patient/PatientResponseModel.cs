@@ -45,5 +45,10 @@ namespace WebApi.ResponseModels.Patient
                     .ToList())
                 .Build();
         }
+
+        public static List<PatientResponse> CreatePatientResponseList(List<PatientEntity> patients)
+        {
+            return patients.Select(CreateFindPatientById).ToList();
+        }
     }
 }

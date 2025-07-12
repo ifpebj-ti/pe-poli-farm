@@ -3,8 +3,7 @@ import NovoAtendimentoHeader from '@/src/components/Headers/HeaderNovoAtendiment
 import NavBar from '@/src/components/NavBar';
 import TabelaNovoAtendimento from '@/src/components/Tabelas/TabelaNovoAtendimento';
 
-import { Add } from '@mui/icons-material';
-import { Box, Button } from '@mui/material';
+import { Box } from '@mui/material';
 
 export default function NovoAtendimento() {
   const linkList = [
@@ -40,29 +39,6 @@ export default function NovoAtendimento() {
         }}
       >
         <TabelaNovoAtendimento />
-        <Button
-          variant="outlined"
-          sx={{
-            width: 'fit-content',
-            alignSelf: 'flex-end',
-            height: 36,
-            borderRadius: '18px',
-            textTransform: 'none',
-            mx: 4,
-            px: 3,
-            borderColor: '#1351B4',
-            color: '#1351B4',
-            fontWeight: 400,
-            fontFamily: 'Roboto, sans-serif',
-            minWidth: 90,
-            '&:hover': {
-              borderColor: '#0f479e',
-              backgroundColor: '#f0f7ff'
-            }
-          }}
-        >
-          <Add /> NOVO PACIENTE
-        </Button>
       </Box>
     </Box>
   );

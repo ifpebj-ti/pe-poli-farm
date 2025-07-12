@@ -6,6 +6,5 @@ public record UserResponse(
     string Email,
     string Cpf,
     string Position,
-    ProfileResponse Profile,
-    string AccessCode
+    string Profile
     );
