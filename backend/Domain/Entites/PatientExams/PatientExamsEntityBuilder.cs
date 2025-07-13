@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.MedicalRecord;
+using Domain.ValuesObjects;
 
 namespace Domain.Entities.PatientExams
 {
@@ -9,6 +10,9 @@ namespace Domain.Entities.PatientExams
         private DateTime? _executionDate;
         private string _description = string.Empty;
         private Guid _medicalRecordId;
+        private Guid _professionalId;
+        private string _name = string.Empty;
+        private ExamPriorityStatus _priority = new ExamPriorityStatus("NORMAL");
 
         public PatientExamsEntityBuilder WithId(Guid id)
         {
@@ -40,9 +44,28 @@ namespace Domain.Entities.PatientExams
             return this;
         }
 
+        public PatientExamsEntityBuilder WithName(string name)
+        {
+            _name = name;
+            return this;
+        }
+
+        public PatientExamsEntityBuilder WithPriority(ExamPriorityStatus priority)
+        {
+            _priority = priority;
+            return this;
+        }
+
+        public PatientExamsEntityBuilder WithProfessionalId(Guid professionalId)
+        {
+            _professionalId = professionalId;
+            return this;
+        }
+
+
         public PatientExamsEntity Build()
         {
-            return new PatientExamsEntity(_id, _prescriptionDate, _executionDate, _description, _medicalRecordId);
+            return new PatientExamsEntity(_id, _prescriptionDate, _executionDate, _name, _description, _priority, _medicalRecordId, _professionalId);
         }
     }
 

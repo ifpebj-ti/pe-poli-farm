@@ -3,6 +3,7 @@ using System;
 using Infra.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace WebApi.Migrations
 {
     [DbContext(typeof(PolifarmDbContext))]
-    partial class PolifarmDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250713185236_AddedNameAndPriorityToPatientExam")]
+    partial class AddedNameAndPriorityToPatientExam
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -647,17 +650,12 @@ namespace WebApi.Migrations
                     b.Property<DateTime>("PrescriptionDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("ProfessionalId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
                     b.HasIndex("MedicalRecordId");
-
-                    b.HasIndex("ProfessionalId");
 
                     b.ToTable("PatientExamsEntity");
                 });
@@ -1214,12 +1212,6 @@ namespace WebApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entites.User.UserEntity", "Professional")
-                        .WithMany()
-                        .HasForeignKey("ProfessionalId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.OwnsOne("Domain.ValuesObjects.ExamPriorityStatus", "Priority", b1 =>
                         {
                             b1.Property<Guid>("PatientExamsEntityId")
@@ -1241,8 +1233,6 @@ namespace WebApi.Migrations
 
                     b.Navigation("Priority")
                         .IsRequired();
-
-                    b.Navigation("Professional");
                 });
 
             modelBuilder.Entity("Domain.Entities.Service.ServiceEntity", b =>

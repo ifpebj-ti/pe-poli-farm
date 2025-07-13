@@ -18,6 +18,8 @@ using WebApi.Validators.Referral;
 using Domain.Dtos.Referral;
 using Application.Usecases.Referral;
 using WebApi.ResponseModels.Referral;
+using Domain.Dtos.MedicalConsultation;
+using WebApi.Validators.MedicalConsultation;
 
 namespace WebApi.Controllers
 {
@@ -137,6 +139,51 @@ namespace WebApi.Controllers
                 return StatusCode((int)result.ErrorDetails!.Status!, result.ErrorDetails);
 
             return Ok(ReferralResponseModels.ToResponseList(result.Data!));
+        }
+
+        /// <summary>
+        /// Registra uma nova consulta médica completa.
+        /// </summary>
+        /// <remarks>
+        /// Recebe os dados da anamnese, histórico de saúde e prescrições para criar um atendimento e um prontuário associado.
+        /// </remarks>
+        /// <returns>Mensagem de sucesso ou detalhes do erro.</returns>
+        /// <response code="201">Consulta registrada com sucesso.</response>
+        /// <response code="400">Dados de entrada inválidos.</response>
+        /// <response code="401">Acesso não autorizado.</response>
+        /// <response code="404">Paciente não encontrado.</response>
+        [HttpPost]
+        [ProducesResponseType(typeof(object), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ResultPattern<string>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResultPattern<string>), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> CreateMedicalConsultation(
+            [FromBody] CreateMedicalConsultationDTO request,
+            [FromServices] CreateMedicalConsultationUseCase createConsultationUseCase,
+            CancellationToken cancellationToken)
+        {
+
+            // 1. Validação (Opcional, mas altamente recomendado)
+            // Similar ao seu exemplo, você pode usar FluentValidation aqui.
+            var validator = new CreateMedicalConsultationValidator();
+            var validationResult = await validator.ValidateAsync(request);
+            if (!validationResult.IsValid)
+                return BadRequest(ResultPattern<string>.BadRequest(validationResult.ToString()).ErrorDetails);
+
+            // 2. Execução do Caso de Uso
+            var result = await createConsultationUseCase.Execute(request, cancellationToken);
+
+            // 3. Tratamento do Resultado
+            if (result.IsFailure)
+            {
+                // O ResultPattern já contém o status code (400, 404, 500), então podemos usá-lo diretamente.
+                return StatusCode((int)result.ErrorDetails!.Status!, result.ErrorDetails);
+            }
+
+            // 4. Resposta de Sucesso
+            // O caso de uso retorna uma string de sucesso. Podemos retorná-la em um objeto.
+            // O código HTTP 201 Created é mais apropriado aqui, pois um novo recurso (a consulta) foi criado.
+            return StatusCode(StatusCodes.Status201Created, new { message = result.Data });
         }
     }
 }

@@ -26,6 +26,10 @@ namespace Infra.Database.SqLite.EntityFramework.EntityConfiguration
             builder.Property(pe => pe.ExecutionDate)
                 .IsRequired(false);
 
+            builder.ComplexProperty(pe => pe.Priority)
+                .Property(a => a.Value)
+                .IsRequired();
+
             // Configuração do relacionamento com MedicalRecord
             builder.HasOne(pe => pe.MedicalRecord)
                 .WithMany(mr => mr.PatientExams) // Um MedicalRecord pode ter muitos PatientExams
