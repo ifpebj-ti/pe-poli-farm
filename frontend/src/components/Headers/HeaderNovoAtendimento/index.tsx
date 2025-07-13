@@ -29,7 +29,7 @@ export default function NovoAtendimentoHeader({
   onStatusChange
 }: NovoAtendimentoHeaderProps) {
   return (
-    <Box sx={{ px: 6, pt: 4, pb: 2 }}>
+    <Box sx={{ px: 6, pb: 2 }}>
       <Typography variant="h4" sx={{ color: '#000', fontWeight: 500, mb: 3 }}>
         Novo Atendimento
       </Typography>

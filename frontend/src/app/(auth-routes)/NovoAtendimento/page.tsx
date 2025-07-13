@@ -7,6 +7,8 @@ import NovoAtendimentoHeader from '@/src/components/Headers/HeaderNovoAtendiment
 import NavBar from '@/src/components/NavBar';
 import TabelaNovoAtendimento from '@/src/components/Tabelas/TabelaNovoAtendimento';
 
+import { Patient } from '@/src/lib/pacientes';
+import { api } from '@/src/services/api';
 import { Box, CircularProgress, Typography } from '@mui/material';
 
 import { useDebounce } from '../Pacientes/hooks/useDebounce';
@@ -47,14 +49,49 @@ export default function NovoAtendimento() {
     event: React.ChangeEvent<unknown>,
     newPage: number
   ) => setPage(newPage);
-  const handleVerProntuario = (pacienteCPF: string) =>
-    router.push(`/Prontuario/${pacienteCPF}`);
   const handleStatusChange = (
     event: React.MouseEvent<HTMLElement>,
     newStatus: string | null
   ) => {
     if (newStatus !== null) {
       setStatusFiltro(newStatus);
+    }
+  };
+
+  const handleIniciarAtendimento = async (paciente: Patient) => {
+    // CENÁRIO 1: Paciente já está em atendimento
+    console.log('Paciente recebido no clique:', paciente);
+
+    if (statusFiltro === 'IN_SERVICE') {
+      console.log(
+        `Paciente ${paciente.name} já em atendimento. Navegando para a consulta...`
+      );
+      // Supondo que a página de consulta também use o CPF na rota
+      router.push(`/TelaConsulta/${paciente.cpf}`);
+      return; // Interrompe a execução
+    }
+    try {
+      console.log(`Iniciando novo atendimento para ${paciente.id}...`);
+      // -> ALTERAÇÃO: Chamada POST para o novo endpoint
+      await api.post(
+        '/api/Service/initService',
+        paciente.id, // 1. O corpo da requisição (apenas a string do ID)
+        {
+          // 2. O objeto de configuração, onde forçamos o cabeçalho
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      // Se a API funcionou, o paciente agora está "IN_SERVICE".
+      alert(`Atendimento para ${paciente.name} iniciado com sucesso!`);
+
+      // O ideal é navegar para a tela de consulta após iniciar o serviço
+      router.push(`/TelaConsulta/${paciente.cpf}`);
+    } catch (apiError) {
+      console.error('Erro ao iniciar atendimento:', apiError);
+      alert('Não foi possível iniciar o atendimento. Tente novamente.');
     }
   };
 
@@ -69,32 +106,60 @@ export default function NovoAtendimento() {
       }}
     >
       <NavBar />
-      <Box sx={{ mt: 4, ml: 6 }}>
-        <BreadCrumb {...{ linkList }} />
-      </Box>
-      <NovoAtendimentoHeader
-        termoBusca={termoBusca}
-        onBuscaChange={handleBuscaChange}
-        statusFiltro={statusFiltro}
-        onStatusChange={handleStatusChange}
-      />
-      <Box sx={{ p: 6, display: 'flex', justifyContent: 'center' }}>
-        {isLoading ? (
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <CircularProgress />
-            <Typography sx={{ ml: 2 }}>Buscando pacientes...</Typography>
-          </Box>
-        ) : error ? (
-          <Typography color="error">{error}</Typography>
-        ) : (
-          <TabelaNovoAtendimento
-            pacientes={pacientes}
-            page={page}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-            onVerProntuario={handleVerProntuario}
-          />
-        )}
+      <Box
+        component="main" // Define o papel semântico do container
+        sx={{
+          flexGrow: 1, // Faz este container ocupar todo o espaço vertical disponível // Adiciona um padding unificado (em cima, dos lados e embaixo)
+          px: { xs: 2, md: 4 },
+          display: 'flex',
+          flexDirection: 'column' // Padding horizontal um pouco maior para telas grandes
+        }}
+      >
+        {/* BreadCrumb vem primeiro */}
+        <Box sx={{ mb: 2, mx: 4 }}>
+          {' '}
+          {/* Apenas uma pequena margem inferior para separar do Header */}
+          <BreadCrumb {...{ linkList }} />
+        </Box>
+
+        {/* Header de Atendimento */}
+        <NovoAtendimentoHeader
+          termoBusca={termoBusca}
+          onBuscaChange={handleBuscaChange}
+          statusFiltro={statusFiltro}
+          onStatusChange={handleStatusChange}
+        />
+
+        {/* Área da Tabela */}
+        <Box sx={{ mt: 3 }}>
+          {' '}
+          {/* Margem superior para separar o header da tabela */}
+          {isLoading ? (
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                pt: 8
+              }}
+            >
+              <CircularProgress />
+              <Typography sx={{ ml: 2 }}>Buscando pacientes...</Typography>
+            </Box>
+          ) : error ? (
+            <Typography color="error" sx={{ textAlign: 'center', pt: 8 }}>
+              {error}
+            </Typography>
+          ) : (
+            <TabelaNovoAtendimento
+              pacientes={pacientes}
+              page={page}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+              onIniciarAtendimento={handleIniciarAtendimento}
+            />
+          )}
+        </Box>
       </Box>
     </Box>
   );

@@ -10,7 +10,7 @@
 //import TelaConsulta from '@/src/components/Consulta';
 import { Box } from '@mui/material';
 
-import ConsultaCompletaPage from '../(auth-routes)/TelaConsulta/page';
+import ConsultaCompletaPage from '../(auth-routes)/TelaConsulta/[id]/page';
 
 //import ConsultaCompletaPage from "../(auth-routes)/TelaConsulta/page";
 //import TelaAgendamento from '@/src/components/Agendamento';

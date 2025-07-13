@@ -1,4 +1,6 @@
 'use client';
+import { useRouter } from 'next/navigation';
+
 import { Patient } from '@/src/lib/pacientes';
 import AddIcon from '@mui/icons-material/Add';
 import {
@@ -20,7 +22,7 @@ interface TabelaProps {
   page: number;
   totalPages: number;
   onPageChange: (event: React.ChangeEvent<unknown>, page: number) => void;
-  onVerProntuario: (pacienteCPF: string) => void;
+  onIniciarAtendimento: (paciente: Patient) => void;
 }
 
 const calcularIdade = (birthDateString: string): number => {
@@ -48,11 +50,12 @@ export default function TabelaNovoAtendimento({
   page,
   totalPages,
   onPageChange,
-  onVerProntuario
+  onIniciarAtendimento
 }: TabelaProps) {
+  const router = useRouter();
   return (
     <Box sx={{ px: 4, pt: 3, display: 'flex', justifyContent: 'center' }}>
-      <Box sx={{ width: '100%', maxWidth: 1100 }}>
+      <Box sx={{ width: '100%' }}>
         <TableContainer component={Paper} elevation={1}>
           <Table>
             <TableHead>
@@ -86,7 +89,7 @@ export default function TabelaNovoAtendimento({
                     <Button
                       variant="contained"
                       size="small"
-                      onClick={() => onVerProntuario(paciente.cpf)}
+                      onClick={() => onIniciarAtendimento(paciente)}
                       sx={{
                         backgroundColor: '#1351B4',
                         borderRadius: '8px',
@@ -99,7 +102,7 @@ export default function TabelaNovoAtendimento({
                         }
                       }}
                     >
-                      Ver prontuário
+                      Iniciar Atendimento
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -123,6 +126,7 @@ export default function TabelaNovoAtendimento({
           <Button
             variant="outlined"
             startIcon={<AddIcon />}
+            onClick={() => router.push('/NovoPaciente')}
             sx={{
               borderColor: '#1351B4',
               color: '#1351B4',
