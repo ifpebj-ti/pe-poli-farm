@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import PopupPacienteAdicionado from '@/src/components/PopUp/PopUpAddPaciente';
@@ -18,6 +19,7 @@ import Grid from '@mui/material/Grid';
 
 export default function FormDadosPaciente() {
   const [openPopup, setOpenPopup] = useState(false);
+  const router = useRouter();
 
   const handleOpenPopup = () => {
     setOpenPopup(true);
@@ -27,6 +29,13 @@ export default function FormDadosPaciente() {
     setOpenPopup(false);
   };
 
+  const handleCancelarClick = () => {
+    router.push('/NovoAtendimento'); // Navega para a página NovoAtendimento
+  };
+
+  const handleAvancarClick = () => {
+    router.push('/TelaConsulta'); // Navega para a página TelaConsulta
+  };
   return (
     <>
       <Container maxWidth="lg" sx={{ mt: 7, mb: 4 }}>
@@ -64,6 +73,7 @@ export default function FormDadosPaciente() {
                 variant="contained"
                 color="error"
                 sx={{ borderRadius: 10 }}
+                onClick={handleCancelarClick}
               >
                 Cancelar
               </Button>
@@ -79,6 +89,7 @@ export default function FormDadosPaciente() {
                 variant="contained"
                 color="success"
                 sx={{ borderRadius: 10 }}
+                onClick={handleAvancarClick}
               >
                 Avançar
               </Button>

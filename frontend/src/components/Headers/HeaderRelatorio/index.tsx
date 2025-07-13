@@ -1,4 +1,5 @@
 'use client';
+import { useRouter } from 'next/navigation';
 
 import SearchIcon from '@mui/icons-material/Search';
 import {
@@ -11,6 +12,11 @@ import {
 } from '@mui/material';
 
 export default function RelatorioHeader() {
+  const router = useRouter(); // Inicialize useRouter
+
+  const handleVoltarClick = () => {
+    router.push('/Inicio'); // Navega para a página /Inicio
+  };
   return (
     <Box
       sx={{
@@ -73,6 +79,7 @@ export default function RelatorioHeader() {
 
         <Button
           variant="outlined"
+          onClick={handleVoltarClick}
           sx={{
             height: 36,
             borderRadius: '18px',

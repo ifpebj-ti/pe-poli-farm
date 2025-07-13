@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation'; // Importe useRouter
 import { useState } from 'react';
 
 import PopupProcedimento from '@/src/components/PopUp/PopUpRegistroProcedimentos'; // ⬅️ Importa aqui
@@ -8,6 +9,7 @@ import { Box, Typography, TextField, Button } from '@mui/material';
 
 export default function TelaRegistro() {
   const [openPopup, setOpenPopup] = useState(false);
+  const router = useRouter();
 
   const handleRegistrar = () => {
     setOpenPopup(true);
@@ -17,6 +19,9 @@ export default function TelaRegistro() {
     setOpenPopup(false);
   };
 
+  const handleVoltarClick = () => {
+    router.push('/Pacientes');
+  };
   return (
     <>
       <Box
@@ -35,6 +40,7 @@ export default function TelaRegistro() {
           </Typography>
           <Button
             variant="outlined"
+            onClick={handleVoltarClick}
             sx={{
               height: 36,
               borderRadius: '18px',

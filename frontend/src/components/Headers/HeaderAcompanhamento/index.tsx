@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation'; // Importe useRouter
 import { useState } from 'react';
 
 import SearchIcon from '@mui/icons-material/Search';
@@ -18,7 +19,11 @@ import {
 
 export default function AcompanhamentoHeader() {
   const [status, setStatus] = useState('');
+  const router = useRouter(); // Inicialize useRouter
 
+  const handleVoltarClick = () => {
+    router.push('/Inicio'); // Navega para a página /Inicio
+  };
   return (
     <Box
       sx={{
@@ -105,6 +110,7 @@ export default function AcompanhamentoHeader() {
         </Box>
         <Button
           variant="outlined"
+          onClick={handleVoltarClick}
           sx={{
             height: 36,
             borderRadius: '18px',

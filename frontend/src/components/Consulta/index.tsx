@@ -1,5 +1,5 @@
 'use client';
-
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import PopupAtestado from '@/src/components/PopUp/PopupAtestado';
@@ -20,6 +20,7 @@ export default function TelaConsulta() {
   const [openMedicacaoPopup, setOpenMedicacaoPopup] = useState(false);
   const [openExamePopup, setOpenExamePopup] = useState(false);
   const [openAtestadoPopup, setOpenAtestadoPopup] = useState(false);
+  const router = useRouter();
 
   const inputStyles = {
     '& .MuiOutlinedInput-root': {
@@ -38,6 +39,10 @@ export default function TelaConsulta() {
     nome: 'Laura Oliveira',
     cpf: '123.456.789-10',
     sus: '46743674'
+  };
+
+  const handleAgendamentoClick = () => {
+    router.push('/TelaAgendamento');
   };
 
   return (
@@ -431,6 +436,7 @@ export default function TelaConsulta() {
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
           <Button
             variant="contained"
+            onClick={handleAgendamentoClick}
             sx={{
               ...buttonStyles,
               backgroundColor: '#1351B4',

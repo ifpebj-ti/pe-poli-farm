@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 
 import PopupAgendamentoSucesso from '@/src/components/PopUp/PopUpConfirmaçãoAgendamento';
@@ -42,6 +43,7 @@ export default function TelaAgendamentoContent() {
   ]);
   const [filtro, setFiltro] = useState('mês');
   const [openConfirmacao, setOpenConfirmacao] = useState(false);
+  const router = useRouter();
 
   // --- Constantes e Helpers ---
   const meses = [
@@ -447,6 +449,9 @@ export default function TelaAgendamentoContent() {
   const handleAgendar = () => {
     setOpenConfirmacao(true);
   };
+  const handleCancelarClick = () => {
+    router.push('/Inicio'); // Navigate to the Inicio page
+  };
   // --- O CÓDIGO A SER RENDERIZADO COMEÇA AQUI ---
   return (
     <Box
@@ -506,6 +511,7 @@ export default function TelaAgendamentoContent() {
             >
               <Button
                 variant="contained"
+                onClick={handleCancelarClick}
                 sx={{
                   backgroundColor: '#f44336',
                   borderRadius: '20px',

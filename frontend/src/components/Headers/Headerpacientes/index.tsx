@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { ChangeEvent } from 'react';
 
 import SearchIcon from '@mui/icons-material/Search';
@@ -21,6 +22,10 @@ export default function PacientesHeader({
   termoBusca,
   onBuscaChange
 }: PacientesHeaderProps) {
+  const router = useRouter();
+  const handleVoltarClick = () => {
+    router.push('/Inicio'); // Navega para a página /Inicio
+  };
   return (
     <Box
       sx={{
@@ -85,6 +90,7 @@ export default function PacientesHeader({
 
         <Button
           variant="outlined"
+          onClick={handleVoltarClick}
           sx={{
             height: 36,
             borderRadius: '18px',

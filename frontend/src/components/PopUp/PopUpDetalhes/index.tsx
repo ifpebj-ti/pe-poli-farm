@@ -21,6 +21,11 @@ export default function PopupDetalhes({
   open,
   handleClose
 }: PopupDetalhesExameProps) {
+  const handlePrint = () => {
+    // window.print() abre a caixa de diálogo de impressão do navegador
+    window.print();
+    console.log('Conteúdo do Pop-up de Detalhes impresso!');
+  };
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
       <DialogTitle>
@@ -124,6 +129,7 @@ export default function PopupDetalhes({
         <Button
           variant="contained"
           color="primary"
+          onClick={handlePrint}
           sx={{
             textTransform: 'none',
             borderRadius: '40px',
