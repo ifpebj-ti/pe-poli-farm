@@ -1,0 +1,21 @@
+services:
+  portainer:
+    image: portainer/portainer-ee:latest
+    container_name: portainer
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "9443:9443"
+      - "8000:8000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      - management-network
+    restart: unless-stopped
+
+networks:
+  management-network:
+    external: true
+volumes:
+  portainer_data:
