@@ -20,13 +20,15 @@ interface TabelaPacientesProps {
   page: number;
   totalPages: number;
   onPageChange: (event: React.ChangeEvent<unknown>, page: number) => void;
+  onVerProntuario: (pacienteCPF: string) => void;
 }
 
 export default function TabelaPacientes({
   pacientes,
   page,
   totalPages,
-  onPageChange
+  onPageChange,
+  onVerProntuario
 }: TabelaPacientesProps) {
   if (pacientes.length === 0) {
     return (
@@ -88,6 +90,7 @@ export default function TabelaPacientes({
                       <Button
                         variant="contained"
                         size="small"
+                        onClick={() => onVerProntuario(paciente.cpf)}
                         sx={{
                           backgroundColor: '#1351B4',
                           borderRadius: '8px',
