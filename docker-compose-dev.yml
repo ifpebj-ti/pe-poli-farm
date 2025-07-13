@@ -1,8 +1,8 @@
 services:
   backend:
-    image: ghcr.io/ifpebj-ti/polifarm-backend:latest
+    build: ./backend
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_ENVIRONMENT=Development
       - CONNECTION_STRING=Host=database;Port=${PORT_MACHINE_POSTGRES};Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
       - JWT_SETTINGS__SECRET=${JWT_SETTINGS__SECRET}
       - JWT_SETTINGS__ISS=${JWT_SETTINGS__ISS}
@@ -21,11 +21,11 @@ services:
     restart: unless-stopped
 
   frontend:
-    image: ghcr.io/ifpebj-ti/polifarm-frontend:latest
+    build: ./frontend
     ports:
       - '${PORT_MACHINE_FRONTEND}:3000'
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
       - NEXT_PUBLIC_BASE_URL=${NEXT_PUBLIC_BASE_URL}
       - NEXTAUTH_URL=${NEXTAUTH_URL}
       - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}

@@ -1,24 +1,21 @@
 services:
-  npm:
-    image: jc21/nginx-proxy-manager:latest
-    container_name: npm
-    restart: unless-stopped
+  portainer:
+    image: portainer/portainer-ee:latest
+    container_name: portainer
+    security_opt:
+      - no-new-privileges:true
     ports:
-      - "80:80" # Tráfego HTTP público
-      - "443:443" # Tráfego HTTPS público
-      - "${PORT_MACHINE_NGINX}:81" # Interface de administração do NPM
+      - "9443:9443"
+      - "8000:8000"
     volumes:
-      - npm_data:/data
-      - npm_letsencrypt:/etc/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
     networks:
       - management-network
+    restart: unless-stopped
 
 networks:
   management-network:
     external: true
-
 volumes:
-  npm_data:
-    driver: local
-  npm_letsencrypt:
-    driver: local
+  portainer_data:
