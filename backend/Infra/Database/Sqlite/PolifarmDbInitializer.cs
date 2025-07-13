@@ -116,6 +116,13 @@ public static class PolifarmDbInitializer
             context.Services.Add(servico);
             context.SaveChanges();
 
+            var registro = new MedicalRecordEntity(
+                id: Guid.NewGuid(),
+                status: new MedicalRecordStatus(MedicalRecordStatusType.MEDICAL_CARE.ToString()),
+                statusInCaseOfAdmission: new MedicalRecordStatus(MedicalRecordStatusType.MEDICAL_CARE.ToString()),
+                anamnese: null
+            );
+
             var anamnese = new AnamneseEntity(
                 id: Guid.NewGuid(),
                 bloodPressure: "120/80",
@@ -139,16 +146,11 @@ public static class PolifarmDbInitializer
                 medicalHypothesis: "Gripe comum",
                 previousSurgeries: "Apendicectomia",
                 SignsAndSymptoms: "Febre, dor de cabeça",
-                classificationStatus: new ClassificationStatus(ClassificationStatusType.EMERGENCY.ToString())
+                classificationStatus: new ClassificationStatus(ClassificationStatusType.EMERGENCY.ToString()),
+                registro.Id
             );
 
-
-            var registro = new MedicalRecordEntity(
-                id: Guid.NewGuid(),
-                status: new MedicalRecordStatus(MedicalRecordStatusType.MEDICAL_CARE.ToString()),
-                statusInCaseOfAdmission: new MedicalRecordStatus(MedicalRecordStatusType.MEDICAL_CARE.ToString()),
-                anamnese: anamnese
-            );
+            registro.Anamnese = anamnese;
 
             servico.MedicalRecordEntity = registro;
             

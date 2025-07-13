@@ -28,6 +28,7 @@ public class AnamneseEntityBuilder
     private string _previousSurgeries = string.Empty;
     private string _signsAndSymptoms = string.Empty;
     private ClassificationStatus _classificationStatus;
+    private Guid _medicalRecordId;
 
     public AnamneseEntityBuilder WithId(Guid id)
     {
@@ -167,6 +168,12 @@ public class AnamneseEntityBuilder
         return this;
     }
 
+    public AnamneseEntityBuilder WithMedicalRecordId(Guid medicalRecordId)
+    {
+        _medicalRecordId = medicalRecordId;
+        return this;
+    }
+
     public AnamneseEntity Build()
     {
         return new AnamneseEntity(
@@ -192,7 +199,8 @@ public class AnamneseEntityBuilder
             _medicalHypothesis,
             _previousSurgeries,
             _signsAndSymptoms,
-            _classificationStatus
+            _classificationStatus,
+            _medicalRecordId
         );
     }
 }

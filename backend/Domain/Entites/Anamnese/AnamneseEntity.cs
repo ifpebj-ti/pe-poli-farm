@@ -57,7 +57,8 @@ public class AnamneseEntity : BaseEntity
         string medicalHypothesis,
         string previousSurgeries,
         string SignsAndSymptoms,
-        ClassificationStatus classificationStatus)
+        ClassificationStatus classificationStatus,
+        Guid medicalRecordId)
     {
         Id = id;
         BloodPressure = bloodPressure;
@@ -82,5 +83,6 @@ public class AnamneseEntity : BaseEntity
         PreviousSurgeries = previousSurgeries;
         SignsAndSymptoms = SignsAndSymptoms;
         ClassificationStatus = classificationStatus;
+        MedicalRecordId = medicalRecordId;
     }
 }

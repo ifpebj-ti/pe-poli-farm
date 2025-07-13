@@ -52,6 +52,7 @@ namespace Webapi.Configuration
             services.AddScoped<GetMedicalCertificateUseCase>();
             services.AddScoped<CreateReferralUseCase>();
             services.AddScoped<GetReferralUseCase>();
+            services.AddScoped<CreateMedicalConsultationUseCase>();
             services.AddScoped<IReferralRepositoryGateway, ReferralRepositoryGateway>();
 
             //Service
