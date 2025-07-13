@@ -1,0 +1,97 @@
+services:
+  loki:
+    image: grafana/loki:3.4.2
+    container_name: loki
+    ports:
+      - '${PORT_MACHINE_LOKI}:3100'
+    networks:
+      - observability-network
+    volumes:
+      - ${HOME_PATH}/config/loki-config.yaml:/etc/loki/local-config.yaml
+    command: -config.file=/etc/loki/local-config.yaml
+    restart: unless-stopped
+
+  alloy:
+    image: grafana/alloy:v1.9.2
+    ports:
+      - '${PORT_MACHINE_ALLOY}:12345'
+      - 4318:4318
+      - 4317:4317
+    networks:
+      - observability-network
+    volumes:
+      - ${HOME_PATH}/config/config.alloy:/etc/alloy/config.alloy
+    command: run --server.http.listen-addr=0.0.0.0:12345 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy
+    depends_on:
+      - loki
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - '${PORT_MACHINE_PROMETHEUS}:9090'
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--web.enable-remote-write-receiver'
+      - '--enable-feature=otlp-write-receiver'
+      - '--enable-feature=exemplar-storage'
+      - '--enable-feature=native-histograms'
+    volumes:
+      - ${HOME_PATH}/config/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    networks:
+      - observability-network
+    restart: unless-stopped
+
+  tempo:
+    image: grafana/tempo:2.7.1
+    container_name: tempo
+    command: [ "-config.file=/etc/tempo.yaml" ]
+    volumes:
+      - ${HOME_PATH}/config/tempo.yaml:/etc/tempo.yaml
+      - tempo_data:/var/tempo
+    ports:
+      - '${PORT_MACHINE_TEMPO}:3200'
+    networks:
+      - observability-network
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: grafana
+    ports:
+      - '${PORT_MACHINE_GRAFANA}:3000'
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ${HOME_PATH}/config/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+    restart: unless-stopped
+    networks:
+      - observability-network
+      - management-network
+
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:v1.5.0
+    container_name: node_exporter
+    command: '--path.rootfs=/host'
+    pid: host
+    restart: unless-stopped
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    networks:
+      - observability-network
+
+volumes:
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+  tempo_data:
+    driver: local
+
+networks:
+  observability-network:
+    external: true
+  management-network:
+    external: true
