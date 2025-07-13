@@ -1,6 +1,7 @@
 ﻿using Application.Gateways;
 using Application.Usecases.Appointment;
 using Application.Usecases.Auth;
+using Application.Usecases.Conduct;
 using Application.Usecases.MedicalCertificate;
 using Application.Usecases.Note;
 using Application.Usecases.Patient;
@@ -52,6 +53,8 @@ namespace Webapi.Configuration
             services.AddScoped<GetMedicalCertificateUseCase>();
             services.AddScoped<CreateReferralUseCase>();
             services.AddScoped<GetReferralUseCase>();
+            services.AddScoped<CreateMedicalConsultationUseCase>();
+            services.AddScoped<RegisterConductUseCase>();
             services.AddScoped<IReferralRepositoryGateway, ReferralRepositoryGateway>();
 
             //Service

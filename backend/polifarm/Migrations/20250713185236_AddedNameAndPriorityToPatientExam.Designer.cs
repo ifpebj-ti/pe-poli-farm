@@ -3,6 +3,7 @@ using System;
 using Infra.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace WebApi.Migrations
 {
     [DbContext(typeof(PolifarmDbContext))]
-    partial class PolifarmDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250713185236_AddedNameAndPriorityToPatientExam")]
+    partial class AddedNameAndPriorityToPatientExam
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -105,56 +108,6 @@ namespace WebApi.Migrations
                     b.HasIndex("ProfessionalId");
 
                     b.ToTable("Appointments");
-                });
-
-            modelBuilder.Entity("Domain.Entites.Conduct.ConductEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("ConductDescription")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<Guid>("MedicalRecordId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("MedicationsInUse")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("PatientId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("ProcedureType")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("ProfessionalId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MedicalRecordId");
-
-                    b.HasIndex("PatientId");
-
-                    b.HasIndex("ProfessionalId");
-
-                    b.ToTable("Conducts");
                 });
 
             modelBuilder.Entity("Domain.Entites.MedicalCertificate.MedicalCertificateEntity", b =>
@@ -697,17 +650,12 @@ namespace WebApi.Migrations
                     b.Property<DateTime>("PrescriptionDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("ProfessionalId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
                     b.HasIndex("MedicalRecordId");
-
-                    b.HasIndex("ProfessionalId");
 
                     b.ToTable("PatientExamsEntity");
                 });
@@ -822,33 +770,6 @@ namespace WebApi.Migrations
                     b.HasOne("Domain.Entites.User.UserEntity", "Professional")
                         .WithMany()
                         .HasForeignKey("ProfessionalId");
-
-                    b.Navigation("Patient");
-
-                    b.Navigation("Professional");
-                });
-
-            modelBuilder.Entity("Domain.Entites.Conduct.ConductEntity", b =>
-                {
-                    b.HasOne("Domain.Entities.MedicalRecord.MedicalRecordEntity", "MedicalRecord")
-                        .WithMany()
-                        .HasForeignKey("MedicalRecordId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Patient.PatientEntity", "Patient")
-                        .WithMany()
-                        .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entites.User.UserEntity", "Professional")
-                        .WithMany()
-                        .HasForeignKey("ProfessionalId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("MedicalRecord");
 
                     b.Navigation("Patient");
 
@@ -1291,12 +1212,6 @@ namespace WebApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entites.User.UserEntity", "Professional")
-                        .WithMany()
-                        .HasForeignKey("ProfessionalId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.OwnsOne("Domain.ValuesObjects.ExamPriorityStatus", "Priority", b1 =>
                         {
                             b1.Property<Guid>("PatientExamsEntityId")
@@ -1318,8 +1233,6 @@ namespace WebApi.Migrations
 
                     b.Navigation("Priority")
                         .IsRequired();
-
-                    b.Navigation("Professional");
                 });
 
             modelBuilder.Entity("Domain.Entities.Service.ServiceEntity", b =>

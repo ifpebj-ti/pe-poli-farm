@@ -28,6 +28,16 @@ public class MedicalRecordEntity : BaseEntity
         this.StatusInCaseOfAdmission = statusInCaseOfAdmission;
         this.Anamnese = anamnese;
     }
+
+    public MedicalRecordEntity(Guid id, MedicalRecordStatus status, MedicalRecordStatus statusInCaseOfAdmission, AnamneseEntity? anamnese, Guid serviceId)
+    {
+        this.Id = id;
+        this.Status = status;
+        this.StatusInCaseOfAdmission = statusInCaseOfAdmission;
+        this.Anamnese = anamnese;
+        this.ServiceId = serviceId;
+    }
+
     public void SetHealthAndDisease(HealthAndDiseaseEntity healthAndDisease)
     {
         HealthAndDisease = healthAndDisease;

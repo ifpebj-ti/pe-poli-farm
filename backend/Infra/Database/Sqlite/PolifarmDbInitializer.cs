@@ -86,8 +86,9 @@ public static class PolifarmDbInitializer
 
         if (!context.Patients.Any())
         {
+            // 1. Cria e salva o Paciente
             var paciente = new PatientEntity(
-                id: Guid.NewGuid(),
+                id: new Guid("abf0cecc-a1ca-4ed4-9f8b-7781ae6da6e2"), // Usando um ID fixo para consistência
                 name: "Carlos Andrade",
                 socialName: null,
                 dateBirth: new DateTime(1985, 5, 1),
@@ -101,10 +102,10 @@ public static class PolifarmDbInitializer
                 emergencyContactDetailsEntity: new List<EmergencyContactDetailsEntity>(),
                 serviceEntities: null
             );
-
             context.Patients.Add(paciente);
-            context.SaveChanges();
+            context.SaveChanges(); // Salva o paciente para que ele tenha um ID no banco
 
+            // 2. Cria e salva o Atendimento (Service)
             var servico = new ServiceEntity(
                 id: Guid.NewGuid(),
                 serviceStatus: "EM_ATENDIMENTO",
@@ -112,10 +113,20 @@ public static class PolifarmDbInitializer
                 patientEntity: paciente,
                 medicalRecordEntity: null
             );
-
             context.Services.Add(servico);
-            context.SaveChanges();
+            context.SaveChanges(); // Salva o serviço para que ele tenha um ID no banco
 
+            // 3. Cria o Prontuário (MedicalRecord) já associado ao ID do serviço
+            //    Assumindo que seu construtor foi ajustado para receber o serviceId
+            var registro = new MedicalRecordEntity(
+                id: Guid.NewGuid(),
+                status: new MedicalRecordStatus(MedicalRecordStatusType.MEDICAL_CARE.ToString()),
+                statusInCaseOfAdmission: new MedicalRecordStatus(MedicalRecordStatusType.MEDICAL_CARE.ToString()),
+                anamnese: null,
+                serviceId: servico.Id
+            );
+
+            // 4. Cria a Anamnese associada ao prontuário
             var anamnese = new AnamneseEntity(
                 id: Guid.NewGuid(),
                 bloodPressure: "120/80",
@@ -139,40 +150,21 @@ public static class PolifarmDbInitializer
                 medicalHypothesis: "Gripe comum",
                 previousSurgeries: "Apendicectomia",
                 SignsAndSymptoms: "Febre, dor de cabeça",
-                classificationStatus: new ClassificationStatus(ClassificationStatusType.EMERGENCY.ToString())
+                classificationStatus: new ClassificationStatus(ClassificationStatusType.EMERGENCY.ToString()),
+                registro.Id
             );
 
+            // 5. Cria o Histórico de Saúde associado ao prontuário
 
-            var registro = new MedicalRecordEntity(
-                id: Guid.NewGuid(),
-                status: new MedicalRecordStatus(MedicalRecordStatusType.MEDICAL_CARE.ToString()),
-                statusInCaseOfAdmission: new MedicalRecordStatus(MedicalRecordStatusType.MEDICAL_CARE.ToString()),
-                anamnese: anamnese
-            );
 
+            // 6. Associa tudo em memória antes do SaveChanges final
+            registro.Anamnese = anamnese;
             servico.MedicalRecordEntity = registro;
-            
-            context.MedicalRecords.Add(registro);
-            context.SaveChanges(); // Erro nessa linha
 
-            // Define relação reversa
-            registro.SetHealthAndDisease(new HealthAndDiseaseEntity(
-                familyHAS: true,
-                familyDM: false,
-                familyIAM: false,
-                familyAVC: false,
-                familyAlzheimer: false,
-                familyCA: true,
-                ownHAS: true,
-                ownDM: false,
-                ownIAM: false,
-                ownAVC: false,
-                ownAlzheimer: false,
-                ownCA: false,
-                medicalRecordId: registro.Id
-            ));
+            context.MedicalRecords.Add(registro); // Adiciona o prontuário (e a anamnese/histórico por transitividade)
+            context.Services.Update(servico);     // Marca o serviço para ser atualizado com o ID do prontuário
 
-            context.MedicalRecords.Update(registro);
+            // 7. Salva todas as mudanças restantes em uma única transação
             context.SaveChanges();
         }
     }
