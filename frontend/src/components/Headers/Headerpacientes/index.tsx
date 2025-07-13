@@ -9,26 +9,17 @@ import {
   TextField,
   InputAdornment,
   IconButton,
-  Button,
-  ToggleButtonGroup,
-  ToggleButton
+  Button
 } from '@mui/material';
 
 type PacientesHeaderProps = {
   termoBusca: string;
   onBuscaChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  statusFiltro: string;
-  onStatusChange: (
-    event: React.MouseEvent<HTMLElement>,
-    newStatus: string | null
-  ) => void;
 };
 
 export default function PacientesHeader({
   termoBusca,
-  onBuscaChange,
-  statusFiltro,
-  onStatusChange
+  onBuscaChange
 }: PacientesHeaderProps) {
   return (
     <Box
@@ -63,19 +54,6 @@ export default function PacientesHeader({
           gap: 2
         }}
       >
-        {/* -> NOVO: Botões de filtro por status <- */}
-        <ToggleButtonGroup
-          color="primary"
-          value={statusFiltro}
-          exclusive
-          onChange={onStatusChange}
-          aria-label="Filtro de status"
-        >
-          <ToggleButton value="NO_SERVICE">Aguardando Atendimento</ToggleButton>
-          <ToggleButton value="IN_SERVICE">Em Atendimento</ToggleButton>
-          <ToggleButton value="DISCHARGED">Alta</ToggleButton>
-        </ToggleButtonGroup>
-
         <TextField
           placeholder="Pesquise pacientes"
           size="small"

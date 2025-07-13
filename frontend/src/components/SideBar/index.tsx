@@ -1,8 +1,11 @@
 'use client';
 
+import { signOut, useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import CloseIcon from '@mui/icons-material/Close';
+import GroupIcon from '@mui/icons-material/Group';
 import HomeIcon from '@mui/icons-material/Home';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -28,11 +31,22 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ open, onClose }: SidebarProps) {
+  const router = useRouter();
+  const { data: session, status } = useSession();
+
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const handleListItemClick = (index: number) => {
+  const handleNavigation = (path: string, index: number) => {
     setSelectedIndex(index);
+    router.push(path);
+    onClose(); // Fecha o sidebar após a navegação
   };
+
+  const handleLogout = () => {
+    signOut({ callbackUrl: '/' }); // Faz logout e redireciona para a página inicial
+  };
+
+  const user = session?.user;
 
   return (
     <Drawer anchor="left" open={open} onClose={onClose}>
@@ -71,14 +85,14 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
                 component="div"
                 sx={{ flexGrow: 1, fontWeight: 'bold' }}
               >
-                Nome do Usuário
+                {user?.unique_name || 'Usuário'}
               </Typography>
               <Typography
                 variant="subtitle2"
                 component="div"
                 sx={{ flexGrow: 1 }}
               >
-                Cargo do Usuário
+                {user?.position || 'Usuário'}
               </Typography>
             </Stack>
             <IconButton
@@ -99,7 +113,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
             <ListItem disablePadding>
               <ListItemButton
                 selected={selectedIndex === 0}
-                onClick={() => handleListItemClick(0)}
+                onClick={() => handleNavigation('/Inicio', 0)}
                 sx={{
                   '&.Mui-selected': {
                     backgroundColor: 'primary.main',
@@ -123,7 +137,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
             <ListItem disablePadding>
               <ListItemButton
                 selected={selectedIndex === 1}
-                onClick={() => handleListItemClick(1)}
+                onClick={() => handleNavigation('/MeusDados', 0)}
                 sx={{
                   '&.Mui-selected': {
                     backgroundColor: 'primary.main',
@@ -143,6 +157,30 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
                 </ListItemIcon>
               </ListItemButton>
             </ListItem>
+
+            {user?.role === 'ADMIN' && (
+              <ListItem disablePadding>
+                <ListItemButton
+                  selected={selectedIndex === 1}
+                  onClick={() => handleNavigation('/Profissionais', 1)}
+                  sx={{
+                    '&.Mui-selected': {
+                      backgroundColor: 'primary.main',
+                      color: 'white',
+                      '& *': { color: 'white' }
+                    }
+                  }}
+                >
+                  <ListItemIcon>
+                    <GroupIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Usuários do Sistema" />
+                  <ListItemIcon>
+                    <KeyboardArrowRightIcon sx={{ ml: 3 }} />
+                  </ListItemIcon>
+                </ListItemButton>
+              </ListItem>
+            )}
           </List>
         </Box>
 
@@ -154,13 +192,16 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
               sx={{ width: 64, height: 64 }}
             />
             <Typography fontWeight="bold" textAlign="center">
-              João Antônio da Silva
+              {user?.unique_name || 'Usuário'}
             </Typography>
             <Typography variant="body2" color="green" fontWeight="bold">
-              Acesso Público
+              {status === 'authenticated' ? 'Conectado' : 'Desconectado'}
             </Typography>
 
-            <ListItemButton sx={{ mt: 1, color: '#1351B4' }}>
+            <ListItemButton
+              sx={{ mt: 1, color: '#1351B4' }}
+              onClick={handleLogout}
+            >
               <ListItemIcon>
                 <LogoutIcon sx={{ color: '#1351B4' }} />
               </ListItemIcon>

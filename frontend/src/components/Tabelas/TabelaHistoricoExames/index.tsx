@@ -1,4 +1,9 @@
 'use client';
+
+import { useState } from 'react';
+
+import PopupDetalhes from '@/src/components/PopUp/PopUpDetalhes';
+
 import {
   Box,
   Button,
@@ -15,6 +20,7 @@ import {
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
+// Dados simulados
 const exames = Array.from({ length: 7 }, () => ({
   nome: `Nome Paciente`,
   profissional: 'Dra. Ana Souza',
@@ -23,6 +29,19 @@ const exames = Array.from({ length: 7 }, () => ({
 }));
 
 export default function TabelaHistoricoExames() {
+  const [open, setOpen] = useState(false);
+  const [, setExameSelecionado] = useState<unknown>(null);
+
+  const handleOpen = (exame: unknown) => {
+    setExameSelecionado(exame);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setExameSelecionado(null);
+  };
+
   return (
     <Box sx={{ px: 4, pt: 3, display: 'flex', justifyContent: 'center' }}>
       <Box sx={{ width: '100%', maxWidth: 1100 }}>
@@ -55,9 +74,7 @@ export default function TabelaHistoricoExames() {
                     {format(
                       new Date(exame.data.replace(/-/g, '/')),
                       'dd/MM/yyyy',
-                      {
-                        locale: ptBR
-                      }
+                      { locale: ptBR }
                     )}
                   </TableCell>
                   <TableCell sx={{ paddingY: 1 }}>{exame.tipoExame}</TableCell>
@@ -73,10 +90,9 @@ export default function TabelaHistoricoExames() {
                         minWidth: 120,
                         height: 30,
                         marginRight: '18px',
-                        '&:hover': {
-                          backgroundColor: '#0f479e'
-                        }
+                        '&:hover': { backgroundColor: '#0f479e' }
                       }}
+                      onClick={() => handleOpen(exame)}
                     >
                       VER MAIS
                     </Button>
@@ -90,9 +106,7 @@ export default function TabelaHistoricoExames() {
                         fontWeight: 500,
                         minWidth: 120,
                         height: 30,
-                        '&:hover': {
-                          backgroundColor: '#086506'
-                        }
+                        '&:hover': { backgroundColor: '#086506' }
                       }}
                     >
                       BAIXAR PDF
@@ -104,11 +118,13 @@ export default function TabelaHistoricoExames() {
           </Table>
         </TableContainer>
 
-        {/* Paginação agora dentro da largura da tabela */}
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
           <Pagination count={5} page={1} color="primary" />
         </Box>
       </Box>
+
+      {/* 🔥 Pop-up de Detalhes funcionando corretamente */}
+      <PopupDetalhes open={open} handleClose={handleClose} />
     </Box>
   );
 }
