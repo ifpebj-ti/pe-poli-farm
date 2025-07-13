@@ -1,5 +1,7 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import {
@@ -20,6 +22,10 @@ const agendamentos = [
 ];
 
 export default function AgendamentoCard() {
+  const router = useRouter();
+  const handleConsultarAgendaClick = () => {
+    router.push('/TelaAgendamento');
+  };
   return (
     <Card sx={{ maxWidth: '100%', boxShadow: 3 }}>
       <CardContent>
@@ -55,6 +61,7 @@ export default function AgendamentoCard() {
 
         <Button
           variant="contained"
+          onClick={handleConsultarAgendaClick}
           sx={{
             mt: 2,
             textTransform: 'none',

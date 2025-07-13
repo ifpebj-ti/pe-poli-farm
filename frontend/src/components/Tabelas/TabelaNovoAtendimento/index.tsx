@@ -1,4 +1,6 @@
 'use client';
+import { useRouter } from 'next/navigation';
+
 import AddIcon from '@mui/icons-material/Add';
 import {
   Box,
@@ -22,6 +24,16 @@ const pacientes = Array.from({ length: 7 }, () => ({
 }));
 
 export default function TabelaNovoAtendimento() {
+  const router = useRouter(); // Inicialize useRouter
+
+  const handleNovoPacienteClick = () => {
+    router.push('/NovoPaciente'); // Navega para a página /NovoPaciente
+  };
+
+  const handleIniciarAtendimentoClick = (pacienteNome: string) => {
+    router.push(`/TelaConsulta?paciente=${encodeURIComponent(pacienteNome)}`);
+  };
+
   return (
     <Box sx={{ px: 4, pt: 3, display: 'flex', justifyContent: 'center' }}>
       <Box sx={{ width: '100%', maxWidth: 1100 }}>
@@ -52,6 +64,9 @@ export default function TabelaNovoAtendimento() {
                     <Button
                       variant="contained"
                       size="small"
+                      onClick={() =>
+                        handleIniciarAtendimentoClick(paciente.nome)
+                      }
                       sx={{
                         backgroundColor: '#1351B4',
                         borderRadius: '8px',
@@ -64,7 +79,7 @@ export default function TabelaNovoAtendimento() {
                         }
                       }}
                     >
-                      Ver prontuário
+                      Iniciar Atendimento
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -81,6 +96,7 @@ export default function TabelaNovoAtendimento() {
           <Button
             variant="outlined"
             startIcon={<AddIcon />}
+            onClick={handleNovoPacienteClick}
             sx={{
               borderColor: '#1351B4',
               color: '#1351B4',

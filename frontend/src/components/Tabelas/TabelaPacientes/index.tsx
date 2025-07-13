@@ -1,4 +1,6 @@
 'use client';
+import { useRouter } from 'next/navigation';
+
 import { Patient } from '@/src/lib/pacientes';
 import { calcularIdade, formatarHorario } from '@/src/lib/utils';
 import {
@@ -28,6 +30,14 @@ export default function TabelaPacientes({
   totalPages,
   onPageChange
 }: TabelaPacientesProps) {
+  const router = useRouter(); // Inicialize useRouter
+
+  // Função para lidar com o clique no botão "Ver prontuário"
+  const handleVerProntuarioClick = (patientId: string) => {
+    // Navega para a TelaProntuario, passando o ID do paciente na URL
+    router.push(`/TelaProntuario/${patientId}`);
+  };
+
   if (pacientes.length === 0) {
     return (
       <Paper elevation={1} sx={{ mx: 4, mt: 3, p: 4, textAlign: 'center' }}>
@@ -88,6 +98,8 @@ export default function TabelaPacientes({
                       <Button
                         variant="contained"
                         size="small"
+                        // Chama a função passando o ID do paciente
+                        onClick={() => handleVerProntuarioClick(paciente.id)}
                         sx={{
                           backgroundColor: '#1351B4',
                           borderRadius: '8px',

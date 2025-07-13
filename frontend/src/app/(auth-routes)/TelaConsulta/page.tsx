@@ -1,4 +1,5 @@
 'use client';
+import { useRouter } from 'next/navigation';
 
 import BreadCrumb from '@/src/components/BreadCrumb';
 import TelaConsulta from '@/src/components/Consulta';
@@ -7,6 +8,7 @@ import NavBar from '@/src/components/NavBar';
 import { Box, Button } from '@mui/material';
 
 export default function ConsultaCompletaPage() {
+  const router = useRouter();
   const linkList = [
     {
       label: 'Home',
@@ -14,7 +16,7 @@ export default function ConsultaCompletaPage() {
     },
     {
       label: 'Novo Atendimento',
-      href: '#'
+      href: '/NovoAtendimento'
     }
   ];
 
@@ -24,6 +26,19 @@ export default function ConsultaCompletaPage() {
     fontWeight: 500,
     px: 3,
     minWidth: 130
+  };
+  const handleCancelarClick = () => {
+    router.push('/NovoAtendimento'); // Navega para a página NovoAtendimento
+  };
+
+  const handleProcedimentosClick = () => {
+    router.push('/Procedimentos'); // Navega para a página TelaProcedimentos
+  };
+
+  const handleImprimirClick = () => {
+    // Lógica para imprimir, talvez usando window.print() ou gerando um PDF
+    window.print(); // Exemplo simples de impressão
+    console.log('Botão IMPRIMIR clicado');
   };
 
   return (
@@ -51,6 +66,7 @@ export default function ConsultaCompletaPage() {
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Button
               variant="contained"
+              onClick={handleImprimirClick}
               sx={{
                 ...buttonStyles,
                 backgroundColor: '#1351B4',
@@ -62,6 +78,7 @@ export default function ConsultaCompletaPage() {
             </Button>
             <Button
               variant="contained"
+              onClick={handleCancelarClick}
               color="error"
               sx={{ ...buttonStyles, textTransform: 'none' }}
             >
@@ -75,6 +92,7 @@ export default function ConsultaCompletaPage() {
                 '&:hover': { backgroundColor: '#086506' },
                 textTransform: 'none'
               }}
+              onClick={handleProcedimentosClick}
             >
               PROCEDIMENTOS
             </Button>

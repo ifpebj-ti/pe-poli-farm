@@ -1,3 +1,7 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
+
 import BreadCrumb from '@/src/components/BreadCrumb';
 import CardResumoClinico from '@/src/components/Cards/CardResumoClinico';
 import RelatorioPacienteHeader from '@/src/components/Headers/HeaderRelatorioPaciente';
@@ -7,6 +11,7 @@ import TabelaRelatorioPaciente from '@/src/components/Tabelas/TabelaRelatorioPac
 import { Box, Button, Typography } from '@mui/material';
 
 export default function RelatorioPaciente() {
+  const router = useRouter();
   const linkList = [
     {
       label: 'Pacientes',
@@ -17,6 +22,10 @@ export default function RelatorioPaciente() {
       href: '#'
     }
   ];
+
+  const handleVoltarClick = () => {
+    router.push('/Relatorio');
+  };
 
   return (
     <Box
@@ -37,6 +46,7 @@ export default function RelatorioPaciente() {
       <TabelaRelatorioPaciente />
       <Button
         variant="outlined"
+        onClick={handleVoltarClick}
         sx={{
           width: 'fit-content',
           alignSelf: 'flex-end',

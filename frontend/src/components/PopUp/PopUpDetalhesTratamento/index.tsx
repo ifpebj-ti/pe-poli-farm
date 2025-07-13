@@ -34,6 +34,12 @@ export default function PopupDetalhesTratamento({
 }: PopupDetalhesTratamentoProps) {
   const [openEditar, setOpenEditar] = useState(false);
 
+  const handlePrint = () => {
+    // window.print() abre a caixa de diálogo de impressão do navegador
+    window.print();
+    console.log('Conteúdo do Pop-up de Detalhes do Tratamento impresso!');
+  };
+
   return (
     <>
       <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
@@ -150,6 +156,7 @@ export default function PopupDetalhesTratamento({
           <Button
             variant="contained"
             color="primary"
+            onClick={handlePrint}
             sx={{
               textTransform: 'none',
               borderRadius: '20px',

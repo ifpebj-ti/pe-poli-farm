@@ -1,4 +1,6 @@
 'use client';
+import { useRouter } from 'next/navigation'; // Importe useRouter
+
 import {
   Box,
   Button,
@@ -23,6 +25,12 @@ const relatorios = Array.from({ length: 7 }, () => ({
 }));
 
 export default function TabelaRelatorio() {
+  const router = useRouter();
+  const handleGerarRelatorioClick = () => {
+    // Navega para a página RelatorioPaciente SEM passar um ID específico
+    router.push('/RelatorioPaciente');
+  };
+
   return (
     <Box sx={{ px: 4, pt: 3, display: 'flex', justifyContent: 'center' }}>
       <Box sx={{ width: '100%', maxWidth: 1100 }}>
@@ -65,6 +73,7 @@ export default function TabelaRelatorio() {
                     <Button
                       variant="contained"
                       size="small"
+                      onClick={handleGerarRelatorioClick}
                       sx={{
                         backgroundColor: '#1351B4',
                         borderRadius: '8px',

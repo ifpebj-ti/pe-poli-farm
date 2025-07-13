@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation'; // Importe useRouter
 import { useState } from 'react';
 
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -59,6 +60,8 @@ export default function DadosDoPacientePageContent() {
     Medicacao03: false
   });
 
+  const router = useRouter();
+
   // Helper component for expandable sections
   type ExpandableSectionProps = {
     title: string;
@@ -104,6 +107,16 @@ export default function DadosDoPacientePageContent() {
     </Paper>
   );
 
+  const handleVoltarClick = () => {
+    router.push('/Pacientes'); // Navega para a página /Pacientes
+  };
+
+  const handleImprimirClick = () => {
+    // A função window.print() abre a caixa de diálogo de impressão do navegador
+    window.print();
+    console.log('Botão IMPRIMIR clicado!');
+  };
+
   return (
     <Box sx={{ p: 4, bgcolor: 'white', minHeight: '100vh' }}>
       <Box
@@ -139,6 +152,7 @@ export default function DadosDoPacientePageContent() {
           </TextField>
           <Button
             variant="outlined"
+            onClick={handleVoltarClick}
             sx={{
               borderColor: '#1351B4',
               color: '#1351B4',
@@ -153,6 +167,7 @@ export default function DadosDoPacientePageContent() {
           </Button>
           <Button
             variant="contained"
+            onClick={handleImprimirClick}
             sx={{
               bgcolor: '#1351B4',
               textTransform: 'none',

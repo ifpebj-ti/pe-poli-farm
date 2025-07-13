@@ -40,6 +40,12 @@ export default function PopupAtestado({
     setConfirmOpen(true);
   };
 
+  const handlePrintClick = () => {
+    // window.print() abre a caixa de diálogo de impressão do navegador
+    window.print();
+    console.log('Atestado impresso!');
+  };
+
   // NOVO: Estilo base para todos os botões para evitar repetição
   const baseButtonStyles = {
     borderRadius: '20px', // Deixa os botões em formato de pílula
@@ -157,6 +163,7 @@ export default function PopupAtestado({
           {/* BOTÃO IMPRIMIR ATUALIZADO */}
           <Button
             variant="contained"
+            onClick={handlePrintClick}
             sx={{
               ...baseButtonStyles, // Usa o estilo base
               backgroundColor: '#1976D2', // Cor azul
