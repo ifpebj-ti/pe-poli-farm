@@ -482,3 +482,7 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Database files
+/polifarm/polifarm.db-shm
+/polifarm/polifarm.db-wal
