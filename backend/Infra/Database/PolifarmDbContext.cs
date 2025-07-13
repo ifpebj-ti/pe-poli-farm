@@ -50,6 +50,7 @@ namespace Infra.Database
             modelBuilder.Owned<CPF>();
             modelBuilder.Owned<Email>();
             modelBuilder.Owned<ClassificationStatus>();
+            modelBuilder.Owned<ExamPriorityStatus>();
             modelBuilder.Owned<MedicalRecordStatus>();
             modelBuilder.Owned<PatientStatus>();
             modelBuilder.Owned<Permissions>();
