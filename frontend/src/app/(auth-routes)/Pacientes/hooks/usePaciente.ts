@@ -25,11 +25,14 @@ export function usePacientes(filter: string, status: string, page: number) {
       setError(null);
 
       // Prepara os parâmetros da API. Status é sempre incluído.
-      const params = {
-        status: status,
-        pageNumber: page, // Usa a página recebida como argumento
-        pageSize: PAGE_SIZE,
-        ...(filter && { filter: filter }) // Adiciona o filtro apenas se ele existir
+      const params: {
+        filter?: string;
+        status?: string; // status agora é opcional
+        pageNumber: number;
+        pageSize: number;
+      } = {
+        pageNumber: page,
+        pageSize: PAGE_SIZE
       };
 
       // Adiciona o 'filter' apenas se o usuário tiver digitado algo.
@@ -37,12 +40,25 @@ export function usePacientes(filter: string, status: string, page: number) {
         params.filter = filter;
       }
 
+      if (status && status !== 'ALL') {
+        params.status = status;
+      }
+
       try {
-        const response = await api.get<PatientApiResponse>('/Patient/filter', {
-          params
-        });
-        setPacientes(response.data.data);
-        setTotalPages(Math.ceil(response.data.totalRecords / PAGE_SIZE));
+        if (status === 'ALL') {
+          const response = await api.get<PatientApiResponse>('/Patient/getAll');
+          setPacientes(response.data.data);
+          setTotalPages(Math.ceil(response.data.totalRecords / PAGE_SIZE));
+        } else {
+          const response = await api.get<PatientApiResponse>(
+            '/Patient/filter',
+            {
+              params
+            }
+          );
+          setPacientes(response.data.data);
+          setTotalPages(Math.ceil(response.data.totalRecords / PAGE_SIZE));
+        }
       } catch (err) {
         console.error(`Erro ao buscar pacientes com status ${status}:`, err);
         if (isAxiosError(err)) {

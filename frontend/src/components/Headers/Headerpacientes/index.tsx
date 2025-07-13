@@ -71,9 +71,9 @@ export default function PacientesHeader({
           onChange={onStatusChange}
           aria-label="Filtro de status"
         >
-          <ToggleButton value="NO_SERVICE">Aguardando Atendimento</ToggleButton>
+          <ToggleButton value="NO_SERVICE">Não Em Atendimento</ToggleButton>
           <ToggleButton value="IN_SERVICE">Em Atendimento</ToggleButton>
-          <ToggleButton value="DISCHARGED">Alta</ToggleButton>
+          <ToggleButton value="ALL">Todos</ToggleButton>
         </ToggleButtonGroup>
 
         <TextField

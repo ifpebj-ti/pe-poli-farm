@@ -21,7 +21,7 @@ export default function Pacientes() {
 
   // --- ESTADOS DA UI ---
   const [termoBusca, setTermoBusca] = useState<string>('');
-  const [statusFiltro, setStatusFiltro] = useState<string>('NO_SERVICE');
+  const [statusFiltro, setStatusFiltro] = useState<string>('ALL');
   // -> NOVO: Estado para controlar a página atual
   const [page, setPage] = useState(1);
 
@@ -51,6 +51,9 @@ export default function Pacientes() {
   ) => {
     if (newStatus !== null) {
       setStatusFiltro(newStatus);
+    }
+    if (newStatus === null) {
+      setStatusFiltro(''); // Reset para o status padrão
     }
   };
 
