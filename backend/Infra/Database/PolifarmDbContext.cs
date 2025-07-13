@@ -1,6 +1,7 @@
 ﻿using Domain.Entites;
 using Domain.Entites.AccessCode;
 using Domain.Entites.Appointment;
+using Domain.Entites.Conduct;
 using Domain.Entites.MedicalCertificate;
 using Domain.Entites.Profile;
 using Domain.Entites.Referral;
@@ -39,6 +40,8 @@ namespace Infra.Database
         public DbSet<ReferralEntity> Referrals { get; private set; }
         public DbSet<MedicalRecordEntity> MedicalRecords { get; private set; }
         public DbSet<AnamneseEntity> Anamnesis { get; private set; }
+        public DbSet<ConductEntity> Conducts { get; private set; }
+
 
         public PolifarmDbContext(DbContextOptions<PolifarmDbContext> options) : base(options)
         {
