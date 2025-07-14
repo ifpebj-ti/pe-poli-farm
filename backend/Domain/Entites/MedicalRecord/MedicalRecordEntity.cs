@@ -5,6 +5,7 @@ using Domain.Entities.PatientExams;
 using Domain.Entities.Service;
 using Domain.ValuesObjects;
 using prontuario.Domain.Entities.PatientMedication;
+using System.Text.Json.Serialization;
 
 namespace Domain.Entities.MedicalRecord;
 
@@ -17,8 +18,9 @@ public class MedicalRecordEntity : BaseEntity
     public ICollection<PatientPrescriptionEntity> PatientMedications { get; set; } = new List<PatientPrescriptionEntity>();
     public HealthAndDiseaseEntity HealthAndDisease { get; private set; } = null!;
     public Guid ServiceId { get; private set; }
+    [JsonIgnore]
     public ServiceEntity Service { get; private set; } = null!;
-    
+
     public MedicalRecordEntity() { }
 
     public MedicalRecordEntity(Guid id, MedicalRecordStatus status, MedicalRecordStatus statusInCaseOfAdmission, AnamneseEntity? anamnese)
