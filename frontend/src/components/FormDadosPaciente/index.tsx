@@ -1,10 +1,12 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 
 import PopupPacienteAdicionado from '@/src/components/PopUp/PopUpAddPaciente';
 
+import { PatientFormData } from '@/src/lib/pacientes';
+import { api } from '@/src/services/api';
 import AddIcon from '@mui/icons-material/Add';
 import {
   Box,
@@ -12,6 +14,7 @@ import {
   Button,
   Container,
   Link,
+  MenuItem,
   TextField,
   Typography
 } from '@mui/material';
@@ -21,8 +24,89 @@ export default function FormDadosPaciente() {
   const [openPopup, setOpenPopup] = useState(false);
   const router = useRouter();
 
+  const initialState: PatientFormData = {
+    name: '',
+    socialName: '',
+    birthDate: '',
+    sus: '',
+    cpf: '',
+    rg: '',
+    phone: '',
+    motherName: '',
+    address: {
+      cep: '',
+      street: '',
+      city: '',
+      number: 0,
+      neighborhood: ''
+    },
+    emergencyContactDetails: [{ name: '', phone: '', relationship: '' }] // Começa com um contato
+  };
+  const [formData, setFormData] = useState<PatientFormData>(initialState);
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleAddressChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      address: { ...prev.address, [name]: value }
+    }));
+  };
+
+  const handleEmergencyContactChange = (
+    index: number,
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    const updatedContacts = [...formData.emergencyContactDetails];
+    updatedContacts[index] = { ...updatedContacts[index], [name]: value };
+    setFormData((prev) => ({
+      ...prev,
+      emergencyContactDetails: updatedContacts
+    }));
+  };
+
+  const addEmergencyContact = () => {
+    setFormData((prev) => ({
+      ...prev,
+      emergencyContactDetails: [
+        ...prev.emergencyContactDetails,
+        { name: '', phone: '', relationship: '' }
+      ]
+    }));
+  };
+
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault(); // Previne o recarregamento da página
+
+    // Converte o número do endereço para inteiro antes de enviar
+    const payload = {
+      ...formData,
+      address: {
+        ...formData.address,
+        number: formData.address.number || 0
+      }
+    };
+
+    try {
+      console.log('Enviando dados do paciente:', payload);
+      await api.post('/Patient', payload);
+      setOpenPopup(true); // Abre o popup de sucesso
+      return payload; // Retorna os dados do paciente
+    } catch (error) {
+      console.error('Erro ao salvar paciente:', error);
+      alert('Falha ao salvar paciente. Verifique os dados e tente novamente.');
+      return null;
+    }
+  };
+
   const handleOpenPopup = () => {
     setOpenPopup(true);
+    handleAvancarClick(formData.cpf); // Navega para a página TelaConsulta com o CPF do paciente
   };
 
   const handleClosePopup = () => {
@@ -33,13 +117,18 @@ export default function FormDadosPaciente() {
     router.push('/NovoAtendimento'); // Navega para a página NovoAtendimento
   };
 
-  const handleAvancarClick = () => {
-    router.push('/TelaConsulta'); // Navega para a página TelaConsulta
+  const handleAvancarClick = (patientCPF: string) => {
+    router.push(`/TelaConsulta/${patientCPF}`); // Navega para a página TelaConsulta
   };
   return (
     <>
-      <Container maxWidth="lg" sx={{ mt: 7, mb: 4 }}>
-        <Box component="form" noValidate autoComplete="off">
+      <Container maxWidth="lg" sx={{ mt: 7 }}>
+        <Box
+          component="form"
+          noValidate
+          autoComplete="off"
+          onSubmit={handleSubmit}
+        >
           {/* ✅ TOPO AJUSTADO */}
           <Box
             sx={{
@@ -82,50 +171,101 @@ export default function FormDadosPaciente() {
                 color="primary"
                 sx={{ borderRadius: 10 }}
                 onClick={handleOpenPopup}
+                type="submit"
               >
                 Salvar
               </Button>
-              <Button
+              {/* <Button
                 variant="contained"
                 color="success"
                 sx={{ borderRadius: 10 }}
-                onClick={handleAvancarClick}
+                onClick={() => {
+                  handleAvancarClick(formData.cpf);
+                  handleSubmit(SubmitEvent);
+                }}
               >
                 Avançar
-              </Button>
+              </Button> */}
             </Box>
           </Box>
 
           {/* Dados Pessoais */}
           <Grid container spacing={3}>
             <Grid size={{ xs: 12, md: 6 }}>
-              <TextField label="Nome Completo" fullWidth required />
+              <TextField
+                label="Nome Completo"
+                name="name"
+                fullWidth
+                required
+                value={formData.name}
+                onChange={handleChange}
+              />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
-              <TextField label="Nome Social" fullWidth />
+              <TextField
+                label="Nome Social"
+                name="socialName"
+                fullWidth
+                value={formData.socialName}
+                onChange={handleChange}
+              />
             </Grid>
             <Grid size={{ xs: 12, md: 3 }}>
-              <TextField label="CPF" fullWidth required />
+              <TextField
+                name="cpf"
+                label="CPF"
+                fullWidth
+                required
+                value={formData.cpf}
+                onChange={handleChange}
+              />
             </Grid>
             <Grid size={{ xs: 12, md: 3 }}>
-              <TextField label="SUS" fullWidth />
+              <TextField
+                label="SUS"
+                name="sus"
+                fullWidth
+                value={formData.sus}
+                onChange={handleChange}
+              />
             </Grid>
             <Grid size={{ xs: 12, md: 3 }}>
-              <TextField label="RG" fullWidth />
+              <TextField
+                label="RG"
+                name="rg"
+                fullWidth
+                value={formData.rg}
+                onChange={handleChange}
+              />
             </Grid>
             <Grid size={{ xs: 12, md: 3 }}>
               <TextField
                 label="Data de nascimento"
+                name="birthDate"
                 type="date"
                 InputLabelProps={{ shrink: true }}
                 fullWidth
+                value={formData.birthDate}
+                onChange={handleChange}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
-              <TextField label="Telefone" fullWidth />
+              <TextField
+                label="Telefone"
+                name="phone"
+                fullWidth
+                value={formData.phone}
+                onChange={handleChange}
+              />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
-              <TextField label="Nome da mãe" fullWidth />
+              <TextField
+                label="Nome da mãe"
+                name="motherName"
+                fullWidth
+                value={formData.motherName}
+                onChange={handleChange}
+              />
             </Grid>
           </Grid>
 
@@ -135,19 +275,49 @@ export default function FormDadosPaciente() {
           </Typography>
           <Grid container spacing={3}>
             <Grid size={{ xs: 12, md: 2 }}>
-              <TextField label="CEP" fullWidth />
+              <TextField
+                label="CEP"
+                name="cep"
+                fullWidth
+                value={formData.address.cep}
+                onChange={handleAddressChange}
+              />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
-              <TextField label="Cidade" fullWidth />
+              <TextField
+                label="Cidade"
+                name="city"
+                fullWidth
+                value={formData.address.city}
+                onChange={handleAddressChange}
+              />
             </Grid>
             <Grid size={{ xs: 12, md: 3 }}>
-              <TextField label="Bairro" fullWidth />
+              <TextField
+                label="Bairro"
+                name="neighborhood"
+                fullWidth
+                value={formData.address.neighborhood}
+                onChange={handleAddressChange}
+              />
             </Grid>
             <Grid size={{ xs: 12, md: 2 }}>
-              <TextField label="Rua" fullWidth />
+              <TextField
+                label="Rua"
+                name="street"
+                fullWidth
+                value={formData.address.street}
+                onChange={handleAddressChange}
+              />
             </Grid>
             <Grid size={{ xs: 12, md: 1 }}>
-              <TextField label="Nº" fullWidth />
+              <TextField
+                label="Nº"
+                fullWidth
+                name="number"
+                value={formData.address.number}
+                onChange={handleAddressChange}
+              />
             </Grid>
           </Grid>
 
@@ -155,24 +325,55 @@ export default function FormDadosPaciente() {
           <Typography variant="h5" sx={{ mt: 5, mb: 3, color: 'black' }}>
             Contato de Emergência
           </Typography>
-          <Grid container spacing={3}>
-            <Grid size={{ xs: 12, md: 5 }}>
-              <TextField label="Nome" fullWidth />
+          {formData.emergencyContactDetails.map((contact, index) => (
+            <Grid container spacing={3} key={index} sx={{ mb: 2 }}>
+              <Grid size={{ xs: 12, md: 5 }}>
+                <TextField
+                  label="Nome"
+                  name="name"
+                  fullWidth
+                  value={contact.name}
+                  onChange={(e) => handleEmergencyContactChange(index, e)}
+                />
+              </Grid>
+              <Grid size={{ xs: 12, md: 4 }}>
+                <TextField
+                  select // <-- A propriedade 'select' transforma o campo em um dropdown
+                  name="relationship"
+                  label="Parentesco"
+                  value={contact.relationship}
+                  onChange={(e) => handleEmergencyContactChange(index, e)}
+                  fullWidth
+                >
+                  {/* Cada opção é um MenuItem. O 'value' é o que vai para a API. */}
+                  {/* O texto dentro do MenuItem é o que o usuário vê. */}
+                  <MenuItem value="FATHER">Pai</MenuItem>
+                  <MenuItem value="MOTHER">Mãe</MenuItem>
+                  <MenuItem value="SON">Filho(a)</MenuItem>
+                  <MenuItem value="SIBLING">Irmão(ã)</MenuItem>
+                  <MenuItem value="SPOUSE">Cônjuge</MenuItem>
+                  <MenuItem value="OUTHER">Outro</MenuItem>
+                </TextField>
+              </Grid>
+              <Grid size={{ xs: 12, md: 3 }}>
+                <TextField
+                  label="Telefone"
+                  name="phone"
+                  fullWidth
+                  value={contact.phone}
+                  onChange={(e) => handleEmergencyContactChange(index, e)}
+                />
+              </Grid>
             </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-              <TextField label="Parentesco" fullWidth />
-            </Grid>
-            <Grid size={{ xs: 12, md: 3 }}>
-              <TextField label="Telefone" fullWidth />
-            </Grid>
-          </Grid>
+          ))}
 
           {/* Botão inferior */}
-          <Box sx={{ mt: 4 }}>
+          <Box sx={{ mt: 4, pb: 4 }}>
             <Button
               variant="contained"
               startIcon={<AddIcon />}
               sx={{ borderRadius: 10 }}
+              onClick={addEmergencyContact}
             >
               Novo Contato
             </Button>
