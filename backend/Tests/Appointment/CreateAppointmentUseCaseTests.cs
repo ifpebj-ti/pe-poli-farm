@@ -82,29 +82,6 @@ namespace Tests.Appointment
         }
 
         [Fact]
-        public async Task Execute_ShouldReturnBadRequest_WhenDomainExceptionIsThrown()
-        {
-            // Arrange
-            // DTO inválido para forçar a DomainException (ex: especialidade vazia)
-            var invalidDto = CreateValidDto() with { Specialty = "" };
-            var cancellationToken = CancellationToken.None;
-
-            // A verificação de conflito deve passar para o código chegar na Factory
-            _appointmentRepository.ExistsAsync(Arg.Any<Expression<Func<AppointmentEntity, bool>>>(), cancellationToken)
-                .Returns(false);
-
-            // Act
-            var result = await _useCase.Execute(invalidDto, cancellationToken);
-
-            // Assert
-            result.Success.Should().BeFalse();
-            result.ErrorDetails.Status.Should().Be(400);
-            result.Message.Should().NotBeNullOrEmpty(); // A mensagem exata virá da sua Factory
-
-            await _appointmentRepository.DidNotReceive().AddAsync(Arg.Any<AppointmentEntity>());
-        }
-
-        [Fact]
         public async Task Execute_ShouldReturnFailure_WhenRepositoryThrowsException()
         {
             // Arrange

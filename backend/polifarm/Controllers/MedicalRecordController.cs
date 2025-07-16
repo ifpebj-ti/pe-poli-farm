@@ -23,6 +23,8 @@ using WebApi.Validators.MedicalConsultation;
 using Application.Usecases.Conduct;
 using Domain.Dtos.Conduct;
 using Domain.Entites.Conduct;
+using Domain.Entities.MedicalRecord;
+using WebApi.ResponseModels.MedicalRecord;
 
 namespace WebApi.Controllers
 {
@@ -48,7 +50,7 @@ namespace WebApi.Controllers
             var result = await addPrescriptionUseCase.Execute(request, HttpContext.RequestAborted);
             if (result.IsFailure)
                 return StatusCode((int)result.ErrorDetails!.Status!, new MessageErrorResponseModel(result.Data!));
-            
+
             return Ok(new MessageSuccessResponseModel(result.Data!));
         }
 
@@ -75,7 +77,7 @@ namespace WebApi.Controllers
             var result = await createMedicalCertificateUseCase.Execute(request);
             if (result.IsFailure)
                 return StatusCode((int)result.ErrorDetails!.Status!, result.ErrorDetails);
-            
+
             return Ok(MedicalCertificateResponseModels.ToResponse(result.Data!));
         }
 
@@ -95,7 +97,7 @@ namespace WebApi.Controllers
             var result = await getMedicalCertificateUseCase.Execute(filters, cancellationToken);
             if (result.IsFailure)
                 return StatusCode((int)result.ErrorDetails!.Status!, result.ErrorDetails);
-            
+
             return Ok(MedicalCertificateResponseModels.ToResponseList(result.Data!));
         }
 
@@ -209,6 +211,29 @@ namespace WebApi.Controllers
                 return StatusCode((int)result.ErrorDetails!.Status, result);
 
             return StatusCode(StatusCodes.Status201Created, new { message = result.Data });
+        }
+
+        /// <summary>
+        /// Lista todos os prontuários médicos de um paciente pelo CPF.
+        /// <returns>Prontuarios</returns>
+        /// <response code="201">Retorna os prontuarios com sucesso.</response>
+        /// <response code="400">Dados de entrada inválidos.</response>
+        /// <response code="404">Paciente não encontrado.</response>    
+        [HttpGet("MedicalRecordsByPatientCpf/{cpf}")]
+        [ProducesResponseType(typeof(List<MedicalRecordEntity>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResultPattern<string>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResultPattern<string>), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> GetMedicalRecordsByPatientCpf(string cpf, [FromServices] ReturnAllMedicalRecordsByPatientCpfUseCase useCase)
+        {
+            if (string.IsNullOrWhiteSpace(cpf))
+                return BadRequest(ResultPattern<string>.BadRequest("CPF não pode ser vazio."));
+
+            var result = await useCase.Execute(cpf);
+
+            if (result.IsFailure)
+                return StatusCode((int)result.ErrorDetails!.Status!, result.ErrorDetails);
+
+            return Ok(MedicalRecordResponseModels.CreateCompleteMedicalRecordResponseList(result.Data!));
         }
     }
 }
