@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 
 interface PatientData {
-  nome: string;
+  name: string;
   cpf: string;
   sus: string;
 }
@@ -75,7 +75,7 @@ export default function PopupAtestado({
             <Grid container spacing={2} alignItems="center">
               <Grid>
                 <Typography variant="body1">
-                  <strong>Nome:</strong> {patientData.nome}
+                  <strong>Nome:</strong> {patientData.name}
                 </Typography>
               </Grid>
               <Grid>
