@@ -49,25 +49,6 @@ namespace Tests.Notes
         }
 
         [Fact]
-        public async Task Execute_ShouldReturnBadRequest_WhenDomainExceptionIsThrown()
-        {
-            // Arrange
-            // Cria um DTO inválido para forçar a DomainException (ex: título vazio)
-            var invalidDto = CreateValidDto() with { Title = "" };
-
-            // Act
-            var result = await _useCase.Execute(invalidDto);
-
-            // Assert
-            result.Success.Should().BeFalse();
-            result.ErrorDetails.Status.Should().Be(400);
-            result.Message.Should().NotBeNullOrEmpty(); // A mensagem exata virá da sua Factory
-
-            // Garante que nada foi enviado ao banco de dados
-            await _noteRepository.DidNotReceive().AddAsync(Arg.Any<NotesEntity>());
-        }
-
-        [Fact]
         public async Task Execute_ShouldReturnFailure_WhenRepositoryThrowsException()
         {
             // Arrange

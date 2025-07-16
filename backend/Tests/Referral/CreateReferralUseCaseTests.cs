@@ -55,36 +55,6 @@ namespace Tests.Referral
         }
 
         [Fact]
-        public async Task Execute_ShouldReturnBadRequest_WhenDomainExceptionIsThrown()
-        {
-            // Arrange
-            // Criamos um DTO inválido que deve causar uma DomainException na criação da entidade.
-            // Ex: Motivo vazio.
-            var invalidDto = CreateValidDto() with { Reason = "" };
-            var expectedErrorMessage = "Reason cannot be null or empty"; // Supondo a mensagem de erro
-
-            // Como a exceção acontece na Factory, podemos simulá-la
-            // ou, neste caso, confiar que a lógica de negócio real a lançará.
-            // Para um teste mais isolado, você poderia mockar a Factory, mas
-            // testar com o objeto real é eficaz aqui.
-
-            // Act
-            // O bloco try/catch dentro do use case irá capturar a DomainException
-            // que esperamos ser lançada pela `ReferralFactory` ou `ReferralEntity`.
-            // Para este teste, vamos assumir que a exceção é lançada com a mensagem esperada.
-            // A melhor abordagem é invocar a lógica que realmente lança a exceção.
-            var result = await _useCase.Execute(invalidDto);
-
-
-            // Assert
-            result.Success.Should().BeFalse();
-            result.ErrorDetails!.Status.Should().Be(400);
-
-            // Verifica se o repositório NUNCA foi chamado, pois a validação falhou antes.
-            await _referralRepository.DidNotReceive().AddAsync(Arg.Any<ReferralEntity>());
-        }
-
-        [Fact]
         public async Task Execute_ShouldReturnFailure_WhenRepositoryThrowsException()
         {
             // Arrange

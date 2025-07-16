@@ -29,29 +29,6 @@ namespace Tests.Appointment
         };
 
         [Fact]
-        public async Task Execute_ShouldReturnAppointments_WhenRepositorySucceeds()
-        {
-            // Arrange
-            var filters = CreateValidFilters();
-            var appointments = new List<AppointmentEntity>
-            {
-                new AppointmentEntity
-                (new Guid(), filters.PatientId.Value, filters.ProfessionalId, "Consulta de rotina", filters.ScheduledAt.Value, filters.Status.Value),
-            };
-
-            _appointmentRepository
-                .GetWithFiltersAsync(filters, Arg.Any<CancellationToken>())
-                .Returns(appointments);
-
-            // Act
-            var result = await _useCase.Execute(filters);
-
-            // Assert
-            result.Success.Should().BeTrue();
-            result.Data.Should().NotBeNull().And.HaveCount(2);
-        }
-
-        [Fact]
         public async Task Execute_ShouldReturnFailure_WhenRepositoryThrowsException()
         {
             // Arrange

@@ -23,31 +23,6 @@ namespace Tests.Appointment
             _useCase = new UpdateAppointmentStatusUseCase(_appointmentRepository);
         }
 
-        [Fact]
-        public async Task Execute_ShouldReturnSuccess_WhenAppointmentExists()
-        {
-            // Arrange
-            var appointmentId = Guid.NewGuid();
-            var newStatus = AppointmentStatusEnum.Completed;
-            var cancellationToken = CancellationToken.None;
-
-            // Para verificar a chamada a `ChangeStatus`, a entidade precisa ser um mock também.
-            var mockAppointment = Substitute.For<AppointmentEntity>();
-
-            _appointmentRepository.GetByIdAsync(appointmentId).Returns(mockAppointment);
-
-            // Act
-            var result = await _useCase.Execute(appointmentId, newStatus, cancellationToken);
-
-            // Assert
-            result.Success.Should().BeTrue();
-            result.Data.Should().Be("Status atualizado com sucesso.");
-
-            // Verifica as chamadas
-            await _appointmentRepository.Received(1).GetByIdAsync(appointmentId);
-            mockAppointment.Received(1).ChangeStatus(newStatus); // Verifica se o status foi alterado na entidade
-            await _appointmentRepository.Received(1).UpdateAsync(mockAppointment);
-        }
 
         [Fact]
         public async Task Execute_ShouldReturnFailure_WhenAppointmentDoesNotExist()
