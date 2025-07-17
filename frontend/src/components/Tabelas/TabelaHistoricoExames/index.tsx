@@ -99,6 +99,7 @@ export default function TabelaHistoricoExames() {
                     <Button
                       variant="contained"
                       size="small"
+                      onClick={() => handleOpen(exame)}
                       sx={{
                         backgroundColor: '#0E930B',
                         borderRadius: '8px',

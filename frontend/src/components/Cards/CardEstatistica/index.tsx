@@ -1,3 +1,5 @@
+import { useRouter } from 'next/navigation';
+
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import { Box, Paper, Typography, Button } from '@mui/material';
 
@@ -15,7 +17,12 @@ const getMaxValue = () => {
 };
 
 export default function CardEstatistica() {
+  const router = useRouter();
   const maxValue = getMaxValue();
+
+  const handleVerEstatisticasClick = () => {
+    router.push('/TelaEstatistica'); // Navega para /TelaEstatistica
+  };
 
   return (
     // 2. O Card principal que envolve todo o componente
@@ -93,7 +100,11 @@ export default function CardEstatistica() {
 
       {/* 5. O Botão de Ação */}
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 4 }}>
-        <Button variant="contained" href="/estatisticas">
+        <Button
+          variant="contained"
+          onClick={handleVerEstatisticasClick}
+          href="/estatisticas"
+        >
           Ver Estatísticas
         </Button>
       </Box>

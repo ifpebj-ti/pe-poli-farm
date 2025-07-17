@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import PopupMeusdados from '@/src/components/PopUp/PopUpMeusDados';
@@ -25,6 +26,7 @@ import {
 export default function MeusDados() {
   const [showPassword, setShowPassword] = useState(false);
   const [openPopup, setOpenPopup] = useState(false);
+  const router = useRouter();
 
   const [form, setForm] = useState({
     nome: '',
@@ -44,6 +46,10 @@ export default function MeusDados() {
 
   const handleClosePopup = () => {
     setOpenPopup(false);
+  };
+
+  const handleVoltarClick = () => {
+    router.push('/Inicio'); // Navigate to the /Inicio route
   };
 
   return (
@@ -177,6 +183,7 @@ export default function MeusDados() {
         >
           <Button
             variant="outlined"
+            onClick={handleVoltarClick}
             sx={{
               borderRadius: '20px',
               textTransform: 'none',

@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { ChangeEvent } from 'react';
 
 import SearchIcon from '@mui/icons-material/Search';
@@ -9,7 +10,8 @@ import {
   TextField,
   InputAdornment,
   ToggleButtonGroup,
-  ToggleButton
+  ToggleButton,
+  Button
 } from '@mui/material';
 
 interface NovoAtendimentoHeaderProps {
@@ -28,6 +30,11 @@ export default function NovoAtendimentoHeader({
   statusFiltro,
   onStatusChange
 }: NovoAtendimentoHeaderProps) {
+  const router = useRouter(); // Inicialize useRouter
+
+  const handleVoltarClick = () => {
+    router.push('/Inicio'); // Navega para a página /Inicio
+  };
   return (
     <Box sx={{ px: 6, pb: 2 }}>
       <Typography variant="h4" sx={{ color: '#000', fontWeight: 500, mb: 3 }}>
@@ -67,6 +74,28 @@ export default function NovoAtendimentoHeader({
             )
           }}
         />
+
+        <Button
+          variant="outlined"
+          onClick={handleVoltarClick}
+          sx={{
+            height: 36,
+            borderRadius: '18px',
+            textTransform: 'none',
+            px: 3,
+            borderColor: '#1351B4',
+            color: '#1351B4',
+            fontWeight: 400,
+            fontFamily: 'Roboto, sans-serif',
+            minWidth: 90,
+            '&:hover': {
+              borderColor: '#0f479e',
+              backgroundColor: '#f0f7ff'
+            }
+          }}
+        >
+          Voltar
+        </Button>
       </Box>
     </Box>
   );

@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -127,6 +128,8 @@ export default function EstatisticasSistema() {
     total: 100
   });
 
+  const router = useRouter();
+
   // useEffect para buscar os dados quando os filtros mudam
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -202,6 +205,10 @@ export default function EstatisticasSistema() {
   const yAxisLabels = [4000, 3000, 2000, 1000, 100];
   const maxNovoGraficoValue = Math.max(...mediaDiaria.map((d) => d.value), 0);
 
+  const handleVoltarClick = () => {
+    router.push('/Inicio'); // Navega para a página /Inicio
+  };
+
   return (
     <Box
       sx={{
@@ -258,7 +265,13 @@ export default function EstatisticasSistema() {
 
           <Button
             variant="contained"
-            sx={{ bgcolor: '#1351B4', textTransform: 'none' }}
+            onClick={handleVoltarClick}
+            sx={{
+              bgcolor: '#1351B4',
+              textTransform: 'none',
+              borderRadius: '25px',
+              px: 3
+            }}
           >
             Voltar
           </Button>
