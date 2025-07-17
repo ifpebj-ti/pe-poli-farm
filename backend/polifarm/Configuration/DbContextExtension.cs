@@ -1,4 +1,4 @@
-﻿using Infra.Database;
+using Infra.Database;
 using Microsoft.EntityFrameworkCore;
 
 namespace Webapi.Configuration
@@ -7,10 +7,9 @@ namespace Webapi.Configuration
     {
         public static IServiceCollection AddDbContextExtension(this IServiceCollection services, IConfiguration configuration)
         {
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<PolifarmDbContext>(options =>
         {
-            options.UseNpgsql(connectionString,
+            options.UseNpgsql(configuration.GetValue<string>("CONNECTION_STRING"),
                 sql => sql.MigrationsAssembly("WebApi"));
         });
 
