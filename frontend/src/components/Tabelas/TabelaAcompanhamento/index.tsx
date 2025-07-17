@@ -1,4 +1,9 @@
 'use client';
+
+import { useState } from 'react';
+
+import PopupDetalhesTratamento from '@/src/components/PopUp/PopUpDetalhesTratamento';
+
 import {
   Box,
   Button,
@@ -15,7 +20,15 @@ import {
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
-const pacientes = Array.from({ length: 7 }, () => ({
+type Paciente = {
+  nome: string;
+  profissional: string;
+  data: string;
+  tratamento: string;
+  status: string;
+};
+
+const pacientes: Paciente[] = Array.from({ length: 7 }, () => ({
   nome: `Nome Paciente`,
   profissional: 'Dra. João',
   data: '2025-05-03',
@@ -24,6 +37,20 @@ const pacientes = Array.from({ length: 7 }, () => ({
 }));
 
 export default function TabelaAcompanhamento() {
+  const [open, setOpen] = useState(false);
+  const [pacienteSelecionado, setPacienteSelecionado] =
+    useState<Paciente | null>(null);
+
+  const handleOpen = (paciente: Paciente) => {
+    setPacienteSelecionado(paciente);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setPacienteSelecionado(null);
+  };
+
   return (
     <Box sx={{ px: 4, pt: 3, display: 'flex', justifyContent: 'center' }}>
       <Box sx={{ width: '100%', maxWidth: 1100 }}>
@@ -80,6 +107,7 @@ export default function TabelaAcompanhamento() {
                           backgroundColor: '#0f479e'
                         }
                       }}
+                      onClick={() => handleOpen(paciente)}
                     >
                       VER MAIS
                     </Button>
@@ -90,11 +118,23 @@ export default function TabelaAcompanhamento() {
           </Table>
         </TableContainer>
 
-        {/* Paginação agora dentro da largura da tabela */}
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
           <Pagination count={5} page={1} color="primary" />
         </Box>
       </Box>
+
+      {pacienteSelecionado && (
+        <PopupDetalhesTratamento
+          open={open}
+          handleClose={handleClose}
+          tratamento={{
+            nome: pacienteSelecionado.nome,
+            profissional: pacienteSelecionado.profissional,
+            dataInicio: pacienteSelecionado.data,
+            status: pacienteSelecionado.status
+          }}
+        />
+      )}
     </Box>
   );
 }

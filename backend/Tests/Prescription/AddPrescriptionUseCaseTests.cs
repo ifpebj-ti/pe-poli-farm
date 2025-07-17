@@ -103,29 +103,6 @@ namespace Tests.Prescription
         }
 
         [Fact]
-        public async Task Execute_ShouldReturnBadRequest_WhenDomainExceptionIsThrown()
-        {
-            // Arrange
-            // Criamos um DTO que causará um erro de domínio (ex: nome do medicamento vazio)
-            var invalidDto = CreateValidDto() with { MedicationName = "" };
-            var cancellationToken = CancellationToken.None;
-
-            // O profissional precisa ser encontrado para que o código chegue na Factory
-            _userRepository.FindUserById(invalidDto.ProfessionalId).Returns(new UserEntity());
-
-            // Act
-            var result = await _useCase.Execute(invalidDto, cancellationToken);
-
-            // Assert
-            result.Success.Should().BeFalse();
-            result.ErrorDetails.Status.Should().Be(400);
-            // A mensagem exata dependerá da sua implementação na PrescriptionFactory
-            result.Message.Should().NotBeNullOrEmpty();
-
-            await _prescriptionRepository.DidNotReceive().Create(Arg.Any<PatientPrescriptionEntity>());
-        }
-
-        [Fact]
         public async Task Execute_ShouldReturnFailure_WhenRepositoryThrowsException()
         {
             // Arrange

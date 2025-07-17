@@ -63,7 +63,7 @@ export default function NavBar() {
                 sx={{ flexGrow: 1, color: 'black' }}
               >
                 <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                  Prontuário Eletrônico para Farmácias e Policlínicas
+                  ProntusVitale
                 </Typography>
                 <Typography
                   variant="subtitle2"

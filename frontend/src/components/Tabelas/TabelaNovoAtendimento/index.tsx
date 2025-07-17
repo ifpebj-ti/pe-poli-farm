@@ -1,4 +1,7 @@
 'use client';
+import { useRouter } from 'next/navigation';
+
+import { Patient } from '@/src/lib/pacientes';
 import AddIcon from '@mui/icons-material/Add';
 import {
   Box,
@@ -14,17 +17,46 @@ import {
   Typography
 } from '@mui/material';
 
-const pacientes = Array.from({ length: 7 }, () => ({
-  nome: `Nome Paciente`,
-  nomeMae: 'Nome da mãe',
-  idade: '36 anos e 2 meses',
-  entrada: '13:00'
-}));
+interface TabelaProps {
+  pacientes: Patient[];
+  page: number;
+  totalPages: number;
+  onPageChange: (event: React.ChangeEvent<unknown>, page: number) => void;
+  onIniciarAtendimento: (paciente: Patient) => void;
+}
 
-export default function TabelaNovoAtendimento() {
+const calcularIdade = (birthDateString: string): number => {
+  if (!birthDateString) return 0;
+  const birthDate = new Date(birthDateString);
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return age;
+};
+
+const formatarHorario = (dateString: string): string => {
+  if (!dateString) return 'N/A';
+  return new Date(dateString).toLocaleTimeString('pt-BR', {
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+};
+
+export default function TabelaNovoAtendimento({
+  pacientes,
+  page,
+  totalPages,
+  onPageChange,
+  onIniciarAtendimento
+}: TabelaProps) {
+  const router = useRouter(); // Inicialize useRouter
+
   return (
     <Box sx={{ px: 4, pt: 3, display: 'flex', justifyContent: 'center' }}>
-      <Box sx={{ width: '100%', maxWidth: 1100 }}>
+      <Box sx={{ width: '100%' }}>
         <TableContainer component={Paper} elevation={1}>
           <Table>
             <TableHead>
@@ -42,16 +74,23 @@ export default function TabelaNovoAtendimento() {
                 <TableRow key={index}>
                   <TableCell sx={{ paddingY: 1 }}>
                     <Typography sx={{ color: '#1351B4', cursor: 'pointer' }}>
-                      {paciente.nome}
+                      {paciente.name}
                     </Typography>
                   </TableCell>
-                  <TableCell sx={{ paddingY: 1 }}>{paciente.nomeMae}</TableCell>
-                  <TableCell sx={{ paddingY: 1 }}>{paciente.idade}</TableCell>
-                  <TableCell sx={{ paddingY: 1 }}>{paciente.entrada}</TableCell>
+                  <TableCell sx={{ paddingY: 1 }}>
+                    {paciente.motherName}
+                  </TableCell>
+                  <TableCell sx={{ paddingY: 1 }}>
+                    {calcularIdade(paciente.birthDate)}
+                  </TableCell>
+                  <TableCell sx={{ paddingY: 1 }}>
+                    {formatarHorario(paciente.services[0]?.serviceDate)}
+                  </TableCell>
                   <TableCell align="right" sx={{ paddingY: 1 }}>
                     <Button
                       variant="contained"
                       size="small"
+                      onClick={() => onIniciarAtendimento(paciente)}
                       sx={{
                         backgroundColor: '#1351B4',
                         borderRadius: '8px',
@@ -64,7 +103,7 @@ export default function TabelaNovoAtendimento() {
                         }
                       }}
                     >
-                      Ver prontuário
+                      Iniciar Atendimento
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -74,13 +113,21 @@ export default function TabelaNovoAtendimento() {
         </TableContainer>
 
         {/* Paginação agora dentro da largura da tabela */}
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-          <Pagination count={5} page={1} color="primary" />
-        </Box>
+        {totalPages > 1 && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2, pb: 4 }}>
+            <Pagination
+              count={totalPages}
+              page={page}
+              onChange={onPageChange}
+              color="primary"
+            />
+          </Box>
+        )}
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', my: 2 }}>
           <Button
             variant="outlined"
             startIcon={<AddIcon />}
+            onClick={() => router.push('/NovoPaciente')}
             sx={{
               borderColor: '#1351B4',
               color: '#1351B4',

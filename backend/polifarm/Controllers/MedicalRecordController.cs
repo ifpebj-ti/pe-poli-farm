@@ -20,6 +20,11 @@ using Application.Usecases.Referral;
 using WebApi.ResponseModels.Referral;
 using Domain.Dtos.MedicalConsultation;
 using WebApi.Validators.MedicalConsultation;
+using Application.Usecases.Conduct;
+using Domain.Dtos.Conduct;
+using Domain.Entites.Conduct;
+using Domain.Entities.MedicalRecord;
+using WebApi.ResponseModels.MedicalRecord;
 
 namespace WebApi.Controllers
 {
@@ -45,7 +50,7 @@ namespace WebApi.Controllers
             var result = await addPrescriptionUseCase.Execute(request, HttpContext.RequestAborted);
             if (result.IsFailure)
                 return StatusCode((int)result.ErrorDetails!.Status!, new MessageErrorResponseModel(result.Data!));
-            
+
             return Ok(new MessageSuccessResponseModel(result.Data!));
         }
 
@@ -72,7 +77,7 @@ namespace WebApi.Controllers
             var result = await createMedicalCertificateUseCase.Execute(request);
             if (result.IsFailure)
                 return StatusCode((int)result.ErrorDetails!.Status!, result.ErrorDetails);
-            
+
             return Ok(MedicalCertificateResponseModels.ToResponse(result.Data!));
         }
 
@@ -92,7 +97,7 @@ namespace WebApi.Controllers
             var result = await getMedicalCertificateUseCase.Execute(filters, cancellationToken);
             if (result.IsFailure)
                 return StatusCode((int)result.ErrorDetails!.Status!, result.ErrorDetails);
-            
+
             return Ok(MedicalCertificateResponseModels.ToResponseList(result.Data!));
         }
 
@@ -152,7 +157,7 @@ namespace WebApi.Controllers
         /// <response code="400">Dados de entrada inválidos.</response>
         /// <response code="401">Acesso não autorizado.</response>
         /// <response code="404">Paciente não encontrado.</response>
-        [HttpPost]
+        [HttpPost("MedicalConsultation")]
         [ProducesResponseType(typeof(object), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ResultPattern<string>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -184,6 +189,51 @@ namespace WebApi.Controllers
             // O caso de uso retorna uma string de sucesso. Podemos retorná-la em um objeto.
             // O código HTTP 201 Created é mais apropriado aqui, pois um novo recurso (a consulta) foi criado.
             return StatusCode(StatusCodes.Status201Created, new { message = result.Data });
+        }
+
+        /// <summary>
+        /// Registra uma nova conduta para um paciente.
+        /// </summary>
+        /// <returns>A conduta registrada.</returns>
+        /// <response code="201">Conduta registrada com sucesso.</response>
+        /// <response code="400">Dados de entrada inválidos.</response>
+        /// <response code="404">Paciente ou profissional não encontrado.</response>
+        [HttpPost("CreateProcedure")]
+        [ProducesResponseType(typeof(ConductEntity), StatusCodes.Status201Created)]
+        public async Task<ActionResult> RegisterConduct(
+            [FromBody] CreateConductDTO request,
+            [FromServices] RegisterConductUseCase useCase,
+            CancellationToken cancellationToken)
+        {
+            var result = await useCase.Execute(request, cancellationToken);
+
+            if (result.IsFailure)
+                return StatusCode((int)result.ErrorDetails!.Status, result);
+
+            return StatusCode(StatusCodes.Status201Created, new { message = result.Data });
+        }
+
+        /// <summary>
+        /// Lista todos os prontuários médicos de um paciente pelo CPF.
+        /// <returns>Prontuarios</returns>
+        /// <response code="201">Retorna os prontuarios com sucesso.</response>
+        /// <response code="400">Dados de entrada inválidos.</response>
+        /// <response code="404">Paciente não encontrado.</response>    
+        [HttpGet("MedicalRecordsByPatientCpf/{cpf}")]
+        [ProducesResponseType(typeof(List<MedicalRecordEntity>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResultPattern<string>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResultPattern<string>), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> GetMedicalRecordsByPatientCpf(string cpf, [FromServices] ReturnAllMedicalRecordsByPatientCpfUseCase useCase)
+        {
+            if (string.IsNullOrWhiteSpace(cpf))
+                return BadRequest(ResultPattern<string>.BadRequest("CPF não pode ser vazio."));
+
+            var result = await useCase.Execute(cpf);
+
+            if (result.IsFailure)
+                return StatusCode((int)result.ErrorDetails!.Status!, result.ErrorDetails);
+
+            return Ok(MedicalRecordResponseModels.CreateCompleteMedicalRecordResponseList(result.Data!));
         }
     }
 }

@@ -21,17 +21,17 @@ const menuItems = [
   {
     text: 'Histórico',
     icon: <DescriptionIcon fontSize="large" />,
-    link: '/historico'
+    link: '/HistoricoExames'
   },
   {
     text: 'Acompanhamento',
     icon: <SupervisedUserCircleIcon fontSize="large" />,
-    link: '/acompanhamento'
+    link: '/Acompanhamento'
   },
   {
     text: 'Relatório do Paciente',
     icon: <AssessmentIcon fontSize="large" />,
-    link: '/RelatorioPaciente'
+    link: '/Relatorio'
   }
 ];
 

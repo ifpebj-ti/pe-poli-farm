@@ -1,71 +1,75 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+import { ChangeEvent } from 'react';
+
 import SearchIcon from '@mui/icons-material/Search';
 import {
   Box,
   Typography,
   TextField,
   InputAdornment,
-  IconButton,
+  ToggleButtonGroup,
+  ToggleButton,
   Button
 } from '@mui/material';
 
-export default function NovoAtendimentoHeader() {
+interface NovoAtendimentoHeaderProps {
+  termoBusca: string;
+  onBuscaChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  statusFiltro: string;
+  onStatusChange: (
+    event: React.MouseEvent<HTMLElement>,
+    newStatus: string | null
+  ) => void;
+}
+
+export default function NovoAtendimentoHeader({
+  termoBusca,
+  onBuscaChange,
+  statusFiltro,
+  onStatusChange
+}: NovoAtendimentoHeaderProps) {
+  const router = useRouter(); // Inicialize useRouter
+
+  const handleVoltarClick = () => {
+    router.push('/Inicio'); // Navega para a página /Inicio
+  };
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'flex-start',
-        px: 6,
-        pt: 6,
-        backgroundColor: '#fff',
-        fontFamily: 'Roboto, sans-serif'
-      }}
-    >
-      {/* Título */}
-      <Typography
-        variant="h4"
-        sx={{
-          color: '#000',
-          fontWeight: 400,
-          fontFamily: 'Roboto, sans-serif'
-        }}
-      >
+    <Box sx={{ px: 6, pb: 2 }}>
+      <Typography variant="h4" sx={{ color: '#000', fontWeight: 500, mb: 3 }}>
         Novo Atendimento
       </Typography>
-
-      {/* Campo de busca e botão */}
       <Box
         sx={{
           display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'flex-end',
-          gap: 2
+          justifyContent: 'space-between',
+          alignItems: 'center'
         }}
       >
+        {/* Botões de Filtro de Status */}
+        <ToggleButtonGroup
+          color="primary"
+          value={statusFiltro}
+          exclusive
+          onChange={onStatusChange}
+          aria-label="Filtro de status do atendimento"
+        >
+          <ToggleButton value="NO_SERVICE">Aguardando Atendimento</ToggleButton>
+          <ToggleButton value="IN_SERVICE">Em Atendimento</ToggleButton>
+        </ToggleButtonGroup>
+
+        {/* Campo de busca */}
         <TextField
           placeholder="Pesquise pacientes"
           size="small"
-          sx={{
-            backgroundColor: '#f8f8f8',
-            minWidth: 400,
-            fontFamily: 'Roboto, sans-serif',
-            '& .MuiOutlinedInput-root': {
-              height: 50,
-              borderRadius: '8px',
-              fontFamily: 'Roboto, sans-serif'
-            },
-            '& .MuiOutlinedInput-notchedOutline': {
-              borderColor: '#ccc'
-            }
-          }}
+          value={termoBusca}
+          onChange={onBuscaChange}
+          sx={{ backgroundColor: '#f8f8f8', minWidth: 400 }}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton size="small">
-                  <SearchIcon sx={{ color: '#1351B4', fontSize: 20 }} />
-                </IconButton>
+                <SearchIcon sx={{ color: '#1351B4' }} />
               </InputAdornment>
             )
           }}
@@ -73,6 +77,7 @@ export default function NovoAtendimentoHeader() {
 
         <Button
           variant="outlined"
+          onClick={handleVoltarClick}
           sx={{
             height: 36,
             borderRadius: '18px',
