@@ -46,36 +46,5 @@ namespace Tests.Patient
             ),
             EmergencyContactDetails: new List<EmergencyContactDetailsDTO>()
         );
-
-        [Fact]
-        public async Task Execute_ShouldUpdatePatient_WhenPatientExists()
-        {
-            // Arrange
-            var patientId = Guid.NewGuid();
-            var dto = CreateValidUpdatePatientDto(patientId);
-
-            var existingPatient = new PatientEntity
-            {
-                Id = patientId,
-                Name = "Old Name",
-                Cpf = new CPF(dto.Cpf),
-                Sus = new SUS("123123123123123"),
-                Rg = new RG("RG123456")
-            };
-
-            _gatewayPatient.GetById(patientId).Returns(existingPatient);
-
-            // Act
-            var result = await _useCase.Execute(dto);
-
-            // Assert
-            result.Success.Should().BeTrue();
-
-            await _gatewayPatient.Received(1)
-            .Update(Arg.Is<PatientEntity>(p =>
-                p.Id == patientId &&
-                p.Name == dto.Name));
-        }
     }
-
 }

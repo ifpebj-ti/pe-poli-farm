@@ -56,6 +56,8 @@ namespace Webapi.Configuration
             services.AddScoped<CreateMedicalConsultationUseCase>();
             services.AddScoped<RegisterConductUseCase>();
             services.AddScoped<IReferralRepositoryGateway, ReferralRepositoryGateway>();
+            services.AddScoped<IMedicalRecordGateway, MedicalRecordGateway>();
+            services.AddScoped<ReturnAllMedicalRecordsByPatientCpfUseCase>();
 
             //Service
             services.AddScoped<IServiceGateway, ServiceRepositoryGateway>();

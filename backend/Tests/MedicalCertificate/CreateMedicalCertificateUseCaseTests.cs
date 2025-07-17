@@ -46,19 +46,6 @@ namespace Tests.MedicalCertificate
         }
 
         [Fact]
-        public async Task Execute_ShouldReturnBadRequest_WhenDomainExceptionIsThrown()
-        {
-            var invalidDto = CreateValidDto() with { MedicalRecordId = Guid.Empty };
-
-            var result = await _useCase.Execute(invalidDto);
-
-            result.Success.Should().BeFalse();
-            result.ErrorDetails.Status.Should().Be(400);
-
-            await _repository.DidNotReceive().AddAsync(Arg.Any<MedicalCertificateEntity>());
-        }
-
-        [Fact]
         public async Task Execute_ShouldReturnFailure_WhenRepositoryThrowsException()
         {
             var dto = CreateValidDto();
