@@ -1,6 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { useRef } from 'react';
+import React, { useRef } from 'react';
 
 import BreadCrumb from '@/src/components/BreadCrumb';
 import TelaConsulta, { TelaConsultaHandle } from '@/src/components/Consulta';
@@ -11,14 +11,15 @@ import { Box, Button, CircularProgress, Typography } from '@mui/material';
 import { usePacienteCpf } from '../../TelaProntuario/[cpf]/hooks/usePacienteCpf';
 
 type ConsultaPageProps = {
-  params: {
+  params: Promise<{
     cpf: string;
-  };
+  }>;
 };
 
 export default function ConsultaCompletaPage({ params }: ConsultaPageProps) {
   const router = useRouter();
-  const { cpf } = params;
+  const resolvedParams = React.use(params);
+  const { cpf } = resolvedParams;
 
   const consultaRef = useRef<TelaConsultaHandle>(null);
 
