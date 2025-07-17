@@ -28,4 +28,4 @@ Seu principal objetivo é melhorar a experiência de pacientes e profissionais d
 
 ## 📚 Documentação
 
-Para mais informações e documentação do projeto, acesse nossa [Wiki](https://github.com/ifpebj-ti/horas-discentes/wiki).
+Para mais informações e documentação do projeto, acesse nossa [Wiki](https://github.com/ifpebj-ti/pe-poli-farm/wiki).
