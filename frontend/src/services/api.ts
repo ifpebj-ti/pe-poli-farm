@@ -1,9 +1,12 @@
 import { getSession } from 'next-auth/react';
+import { env } from 'next-runtime-env';
 
 import axios from 'axios';
 
+const NEXT_PUBLIC_BASE_URL = env('NEXT_PUBLIC_BASE_URL');
+
 export const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BASE_URL
+  baseURL: NEXT_PUBLIC_BASE_URL
 });
 
 api.interceptors.request.use(
