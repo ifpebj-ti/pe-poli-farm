@@ -1,4 +1,5 @@
 ﻿using Application.Usecases.User;
+using Application.UseCases.User;
 using Domain.Dtos.User;
 using Domain.Errors;
 using Microsoft.AspNetCore.Authorization;
@@ -7,6 +8,7 @@ using prontuario.WebApi.Validators.User;
 using System.ComponentModel.DataAnnotations;
 using WebApi.ResponseModels;
 using WebApi.ResponseModels.User;
+using WebApi.Validators.User;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WebApi.Controllers
@@ -89,5 +91,39 @@ namespace WebApi.Controllers
             _logger.LogInformation("Usuário retornados com sucesso");
             return Ok(UserResponseModel.CreateUserResponseList(result.Data!));
         }
+
+        /// <summary>
+        /// Atualizar dados do usuário logado
+        /// <returns>Mensagem de sucesso na operação</returns>
+        /// <response code="200">Usuaro atualizado com sucesso</response>
+        /// <response code="400">Erro na operação</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="409">Erro de conflito</response>
+        [AllowAnonymous]
+        [HttpPatch("me/update")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<ActionResult<MessageSuccessResponseModel>> UpdateLoggedUser([FromBody] UpdateUserDTO data, [FromServices] UpdateUserUseCase updateUserUseCase)
+        {
+            var loggedUser = Guid.Parse(User.FindFirst("Id")?.Value ?? throw new UnauthorizedAccessException("Usuário não autenticado"));
+
+            var validator = new UpdateUserDTOValidator();
+            var validationResult = await validator.ValidateAsync(data);
+            if (!validationResult.IsValid)
+            {
+                return new OkObjectResult(ResultPattern<string>.BadRequest(validationResult.ToString()).ErrorDetails);
+            }
+
+            var result = await updateUserUseCase.Execute(loggedUser, data);
+
+            if (result.IsFailure)
+                return StatusCode((int)result.ErrorDetails!.Status!, result.ErrorDetails);
+
+            _logger.LogInformation("Usuário criado com sucesso");
+            return Ok(new MessageSuccessResponseModel(result.Message));
+        }
+
     }
-}
+    }

@@ -9,6 +9,7 @@ using Application.Usecases.Prescription;
 using Application.Usecases.Referral;
 using Application.Usecases.Service;
 using Application.Usecases.User;
+using Application.UseCases.User;
 using Domain.Entites;
 using Domain.Entities.Notes;
 using Infra.Gateways;
@@ -26,6 +27,7 @@ namespace Webapi.Configuration
             services.AddScoped<CreateUserUseCase>();
             services.AddScoped<UpdateUserPasswordUseCase>();
             services.AddScoped<ReturnsAllUsersUseCase>();
+            services.AddScoped<UpdateUserUseCase>();
 
             // Profiles
             services.AddScoped<IProfileRepositoryGateway, ProfileRepositoryGateway>();
