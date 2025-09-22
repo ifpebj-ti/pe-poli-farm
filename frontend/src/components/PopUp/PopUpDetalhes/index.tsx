@@ -49,13 +49,13 @@ export default function PopupDetalhes({
             }}
           >
             <Typography>
-              <strong>Nome:</strong> Laura Oliveira
+              <strong>Nome:</strong> Netinho
             </Typography>
             <Typography>
-              <strong>CPF:</strong> 123.456.789-10
+              <strong>CPF:</strong> 109.519.474-78
             </Typography>
             <Typography>
-              <strong>SUS:</strong> 4874074
+              <strong>SUS:</strong> 123456789876543
             </Typography>
           </Box>
         </Box>
@@ -74,14 +74,14 @@ export default function PopupDetalhes({
             }}
           >
             <Typography>
-              <strong>Nome:</strong> Dra. Ana Souza
+              <strong>Nome:</strong> Dr. João Silva
             </Typography>
             <Typography>
               <strong>Especialidade:</strong> Clínica Geral
             </Typography>
             <Typography>
               <strong>Data:</strong>{' '}
-              {format(new Date('2025-05-01'), 'dd/MM/yyyy', {
+              {format(new Date('2025-07-17'), 'dd/MM/yyyy', {
                 locale: ptBR
               })}
             </Typography>

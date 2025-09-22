@@ -17,12 +17,26 @@ import {
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
-const relatorios = Array.from({ length: 7 }, () => ({
-  nome: `Nome Paciente`,
-  profissional: 'Dr. João',
-  data: '2025-05-03',
-  tipoAtendimento: 'Consulta Médica'
-}));
+const relatorios = [
+  {
+    nome: `Netinho`,
+    profissional: 'Dr. João Silva',
+    data: '2025-07-17',
+    tipoAtendimento: 'Consulta Médica'
+  },
+  {
+    nome: `Teste`,
+    profissional: 'Dr. João Silva',
+    data: '2025-07-17',
+    tipoAtendimento: 'Consulta Médica'
+  },
+  {
+    nome: `Carlos Andrade`,
+    profissional: 'Dr. João Silva',
+    data: '2025-07-18',
+    tipoAtendimento: 'Consulta Médica'
+  }
+];
 
 export default function TabelaRelatorio() {
   const router = useRouter();

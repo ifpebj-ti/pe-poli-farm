@@ -17,24 +17,38 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
 
 type Paciente = {
-  nome: string;
+  paciente: string;
   profissional: string;
   data: string;
   tratamento: string;
   status: string;
 };
 
-const pacientes: Paciente[] = Array.from({ length: 7 }, () => ({
-  nome: `Nome Paciente`,
-  profissional: 'Dra. João',
-  data: '2025-05-03',
-  tratamento: 'Hemograma Completo',
-  status: 'Em Andamento'
-}));
+const pacientes = [
+  {
+    paciente: 'Netinho',
+    profissional: 'Dr. João Silva',
+    data: '17/07/2025',
+    tratamento: 'Consulta de Rotina',
+    status: 'Finalizado'
+  },
+  {
+    paciente: 'Beatriz Lima',
+    profissional: 'Dr. João Silva',
+    data: '17/07/2025',
+    tratamento: 'Sessão de Fisioterapia',
+    status: 'Em Andamento'
+  },
+  {
+    paciente: 'Fernando Martins',
+    profissional: 'Dr. João Silva',
+    data: '18/07/2025',
+    tratamento: 'Exame de Sangue',
+    status: 'Agendado'
+  }
+];
 
 export default function TabelaAcompanhamento() {
   const [open, setOpen] = useState(false);
@@ -72,21 +86,13 @@ export default function TabelaAcompanhamento() {
                 <TableRow key={index}>
                   <TableCell sx={{ paddingY: 1 }}>
                     <Typography sx={{ color: '#1351B4', cursor: 'pointer' }}>
-                      {paciente.nome}
+                      {paciente.paciente}
                     </Typography>
                   </TableCell>
                   <TableCell sx={{ paddingY: 1 }}>
                     {paciente.profissional}
                   </TableCell>
-                  <TableCell sx={{ paddingY: 1 }}>
-                    {format(
-                      new Date(paciente.data.replace(/-/g, '/')),
-                      'dd/MM/yyyy',
-                      {
-                        locale: ptBR
-                      }
-                    )}
-                  </TableCell>
+                  <TableCell sx={{ paddingY: 1 }}>{paciente.data}</TableCell>
                   <TableCell sx={{ paddingY: 1 }}>
                     {paciente.tratamento}
                   </TableCell>
@@ -128,9 +134,9 @@ export default function TabelaAcompanhamento() {
           open={open}
           handleClose={handleClose}
           tratamento={{
-            nome: pacienteSelecionado.nome,
+            nome: pacienteSelecionado.paciente,
             profissional: pacienteSelecionado.profissional,
-            dataInicio: pacienteSelecionado.data,
+            dataInicio: '17/07/2025',
             status: pacienteSelecionado.status
           }}
         />
