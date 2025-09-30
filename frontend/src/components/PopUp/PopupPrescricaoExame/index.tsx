@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 import PopupConfirmacaoPrescricao from '@/src/components/PopUp/PopupConfirmacaoPrescricao';
 
+import { PatientExam } from '@/src/lib/pacientes';
 import {
   Button,
   Dialog,
@@ -22,7 +23,7 @@ import {
 interface PopupProps {
   open: boolean;
   onClose: () => void;
-  onAdd: (exam: unknown) => void;
+  onAdd: (exam: PatientExam) => void;
 }
 
 export default function PopupPrescricaoExame({

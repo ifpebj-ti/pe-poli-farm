@@ -13,8 +13,9 @@ import PopupAtestado from '@/src/components/PopUp/PopupAtestado';
 import PopupPrescricaoExame from '@/src/components/PopUp/PopupPrescricaoExame';
 import PopupPrescricaoMedicacao from '@/src/components/PopUp/PopupPrescricaoMedicacao';
 
-import { Patient } from '@/src/lib/pacientes';
+import { Patient, PatientExam, PatientMedication } from '@/src/lib/pacientes';
 import { api } from '@/src/services/api';
+import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Box,
   Button,
@@ -27,7 +28,9 @@ import {
   SelectChangeEvent,
   Grid,
   FormControlLabel,
-  Checkbox
+  Checkbox,
+  Paper,
+  IconButton
 } from '@mui/material';
 
 interface TelaConsultaProps {
@@ -92,8 +95,8 @@ const initialState = {
     ownAlzheimer: false,
     ownCA: false
   },
-  prescriptions: [] as unknown[],
-  patientExams: [] as unknown[]
+  prescriptions: [] as PatientMedication[],
+  patientExams: [] as PatientExam[]
 };
 
 const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
@@ -245,6 +248,39 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
 
     const handleAgendamentoClick = () => {
       router.push('/TelaAgendamento');
+    };
+
+    const handleRemovePrescription = (indexToRemove: number) => {
+      setFormData((prev) => ({
+        ...prev,
+        prescriptions: prev.prescriptions.filter(
+          (_, index) => index !== indexToRemove
+        )
+      }));
+    };
+
+    const handleRemoveExam = (indexToRemove: number) => {
+      setFormData((prev) => ({
+        ...prev,
+        patientExams: prev.patientExams.filter(
+          (_, index) => index !== indexToRemove
+        )
+      }));
+    };
+
+    // const handleAddPrescription = (prescription: PatientMedication) => {
+    //   setFormData((prev) => ({
+    //     ...prev,
+    //     prescriptions: [...prev.prescriptions, prescription]
+    //   }));
+    // };
+
+    // Função para adicionar um novo exame na lista
+    const handleAddExam = (exam: PatientExam) => {
+      setFormData((prev) => ({
+        ...prev,
+        patientExams: [...prev.patientExams, exam]
+      }));
     };
 
     return (
@@ -891,6 +927,33 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
               >
                 ADICIONAR
               </Button>
+              <Box sx={{ mt: 2, maxHeight: 200, overflowY: 'auto' }}>
+                {formData.prescriptions.map((prescription, index) => (
+                  <Paper
+                    key={index}
+                    variant="outlined"
+                    sx={{
+                      p: 1.5,
+                      mb: 1,
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <Typography variant="body1">
+                      {/* >>> MUDE AQUI para a propriedade correta, ex: prescription.nome */}
+                      {prescription.name || 'Medicamento sem nome'}
+                    </Typography>
+                    <IconButton
+                      onClick={() => handleRemovePrescription(index)}
+                      color="error"
+                      size="small"
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </Paper>
+                ))}
+              </Box>
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
               <Typography variant="h6" color="black" sx={{ mb: 1 }}>
@@ -907,6 +970,33 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
               >
                 ADICIONAR
               </Button>
+              <Box sx={{ mt: 2, maxHeight: 200, overflowY: 'auto' }}>
+                {formData.patientExams.map((exam, index) => (
+                  <Paper
+                    key={index}
+                    variant="outlined"
+                    sx={{
+                      p: 1.5,
+                      mb: 1,
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <Typography variant="body1">
+                      {/* >>> MUDE AQUI para a propriedade correta, ex: exam.nomeExame */}
+                      {exam.name || 'Exame sem nome'}
+                    </Typography>
+                    <IconButton
+                      onClick={() => handleRemoveExam(index)}
+                      color="error"
+                      size="small"
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </Paper>
+                ))}
+              </Box>
             </Grid>
           </Grid>
 
@@ -940,10 +1030,14 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
         <PopupPrescricaoMedicacao
           open={openMedicacaoPopup}
           onClose={() => setOpenMedicacaoPopup(false)}
+          onAdd={() => {
+            console.log('Medicamento adicionado');
+          }}
         />
         <PopupPrescricaoExame
           open={openExamePopup}
           onClose={() => setOpenExamePopup(false)}
+          onAdd={handleAddExam}
         />
         <PopupAtestado
           open={openAtestadoPopup}
