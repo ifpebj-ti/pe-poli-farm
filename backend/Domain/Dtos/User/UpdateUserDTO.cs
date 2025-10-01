@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Domain.Dtos.User
 {
-    public sealed record UpdateUserDTO(string? name, string? email, string? password, Guid? profileId);
+    public sealed record UpdateUserDTO(string? name, string? email, string? password, Guid? profileId, bool? isActive);
 }

@@ -29,6 +29,9 @@ namespace Application.UseCases.User
                 if (!string.IsNullOrWhiteSpace(dto.name))
                     user.UpdateName(dto.name);
 
+                if (dto.isActive.HasValue && dto.isActive == false)
+                    user.DisableUser();
+
                 if (!string.IsNullOrWhiteSpace(dto.email))
                     user.UpdateEmail(new Email(dto.email));
 
