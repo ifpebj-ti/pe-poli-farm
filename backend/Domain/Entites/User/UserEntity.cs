@@ -70,5 +70,10 @@ namespace Domain.Entites.User
             Profile = profile ?? throw new ArgumentNullException(nameof(profile));
             ProfileId = profile.Id;
         }
+
+        public void DisableUser()
+        {
+            Active = false;
+        }
     }
 }

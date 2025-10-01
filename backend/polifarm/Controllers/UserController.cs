@@ -125,5 +125,27 @@ namespace WebApi.Controllers
             return Ok(new MessageSuccessResponseModel(result.Message));
         }
 
+        /// <summary>
+        /// Desativa um usuário pelo ID
+        /// <returns>Mensagem de sucesso na operação</returns>
+        /// <response code="200">Usuaro desativado com sucesso</response>
+        /// <response code="400">Erro na operação</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="409">Erro de conflito</response>
+        [HttpPatch("disable/{userId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<ActionResult<MessageSuccessResponseModel>> DisableUser([FromRoute, Required] Guid userId, [FromServices] DisableUserUseCase disableUserUseCase)
+        {
+            var result = await disableUserUseCase.Execute(userId);
+
+            if (result.IsFailure)
+                return StatusCode((int)result.ErrorDetails!.Status!, result.ErrorDetails);
+
+            _logger.LogInformation("Usuário desativado com sucesso");
+            return Ok(new MessageSuccessResponseModel(result.Message));
+        }
     }
-    }
+}

@@ -28,6 +28,7 @@ namespace Webapi.Configuration
             services.AddScoped<UpdateUserPasswordUseCase>();
             services.AddScoped<ReturnsAllUsersUseCase>();
             services.AddScoped<UpdateUserUseCase>();
+            services.AddScoped<DisableUserUseCase>();
 
             // Profiles
             services.AddScoped<IProfileRepositoryGateway, ProfileRepositoryGateway>();
