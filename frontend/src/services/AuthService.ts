@@ -1,15 +1,18 @@
 import { getSession } from 'next-auth/react';
 
-import { AxiosError } from 'axios';
+import axios, { AxiosError } from 'axios';
 
 import { api } from './api';
 
 export async function Login(email: string, password: string) {
   try {
-    const response = await api.post('/Auth', {
-      email,
-      password
-    });
+    const response = await axios.post(
+      `${process.env.NEXT_INTERNAL_API_URL || process.env.NEXT_PUBLIC_BASE_URL}/Auth`,
+      {
+        email,
+        password
+      }
+    );
     return response;
   } catch (error) {
     if (error instanceof AxiosError) {

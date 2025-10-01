@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { PublicEnvScript } from 'next-runtime-env';
 import { Geist, Geist_Mono } from 'next/font/google';
 
 import './globals.css';
@@ -45,9 +44,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-br">
-      <head>
-        <PublicEnvScript />
-      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
