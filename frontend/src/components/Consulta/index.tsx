@@ -375,8 +375,19 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
           <Typography variant="h6" color="black" sx={{ mb: 2 }}>
             Neuro
           </Typography>
-          <Grid container spacing={2} mb={3}>
-            <Grid size={4}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: 2,
+              mb: 3,
+              '& > div': {
+                flexGrow: 1,
+                minWidth: { xs: '100%', md: '30%' }
+              }
+            }}
+          >
+            <Box>
               <Typography sx={{ color: 'grey.700' }}>
                 Bulhas Cardíacas:
               </Typography>
@@ -400,8 +411,8 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 </MenuItem>
                 <MenuItem value="Outro">Outro</MenuItem>
               </Select>
-            </Grid>
-            <Grid size={4}>
+            </Box>
+            <Box>
               <Typography sx={{ color: 'grey.700' }}>Pulso:</Typography>
               <Select
                 fullWidth
@@ -426,8 +437,8 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 <MenuItem value="Alternante">Alternante</MenuItem>
                 <MenuItem value="Paradoxal">Paradoxal</MenuItem>
               </Select>
-            </Grid>
-            <Grid size={4}>
+            </Box>
+            <Box>
               <Typography sx={{ color: 'grey.700' }}>
                 Ritmo Cardíaco:
               </Typography>
@@ -462,14 +473,25 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 <MenuItem value="Taquicardia">Taquicardia</MenuItem>
                 <MenuItem value="Outro Ritmo">Outro Ritmo</MenuItem>
               </Select>
-            </Grid>
-          </Grid>
+            </Box>
+          </Box>
           {/* Exame Neurológico */}
           <Typography variant="h6" color="black" sx={{ mb: 2 }}>
             Exame Neurológico
           </Typography>
-          <Grid container spacing={2} mb={3}>
-            <Grid size={3}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: 2,
+              mb: 3,
+              '& > div': {
+                flexGrow: 1,
+                minWidth: { xs: '100%', sm: '45%', md: '22%' }
+              }
+            }}
+          >
+            <Box>
               <Typography sx={{ color: 'grey.700' }}>Pupilas:</Typography>
               <Select
                 fullWidth
@@ -491,8 +513,8 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                   Sem Reação Fotomotora
                 </MenuItem>
               </Select>
-            </Grid>
-            <Grid size={3}>
+            </Box>
+            <Box>
               <Typography sx={{ color: 'grey.700' }}>Fala:</Typography>
               <Select
                 fullWidth
@@ -513,8 +535,8 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 <MenuItem value="Bradilalia">Bradilalia</MenuItem>
                 <MenuItem value="Taquilalia">Taquilalia</MenuItem>
               </Select>
-            </Grid>
-            <Grid size={3}>
+            </Box>
+            <Box>
               <Typography sx={{ color: 'grey.700' }}>
                 Nível de Consciência:
               </Typography>
@@ -536,8 +558,8 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 <MenuItem value="Comatoso">Comatoso</MenuItem>
                 <MenuItem value="Letárgico">Letárgico</MenuItem>
               </Select>
-            </Grid>
-            <Grid size={3}>
+            </Box>
+            <Box>
               <Typography sx={{ color: 'grey.700' }}>
                 Resposta Motora:
               </Typography>
@@ -559,8 +581,8 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 </MenuItem>
                 <MenuItem value="Sem Resposta">Sem Resposta</MenuItem>
               </Select>
-            </Grid>
-          </Grid>
+            </Box>
+          </Box>
           {/* Blocos de texto */}
           <Grid container spacing={2} mb={3}>
             <Grid size={4}>
