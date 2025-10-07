@@ -23,7 +23,20 @@ export default function CardNovoAcesso() {
   const { form, submitForm } = useCardNovaSenha();
 
   return (
-    <Card className="flex flex-col justify-between bg-[#BED6EF] w-[478px] p-[30px] rounded-[20px] absolute right-[150px] self-center border-gray-600">
+    // Ajuste de classes para responsividade e centralização:
+    // 1. max-w-[478px] w-[90%]: Limita a largura, mas permite encolher em mobile.
+    // 2. flex: Centraliza o conteúdo verticalmente.
+    // 3. Centralização em mobile: absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+    // 4. Posicionamento em desktop (md): Adicionado 'md:right-[150px] md:left-auto md:transform-none'
+    <Card
+      className="
+        flex flex-col justify-between bg-[#BED6EF] p-[30px] rounded-[20px] 
+        max-w-[478px] w-[90%] 
+        absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
+        border-gray-600 
+        md:right-[150px] md:left-auto md:transform-none md:self-center
+      "
+    >
       <button className="w-fit text-xl" onClick={() => router.push('/')}>
         <FiArrowLeft color="black" />
       </button>
@@ -134,13 +147,14 @@ export default function CardNovoAcesso() {
               type="submit"
               disabled={form.formState.isSubmitting}
             >
-              {form.formState.isSubmitting && (
+              {form.formState.isSubmitting ? (
                 <>
-                  <LuLoader className="animate-spin" />
+                  <LuLoader className="animate-spin mr-2" />
                   Carregando...
                 </>
+              ) : (
+                'Entrar'
               )}
-              {!form.formState.isSubmitting && 'Entrar'}
             </Button>
           </form>
         </Form>

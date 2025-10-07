@@ -40,20 +40,30 @@ export default function MenuInicio() {
     <Box
       sx={{
         display: 'flex',
-        justifyContent: 'space-between',
-        gap: 2, // Espaçamento entre os cartões
-        flexWrap: 'wrap', // Permite que os itens quebrem a linha em telas menores
-        backgroundColor: 'background.default', // Cor de fundo do menu
-        width: '100%' // Largura total do menu
+        // Centraliza os itens quando a largura total não é usada
+        justifyContent: 'center',
+        gap: 2,
+        flexWrap: 'wrap',
+        backgroundColor: 'background.default',
+        width: '100%',
+        // Adiciona padding para que os itens não colem nas laterais em mobile
+        px: { xs: 2, md: 0 }
       }}
     >
       {menuItems.map((item, index) => (
         <Paper
           key={index}
-          elevation={2} // Controla a sombra do cartão
+          elevation={2}
           sx={{
-            width: '17%', // Largura fixa para cada cartão
-            boxShadow: 2, // Sombra do cartão
+            // Ajuste de Largura Responsiva:
+            // xs (Mobile): 100% de largura (um item por linha)
+            // sm (Tablet): 48% de largura (dois itens por linha)
+            // md (Desktop): '18%' (aproximação do 17% original, mas permitindo flexibilidade)
+            width: { xs: '100%', sm: '48%', md: '18%' },
+            boxShadow: 2,
+            // Garante que o item ocupe a largura completa em mobile, mas permita a quebra em desktop
+            flexGrow: 1,
+            minWidth: { xs: 'auto', md: 150 }, // Largura mínima em desktop
             '&:hover': {
               elevation: 4,
               backgroundColor: 'action.hover'
@@ -62,21 +72,30 @@ export default function MenuInicio() {
         >
           <Button
             fullWidth
-            href={item.link} // Define o link de navegação do botão
+            href={item.link}
             sx={{
               display: 'flex',
-              flexDirection: 'row', // Organiza ícone e texto na vertical
+              // Altera a direção para vertical (ícone acima, texto abaixo)
+              flexDirection: 'column',
               alignItems: 'center',
-              justifyContent: 'space-between',
-              py: 3, // Padding vertical
-              px: 2, // Padding horizontal
-              textTransform: 'none', // Remove a transformação para maiúsculas
-              color: 'text.primary' // Cor do texto
+              justifyContent: 'center', // Centraliza o ícone e o texto verticalmente
+              py: 3,
+              px: 2,
+              textTransform: 'none',
+              color: 'text.primary',
+              minHeight: 120 // Garante altura mínima para melhor clique
             }}
           >
             {/* O ícone é renderizado aqui */}
-            {cloneElement(item.icon, { sx: { color: 'primary.main' } })}
-            <Typography variant="body1" component="span" color="primary.main">
+            {cloneElement(item.icon, {
+              sx: { color: 'primary.main', mb: 1.5 }
+            })}
+            <Typography
+              variant="body1"
+              component="span"
+              color="text.primary"
+              sx={{ textAlign: 'center' }} // Centraliza o texto
+            >
               {item.text}
             </Typography>
           </Button>
