@@ -52,5 +52,28 @@ namespace Domain.Entites.User
         public AccessCodeEntity AccessCode { get; private set; } = null!;
         public ICollection<NotesEntity> NotesEntity { get; private set; }
 
+
+        public void UpdateName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Nome inválido.");
+            Name = name;
+        }
+
+        public void UpdateEmail(Email email)
+        {
+            Email = email ?? throw new ArgumentNullException(nameof(email));
+        }
+
+        public void UpdateProfile(ProfileEntity profile)
+        {
+            Profile = profile ?? throw new ArgumentNullException(nameof(profile));
+            ProfileId = profile.Id;
+        }
+
+        public void DisableUser()
+        {
+            Active = false;
+        }
     }
 }
