@@ -1,6 +1,7 @@
 using WebApi.ResponseModels.Anamnese;
 using WebApi.ResponseModels.HealthAndDisease;
 using WebApi.ResponseModels.MedicalRecord;
+using WebApi.ResponseModels.PatientExam;
 using WebApi.ResponseModels.PatientMedications;
 
 namespace WebApi.ResponseModels.MedicalRecord;
@@ -13,6 +14,7 @@ public class MedicalRecordResponseBuilder
     private AnamneseResponse? _anamnese;
     private HealthAndDiseaseResponse? _healthAndDisease;
     private List<PatientPrescriptionResponse>? _patientMedications;
+    private List<PatientExamResponse>? _patientExams;
 
     public MedicalRecordResponseBuilder WithId(Guid id)
     {
@@ -50,6 +52,12 @@ public class MedicalRecordResponseBuilder
         return this;
     }
 
+    public MedicalRecordResponseBuilder WithPatientExams(List<PatientExamResponse>? patientExams)
+    {
+        _patientExams = patientExams;
+        return this;
+    }
+
     public MedicalRecordResponse Build()
     {
         return new MedicalRecordResponse(
@@ -58,7 +66,8 @@ public class MedicalRecordResponseBuilder
             _statusInCaseOfAdmission,
             _anamnese,
             _healthAndDisease,
-            _patientMedications
+            _patientMedications,
+            _patientExams
         );
     }
 }
