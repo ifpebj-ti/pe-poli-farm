@@ -1,6 +1,6 @@
 using WebApi.ResponseModels.Anamnese;
 using WebApi.ResponseModels.HealthAndDisease;
-using WebApi.ResponseModels.PatientExams;
+using WebApi.ResponseModels.PatientExam;
 using WebApi.ResponseModels.PatientMedications;
 
 namespace WebApi.ResponseModels.MedicalRecord;
@@ -12,5 +12,5 @@ public record MedicalRecordResponse(
     AnamneseResponse? Anamnese,
     HealthAndDiseaseResponse? HealthAndDisease,
     List<PatientPrescriptionResponse>? PatientMedications,
-    List<PatientExamResponse>? PatientExams
+    List<PatientExamResponse>? PatientExams 
 );

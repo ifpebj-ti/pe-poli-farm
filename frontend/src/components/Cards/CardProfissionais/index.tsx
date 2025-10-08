@@ -3,8 +3,13 @@
 import { useRouter } from 'next/navigation';
 import React, { useMemo, useState } from 'react';
 
-// Importações do Material-UI
-import { useDebounce } from '@/src/app/(auth-routes)/Pacientes/hooks/useDebounce';
+// PopUps
+import PopUpConfirmacaoAtivar from '@/src/components/PopUp/PopUpConfirmacaoAtivar';
+import PopUpConfirmacaoDesativar from '@/src/components/PopUp/PopUpConfirmacaoDesativar';
+import PopUpConfirmacao from '@/src/components/PopUp/PopUpConfirmaçãoProfissionais';
+import PopUpEditar from '@/src/components/PopUp/PopUpEditarProfissionais';
+
+// MUI
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
 import {
@@ -22,12 +27,21 @@ import {
   Button,
   Chip,
   Pagination,
-  CircularProgress
+  CircularProgress,
+  useMediaQuery
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 import { useProfissionais } from './hooks/UseProfissionais';
 
-// Importações de Ícones do Material-UI
+// 🔹 Interface para tipar os dados
+interface Profissional {
+  id: string;
+  name: string;
+  email: string;
+  position: string;
+  status: string;
+}
 
 // Componente da tela
 export function CardProfissionais() {
@@ -35,32 +49,39 @@ export function CardProfissionais() {
   const { profissionais, isLoading, error } = useProfissionais();
 
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+  const [openEdit, setOpenEdit] = useState(false);
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const [openDesativar, setOpenDesativar] = useState(false);
+  const [openAtivar, setOpenAtivar] = useState(false);
+  const [selectedProf, setSelectedProf] = useState<Profissional | null>(null);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const filteredProfissionais = useMemo(() => {
-    if (!debouncedSearchTerm) {
-      return profissionais;
-    }
-    return profissionais.filter(
+    if (!searchTerm) return profissionais as Profissional[];
+    return (profissionais as Profissional[]).filter(
       (p) =>
-        p.name.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
-        p.email.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
+        p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.email.toLowerCase().includes(searchTerm.toLowerCase())
     );
-  }, [profissionais, debouncedSearchTerm]);
+  }, [profissionais, searchTerm]);
 
   return (
-    <Box sx={{ p: 4, backgroundColor: '#f4f6f8', flexGrow: 1 }}>
+    <Box sx={{ p: { xs: 2, md: 4 }, backgroundColor: '#f4f6f8', flexGrow: 1 }}>
       {/* Cabeçalho com Título e Barra de Busca */}
       <Box
         sx={{
           display: 'flex',
+          flexDirection: { xs: 'column', sm: 'row' },
           justifyContent: 'space-between',
-          alignItems: 'center',
+          alignItems: { xs: 'stretch', sm: 'center' },
+          gap: 2,
           mb: 3
         }}
       >
         <Typography
-          variant="h4"
+          variant={isMobile ? 'h5' : 'h4'}
           component="h1"
           sx={{ fontWeight: 'bold', color: '#333' }}
         >
@@ -69,7 +90,10 @@ export function CardProfissionais() {
         <TextField
           variant="outlined"
           placeholder="Pesquise por nome ou email"
-          sx={{ width: '300px', backgroundColor: 'white' }}
+          sx={{
+            width: { xs: '100%', sm: '300px' },
+            backgroundColor: 'white'
+          }}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           InputProps={{
@@ -88,8 +112,12 @@ export function CardProfissionais() {
           <TableHead sx={{ backgroundColor: '#eef2f6' }}>
             <TableRow>
               <TableCell sx={{ fontWeight: 'bold' }}>Profissional</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Email</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Perfil</TableCell>
+              {!isMobile && (
+                <TableCell sx={{ fontWeight: 'bold' }}>Email</TableCell>
+              )}
+              {!isMobile && (
+                <TableCell sx={{ fontWeight: 'bold' }}>Perfil</TableCell>
+              )}
               <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
               <TableCell align="center" sx={{ fontWeight: 'bold' }}>
                 Ações
@@ -99,14 +127,22 @@ export function CardProfissionais() {
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={5} align="center" sx={{ py: 4 }}>
+                <TableCell
+                  colSpan={isMobile ? 3 : 5}
+                  align="center"
+                  sx={{ py: 4 }}
+                >
                   <CircularProgress />
                   <Typography>Carregando profissionais...</Typography>
                 </TableCell>
               </TableRow>
             ) : error ? (
               <TableRow>
-                <TableCell colSpan={5} align="center" sx={{ py: 4 }}>
+                <TableCell
+                  colSpan={isMobile ? 3 : 5}
+                  align="center"
+                  sx={{ py: 4 }}
+                >
                   <Typography color="error">{error}</Typography>
                 </TableCell>
               </TableRow>
@@ -127,8 +163,8 @@ export function CardProfissionais() {
                   >
                     {profissional.name}
                   </TableCell>
-                  <TableCell>{profissional.email}</TableCell>
-                  <TableCell>{profissional.position}</TableCell>
+                  {!isMobile && <TableCell>{profissional.email}</TableCell>}
+                  {!isMobile && <TableCell>{profissional.position}</TableCell>}
                   <TableCell>
                     <Chip
                       label={profissional.status}
@@ -148,13 +184,33 @@ export function CardProfissionais() {
                   </TableCell>
                   <TableCell align="center">
                     <Box
-                      sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}
+                      sx={{
+                        display: 'flex',
+                        flexDirection: { xs: 'column', sm: 'row' },
+                        gap: 1,
+                        justifyContent: 'center'
+                      }}
                     >
-                      <Button variant="contained" color="primary" size="small">
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                        fullWidth={isMobile}
+                        onClick={() => setOpenEdit(true)}
+                      >
                         Editar
                       </Button>
                       {profissional.status === 'Ativo' ? (
-                        <Button variant="contained" color="error" size="small">
+                        <Button
+                          variant="contained"
+                          color="error"
+                          size="small"
+                          fullWidth={isMobile}
+                          onClick={() => {
+                            setSelectedProf(profissional);
+                            setOpenDesativar(true);
+                          }}
+                        >
                           Desativar
                         </Button>
                       ) : (
@@ -162,6 +218,11 @@ export function CardProfissionais() {
                           variant="contained"
                           color="success"
                           size="small"
+                          fullWidth={isMobile}
+                          onClick={() => {
+                            setSelectedProf(profissional);
+                            setOpenAtivar(true);
+                          }}
                         >
                           Ativar
                         </Button>
@@ -179,12 +240,21 @@ export function CardProfissionais() {
       <Box
         sx={{
           display: 'flex',
+          flexDirection: { xs: 'column', sm: 'row' },
           justifyContent: 'flex-end',
           alignItems: 'center',
+          gap: 2,
           mt: 3
         }}
       >
-        <Pagination count={5} color="primary" sx={{ mr: '35%' }} />
+        <Pagination
+          count={5}
+          color="primary"
+          sx={{
+            mr: { xs: 0, sm: '35%' },
+            alignSelf: { xs: 'center', sm: 'end' }
+          }}
+        />
         <Button
           variant="outlined"
           color="primary"
@@ -193,13 +263,39 @@ export function CardProfissionais() {
             fontWeight: 'bold',
             borderRadius: 8,
             textTransform: 'none',
-            padding: '8px 16px'
+            px: 3,
+            py: 1,
+            width: { xs: '100%', sm: 'auto' }
           }}
           onClick={() => router.push('/CadastroUsuario')}
         >
           Novo Cadastro
         </Button>
       </Box>
+
+      {/* Popups */}
+      <PopUpEditar
+        open={openEdit}
+        onClose={() => setOpenEdit(false)}
+        profissional={selectedProf || undefined}
+        onSave={() => setOpenConfirm(true)}
+      />
+      <PopUpConfirmacao
+        open={openConfirm}
+        onClose={() => setOpenConfirm(false)}
+      />
+      <PopUpConfirmacaoDesativar
+        open={openDesativar}
+        onClose={() => setOpenDesativar(false)}
+        onConfirm={() => setOpenDesativar(false)}
+        profissionalNome={selectedProf?.name}
+      />
+      <PopUpConfirmacaoAtivar
+        open={openAtivar}
+        onClose={() => setOpenAtivar(false)}
+        onConfirm={() => setOpenAtivar(false)}
+        profissionalNome={selectedProf?.name}
+      />
     </Box>
   );
 }

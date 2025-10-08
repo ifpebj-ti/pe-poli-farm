@@ -13,8 +13,6 @@ import {
   DialogTitle,
   Typography
 } from '@mui/material';
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
 
 interface PopupDetalhesTratamentoProps {
   open: boolean;
@@ -92,12 +90,8 @@ export default function PopupDetalhesTratamento({
                 </Typography>
 
                 <Typography sx={{ mb: 1 }}>
-                  <strong>Início:</strong>{' '}
-                  {format(
-                    new Date(tratamento.dataInicio.replace(/-/g, '/')),
-                    'dd/MM/yyyy',
-                    { locale: ptBR }
-                  )}
+                  <strong>Início:</strong>
+                  {'17/07/2025'}
                 </Typography>
 
                 <Typography sx={{ mb: 1 }}>

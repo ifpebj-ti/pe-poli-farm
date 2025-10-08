@@ -108,7 +108,13 @@ export default function TelaAgendamentoContent() {
 
     return (
       <Box
-        sx={{ display: 'flex', height: '100%', borderTop: '1px solid #eee' }}
+        // Responsividade: permite rolagem horizontal
+        sx={{
+          display: 'flex',
+          height: '100%',
+          borderTop: '1px solid #eee',
+          overflowX: 'auto'
+        }}
       >
         <Box sx={{ width: '60px', flexShrink: 0, pt: '15px' }}>
           {hours.map((hour) => (
@@ -133,7 +139,12 @@ export default function TelaAgendamentoContent() {
           ))}
         </Box>
         <Box
-          sx={{ flex: 1, borderLeft: '1px solid #eee', position: 'relative' }}
+          sx={{
+            flex: 1,
+            minWidth: '300px',
+            borderLeft: '1px solid #eee',
+            position: 'relative'
+          }} // Adicionado minWidth
         >
           {hours.map((hour) => (
             <Box
@@ -200,7 +211,14 @@ export default function TelaAgendamentoContent() {
             </Box>
           ))}
         </Box>
-        <Box sx={{ display: 'flex', flexGrow: 1, overflowY: 'auto' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexGrow: 1,
+            overflowY: 'auto',
+            overflowX: 'auto'
+          }}
+        >
           <Box sx={{ width: '60px', flexShrink: 0 }}>
             {hours.map((hour) => (
               <Box
@@ -222,7 +240,15 @@ export default function TelaAgendamentoContent() {
               </Box>
             ))}
           </Box>
-          <Box sx={{ flexGrow: 1, display: 'flex', position: 'relative' }}>
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: 'flex',
+              position: 'relative',
+              minWidth: '400px'
+            }}
+          >
+            {' '}
             {hours.map((hour) => (
               <Box
                 key={hour}
@@ -411,7 +437,6 @@ export default function TelaAgendamentoContent() {
       </Box>
     );
   };
-
   const renderAgendaAno = () => {
     const year = currentDate.getFullYear();
     const anoEventos = eventos
@@ -459,11 +484,13 @@ export default function TelaAgendamentoContent() {
         p: 3,
         bgcolor: 'white',
         minHeight: 'calc(100vh - 112px)',
+        // Responsividade: muda de flex-row para flex-col em telas pequenas
         display: 'flex',
+        flexDirection: { xs: 'column', md: 'row' },
         gap: 3
       }}
     >
-      <Box sx={{ flex: 1, maxWidth: '400px' }}>
+      <Box sx={{ flex: 1, maxWidth: { xs: '100%', md: '400px' } }}>
         <Typography
           variant="h4"
           sx={{ mb: 3, fontWeight: 500, color: 'black' }}
@@ -472,16 +499,16 @@ export default function TelaAgendamentoContent() {
         </Typography>
         <Paper sx={{ p: 2, borderRadius: '10px', boxShadow: 3 }}>
           <Grid container spacing={2}>
-            <Grid size={{ xs: 12 }}>
+            <Grid size={12}>
               <TextField label="Nome Completo:" fullWidth />
             </Grid>
-            <Grid size={{ xs: 12 }}>
+            <Grid size={12}>
               <TextField label="Profissional:" fullWidth />
             </Grid>
-            <Grid size={{ xs: 12 }}>
+            <Grid size={12}>
               <TextField label="Motivo:" fullWidth />
             </Grid>
-            <Grid size={{ xs: 6 }}>
+            <Grid size={6}>
               <TextField
                 label="Data:"
                 type="date"
@@ -489,7 +516,7 @@ export default function TelaAgendamentoContent() {
                 fullWidth
               />
             </Grid>
-            <Grid size={{ xs: 6 }}>
+            <Grid size={6}>
               <TextField
                 label="Hora:"
                 type="time"
@@ -497,11 +524,11 @@ export default function TelaAgendamentoContent() {
                 fullWidth
               />
             </Grid>
-            <Grid size={{ xs: 12 }}>
+            <Grid size={12}>
               <TextField label="Observação:" multiline rows={4} fullWidth />
             </Grid>
             <Grid
-              size={{ xs: 12 }}
+              size={12}
               sx={{
                 display: 'flex',
                 justifyContent: 'space-between',
@@ -518,7 +545,8 @@ export default function TelaAgendamentoContent() {
                   textTransform: 'none',
                   px: 5,
                   height: 40,
-                  '&:hover': { backgroundColor: '#d32f2f' }
+                  '&:hover': { backgroundColor: '#d32f2f' },
+                  flex: 1 // Faz o botão ocupar o espaço disponível
                 }}
               >
                 Cancelar
@@ -531,7 +559,8 @@ export default function TelaAgendamentoContent() {
                   textTransform: 'none',
                   px: 5,
                   height: 40,
-                  '&:hover': { backgroundColor: '#086506' }
+                  '&:hover': { backgroundColor: '#086506' },
+                  flex: 1
                 }}
                 onClick={handleAgendar}
               >
@@ -556,9 +585,12 @@ export default function TelaAgendamentoContent() {
           <Box
             sx={{
               display: 'flex',
+              // Responsividade: envolve os botões em telas pequenas
+              flexDirection: { xs: 'column', sm: 'row' },
               justifyContent: 'space-between',
-              alignItems: 'center',
-              mb: 2
+              alignItems: { xs: 'flex-start', sm: 'center' }, // Alinha no topo em telas pequenas
+              mb: 2,
+              gap: { xs: 2, sm: 0 } // Espaçamento entre os elementos
             }}
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>

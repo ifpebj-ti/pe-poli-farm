@@ -109,10 +109,11 @@ export default function NovoAtendimento() {
       <Box
         component="main" // Define o papel semântico do container
         sx={{
-          flexGrow: 1, // Faz este container ocupar todo o espaço vertical disponível // Adiciona um padding unificado (em cima, dos lados e embaixo)
-          px: { xs: 2, md: 4 },
+          flexGrow: 1,
           display: 'flex',
-          flexDirection: 'column' // Padding horizontal um pouco maior para telas grandes
+          flexDirection: 'column',
+          justifyContent: 'flex-start', // Faz este container ocupar todo o espaço vertical disponível // Adiciona um padding unificado (em cima, dos lados e embaixo)
+          p: { xs: 2, md: 4 } // Padding horizontal um pouco maior para telas grandes
         }}
       >
         {/* BreadCrumb vem primeiro */}

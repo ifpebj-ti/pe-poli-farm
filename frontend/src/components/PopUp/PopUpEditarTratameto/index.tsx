@@ -14,8 +14,6 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
 
 interface PopupEditarTratamentoProps {
   open: boolean;
@@ -118,12 +116,7 @@ export default function PopupEditarTratamento({
                 </Typography>
 
                 <Typography sx={{ mb: 1 }}>
-                  <strong>Início:</strong>{' '}
-                  {format(
-                    new Date(tratamento.dataInicio.replace(/-/g, '/')),
-                    'dd/MM/yyyy',
-                    { locale: ptBR }
-                  )}
+                  <strong>Início:</strong> {tratamento.dataInicio}
                 </Typography>
 
                 <Box sx={{ mb: 2 }}>

@@ -20,13 +20,26 @@ import {
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
-// Dados simulados
-const exames = Array.from({ length: 7 }, () => ({
-  nome: `Nome Paciente`,
-  profissional: 'Dra. Ana Souza',
-  data: '2025-05-01',
-  tipoExame: 'Hemograma Completo'
-}));
+const exames = [
+  {
+    nome: 'Netinho',
+    profissional: 'Dr. João Silva',
+    data: '2025-07-17',
+    tipoExame: 'Hemograma'
+  },
+  {
+    nome: 'Teste',
+    profissional: 'Dr. João Silva',
+    data: '2025-07-17',
+    tipoExame: 'Raio-X'
+  },
+  {
+    nome: 'Carlos Andrade',
+    profissional: 'Dr. João Silva',
+    data: '2025-07-17',
+    tipoExame: 'Eco Cardiograma'
+  }
+];
 
 export default function TabelaHistoricoExames() {
   const [open, setOpen] = useState(false);
@@ -43,75 +56,109 @@ export default function TabelaHistoricoExames() {
   };
 
   return (
-    <Box sx={{ px: 4, pt: 3, display: 'flex', justifyContent: 'center' }}>
+    <Box
+      sx={{
+        px: { xs: 2, sm: 4 },
+        pt: 3,
+        display: 'flex',
+        justifyContent: 'center'
+      }}
+    >
       <Box sx={{ width: '100%', maxWidth: 1100 }}>
         <TableContainer component={Paper} elevation={1}>
           <Table>
             <TableHead>
               <TableRow sx={{ backgroundColor: '#e0ecff' }}>
-                <TableCell sx={{ paddingY: 1 }}>PACIENTE</TableCell>
-                <TableCell sx={{ paddingY: 1 }}>
+                <TableCell sx={{ paddingY: 1, whiteSpace: 'nowrap' }}>
+                  PACIENTE
+                </TableCell>
+                <TableCell sx={{ paddingY: 1, whiteSpace: 'nowrap' }}>
                   PROFISSIONAL SOLICITANTE
                 </TableCell>
-                <TableCell sx={{ paddingY: 1 }}>DATA</TableCell>
-                <TableCell sx={{ paddingY: 1 }}>TIPO DE EXAME</TableCell>
-                <TableCell align="right" sx={{ paddingY: 1 }} />
+                <TableCell sx={{ paddingY: 1, whiteSpace: 'nowrap' }}>
+                  DATA
+                </TableCell>
+                <TableCell sx={{ paddingY: 1, whiteSpace: 'nowrap' }}>
+                  TIPO DE EXAME
+                </TableCell>
+                <TableCell
+                  align="right"
+                  sx={{ paddingY: 1, whiteSpace: 'nowrap' }}
+                />
               </TableRow>
             </TableHead>
 
             <TableBody>
               {exames.map((exame, index) => (
                 <TableRow key={index}>
+                  {/* Nome do Paciente */}
                   <TableCell sx={{ paddingY: 1 }}>
                     <Typography sx={{ color: '#1351B4', cursor: 'pointer' }}>
                       {exame.nome}
                     </Typography>
                   </TableCell>
-                  <TableCell sx={{ paddingY: 1 }}>
+                  {/* Profissional Solicitante */}
+                  <TableCell sx={{ paddingY: 1, whiteSpace: 'nowrap' }}>
                     {exame.profissional}
                   </TableCell>
-                  <TableCell sx={{ paddingY: 1 }}>
+                  {/* Data */}
+                  <TableCell sx={{ paddingY: 1, whiteSpace: 'nowrap' }}>
                     {format(
                       new Date(exame.data.replace(/-/g, '/')),
                       'dd/MM/yyyy',
                       { locale: ptBR }
                     )}
                   </TableCell>
-                  <TableCell sx={{ paddingY: 1 }}>{exame.tipoExame}</TableCell>
+                  {/* Tipo de Exame */}
+                  <TableCell sx={{ paddingY: 1, whiteSpace: 'nowrap' }}>
+                    {exame.tipoExame}
+                  </TableCell>
+                  {/* Célula de Ações */}
                   <TableCell align="right" sx={{ paddingY: 1 }}>
-                    <Button
-                      variant="contained"
-                      size="small"
+                    <Box
+                      // Empilha os botões verticalmente em telas pequenas
                       sx={{
-                        backgroundColor: '#1351B4',
-                        borderRadius: '8px',
-                        textTransform: 'none',
-                        fontWeight: 500,
-                        minWidth: 120,
-                        height: 30,
-                        marginRight: '18px',
-                        '&:hover': { backgroundColor: '#0f479e' }
-                      }}
-                      onClick={() => handleOpen(exame)}
-                    >
-                      VER MAIS
-                    </Button>
-                    <Button
-                      variant="contained"
-                      size="small"
-                      onClick={() => handleOpen(exame)}
-                      sx={{
-                        backgroundColor: '#0E930B',
-                        borderRadius: '8px',
-                        textTransform: 'none',
-                        fontWeight: 500,
-                        minWidth: 120,
-                        height: 30,
-                        '&:hover': { backgroundColor: '#086506' }
+                        display: 'flex',
+                        flexDirection: { xs: 'column', sm: 'row' },
+                        gap: { xs: 1, sm: 0 }, // Espaçamento vertical em mobile
+                        alignItems: 'flex-end',
+                        justifyContent: 'flex-end'
                       }}
                     >
-                      BAIXAR PDF
-                    </Button>
+                      <Button
+                        variant="contained"
+                        size="small"
+                        sx={{
+                          backgroundColor: '#1351B4',
+                          borderRadius: '8px',
+                          textTransform: 'none',
+                          fontWeight: 500,
+                          minWidth: 120,
+                          height: 30,
+                          marginRight: { xs: 0, sm: '18px' }, // Remove margem direita em mobile
+                          '&:hover': { backgroundColor: '#0f479e' }
+                        }}
+                        onClick={() => handleOpen(exame)}
+                      >
+                        VER MAIS
+                      </Button>
+                      <Button
+                        variant="contained"
+                        size="small"
+                        onClick={() => handleOpen(exame)}
+                        sx={{
+                          backgroundColor: '#0E930B',
+                          borderRadius: '8px',
+                          textTransform: 'none',
+                          fontWeight: 500,
+                          minWidth: 120,
+                          height: 30,
+                          '&:hover': { backgroundColor: '#086506' }
+                        }}
+                      >
+                        BAIXAR PDF
+                      </Button>
+                    </Box>
                   </TableCell>
                 </TableRow>
               ))}
@@ -124,7 +171,7 @@ export default function TabelaHistoricoExames() {
         </Box>
       </Box>
 
-      {/* 🔥 Pop-up de Detalhes funcionando corretamente */}
+      {/* Pop-up de Detalhes funcionando corretamente */}
       <PopupDetalhes open={open} handleClose={handleClose} />
     </Box>
   );
