@@ -8,7 +8,7 @@ namespace WebApi.Validators.User
         public UpdateUserDTOValidator()
         {
             RuleFor(x => x.profileId)
-                .NotEmpty().WithMessage("O Id do perfil é obrigatório.");
+                .NotEmpty().WithMessage("O Id do profile é obrigatório.");
 
             RuleFor(x => x.name)
                 .MaximumLength(200)
