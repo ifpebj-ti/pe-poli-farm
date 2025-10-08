@@ -91,6 +91,14 @@ export type MedicalRecord = {
   anamnese: Anamnese;
   healthAndDisease: HealthAndDisease;
   patientMedications: PatientMedication[];
+  patientExam: PatientExam[];
+};
+
+export type PatientExam = {
+  name: string;
+  description: string;
+  priority: string;
+  // Adicione outros campos se precisar mostrar na tela
 };
 
 export type Service = {

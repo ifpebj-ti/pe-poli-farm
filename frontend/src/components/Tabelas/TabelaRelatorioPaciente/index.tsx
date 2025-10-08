@@ -13,7 +13,7 @@ import {
 const historico = Array.from({ length: 7 }, () => ({
   resumoClinico: 'Gripe, paracetamol prescrito...',
   profissional: 'Dr. João',
-  data: '2025-05-03',
+  data: '17/07/2025',
   tipoAtendimento: 'Consulta Médica'
 }));
 

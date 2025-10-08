@@ -20,13 +20,26 @@ import {
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
-// Dados simulados
-const exames = Array.from({ length: 7 }, () => ({
-  nome: `Nome Paciente`,
-  profissional: 'Dra. Ana Souza',
-  data: '2025-05-01',
-  tipoExame: 'Hemograma Completo'
-}));
+const exames = [
+  {
+    nome: 'Netinho',
+    profissional: 'Dr. João Silva',
+    data: '2025-07-17',
+    tipoExame: 'Hemograma'
+  },
+  {
+    nome: 'Teste',
+    profissional: 'Dr. João Silva',
+    data: '2025-07-17',
+    tipoExame: 'Raio-X'
+  },
+  {
+    nome: 'Carlos Andrade',
+    profissional: 'Dr. João Silva',
+    data: '2025-07-17',
+    tipoExame: 'Eco Cardiograma'
+  }
+];
 
 export default function TabelaHistoricoExames() {
   const [open, setOpen] = useState(false);

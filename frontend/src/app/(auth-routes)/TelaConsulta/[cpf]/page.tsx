@@ -54,7 +54,7 @@ export default function ConsultaCompletaPage({ params }: ConsultaPageProps) {
 
   const handleProcedimentosClick = () => {
     handleSalvarClick(); // Salva os dados antes de navegar
-    router.push('/Procedimentos'); // Navega para a página TelaProcedimentos
+    router.push(`/Procedimentos/${cpf}`); // Navega para a página TelaProcedimentos
   };
 
   const handleImprimirClick = () => {
