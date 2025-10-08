@@ -35,4 +35,11 @@ public class MedicalRecordResponseModels
 
         return medicalRecordResponse;
     }
+
+    public static List<MedicalRecordResponse> CreateCompleteMedicalRecordResponseList(List<MedicalRecordEntity> medicalRecordEntity)
+    {
+        return medicalRecordEntity.Select(medicalRecord =>
+                   CreateCompleteMedicalRecordResponse(medicalRecord)).ToList();
+    }
+
 }

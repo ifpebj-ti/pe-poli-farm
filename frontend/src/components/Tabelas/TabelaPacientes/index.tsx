@@ -1,4 +1,5 @@
 'use client';
+
 import { Patient } from '@/src/lib/pacientes';
 import { calcularIdade, formatarHorario } from '@/src/lib/utils';
 import {

@@ -98,7 +98,40 @@ export function CardCadastroUser() {
   } = form;
 
   return (
-    <Card className="flex flex-col justify-between bg-[#BED6EF] w-[478px] p-[30px] rounded-[20px] absolute right-[150px] self-center border-gray-600">
+    <Card
+      // Classes Tailwind originais:
+      // className="flex flex-col justify-between bg-[#BED6EF] w-[478px] p-[30px] rounded-[20px] absolute right-[150px] self-center border-gray-600"
+
+      // Substituição responsiva no sx:
+      sx={{
+        backgroundColor: '#BED6EF',
+        borderRadius: '20px',
+        border: '1px solid #4b5563', // border-gray-600 equivalente
+        p: '30px', // padding
+
+        // Estilos para torná-lo responsivo e centralizado:
+        maxWidth: 478, // Largura máxima do card
+        width: '90%', // Garante que o card ocupe 90% da largura em telas menores
+
+        // Centralização do card (substitui 'absolute right-[150px] self-center')
+        position: 'absolute',
+        top: '50%', // Move para o centro vertical
+        left: '50%', // Move para o centro horizontal
+        transform: 'translate(-50%, -50%)', // Ajusta para centralização exata
+
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        alignSelf: 'center', // self-center
+
+        // Ajuste fino para telas maiores para replicar o 'right-[150px]'
+        '@media (min-width: 1000px)': {
+          left: 'unset',
+          right: '150px',
+          transform: 'translateY(-50%)'
+        }
+      }}
+    >
       <CardHeader
         title={
           <Typography

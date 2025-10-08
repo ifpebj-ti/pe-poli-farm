@@ -1,4 +1,4 @@
-﻿using Infra.Database;
+using Infra.Database;
 using Microsoft.EntityFrameworkCore;
 
 namespace Webapi.Configuration

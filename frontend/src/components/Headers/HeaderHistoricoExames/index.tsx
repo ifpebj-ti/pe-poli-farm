@@ -1,5 +1,7 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+
 import SearchIcon from '@mui/icons-material/Search';
 import {
   Box,
@@ -11,16 +13,24 @@ import {
 } from '@mui/material';
 
 export default function HistoricoExamesHeader() {
+  const router = useRouter(); // Inicialize useRouter
+
+  const handleVoltarClick = () => {
+    router.push('/Inicio'); // Navega para a página /Inicio
+  };
   return (
     <Box
       sx={{
         display: 'flex',
+        // Muda para coluna em telas pequenas (xs) e volta para linha em telas médias (md)
+        flexDirection: { xs: 'column', md: 'row' },
         justifyContent: 'space-between',
-        alignItems: 'flex-start',
+        alignItems: { xs: 'flex-start', md: 'flex-start' }, // Alinhamento consistente
         px: 6,
         pt: 6,
         backgroundColor: '#fff',
-        fontFamily: 'Roboto, sans-serif'
+        fontFamily: 'Roboto, sans-serif',
+        gap: { xs: 3, md: 0 } // Adiciona espaçamento vertical em telas pequenas
       }}
     >
       {/* Título */}
@@ -39,17 +49,23 @@ export default function HistoricoExamesHeader() {
       <Box
         sx={{
           display: 'flex',
+          // Muda para coluna em telas pequenas (xs) e mantém a coluna em telas médias (md)
           flexDirection: 'column',
-          alignItems: 'flex-end',
-          gap: 2
+          alignItems: { xs: 'stretch', md: 'flex-end' }, // Estica a busca em telas pequenas
+          gap: 2,
+          // Garante que o container de busca ocupe 100% da largura em telas pequenas
+          width: { xs: '100%', md: 'auto' }
         }}
       >
         <TextField
           placeholder="Pesquise pacientes"
           size="small"
+          fullWidth // Adicionado para ocupar a largura total do container
           sx={{
             backgroundColor: '#f8f8f8',
-            minWidth: 400,
+            // Define a largura mínima/máxima para ser responsiva: 100% em mobile, volta para 400px em desktop
+            minWidth: { xs: '100%', md: 400 },
+            maxWidth: { xs: '100%', md: 400 }, // Garante que não ultrapasse 400px
             fontFamily: 'Roboto, sans-serif',
             '& .MuiOutlinedInput-root': {
               height: 50,
@@ -73,6 +89,7 @@ export default function HistoricoExamesHeader() {
 
         <Button
           variant="outlined"
+          onClick={handleVoltarClick}
           sx={{
             height: 36,
             borderRadius: '18px',
@@ -83,6 +100,8 @@ export default function HistoricoExamesHeader() {
             fontWeight: 400,
             fontFamily: 'Roboto, sans-serif',
             minWidth: 90,
+            // Em telas pequenas, o botão deve se alinhar à direita (se o container estiver 'stretch')
+            alignSelf: { xs: 'flex-end', md: 'flex-end' },
             '&:hover': {
               borderColor: '#0f479e',
               backgroundColor: '#f0f7ff'

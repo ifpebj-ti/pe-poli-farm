@@ -1,4 +1,5 @@
 'use client';
+
 import { useRouter } from 'next/navigation';
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 
@@ -31,7 +32,6 @@ export default function Pacientes() {
   const debouncedBusca = useDebounce(termoBusca, 500);
 
   // --- LÓGICA DE DADOS ---
-  // -> ALTERAÇÃO: Passa o estado 'page' para o hook e recebe 'totalPages'
   const { pacientes: todosPacientes, isLoading, error } = usePacientes();
 
   const pacientesFiltrados = useMemo(() => {
@@ -41,7 +41,6 @@ export default function Pacientes() {
     );
   }, [todosPacientes, debouncedBusca]);
 
-  // -> NOVO: Efeito para resetar a paginação ao mudar os filtros
   const totalPages = useMemo(() => {
     return Math.ceil(pacientesFiltrados.length / PAGE_SIZE);
   }, [pacientesFiltrados]);
@@ -60,7 +59,6 @@ export default function Pacientes() {
     setTermoBusca(e.target.value);
   };
 
-  // -> NOVO: Handler para mudar de página
   const handlePageChange = (
     event: React.ChangeEvent<unknown>,
     newPage: number
@@ -73,12 +71,16 @@ export default function Pacientes() {
     );
     router.push(`/TelaProntuario/${pacienteCPF}`);
   };
+
+  const responsivePadding = { xs: 2, sm: 4, md: 6 }; // Define um objeto de padding responsivo
+
   return (
     <Box
       sx={{ backgroundColor: 'white', minHeight: '100vh', minWidth: '100%' }}
     >
       <NavBar />
-      <Box sx={{ mt: 4, ml: 6 }}>
+      {/* 1. BreadCrumb: Ajusta a margem lateral para ser responsiva */}
+      <Box sx={{ mt: 4, ml: responsivePadding, px: { xs: 2, md: 0 } }}>
         <BreadCrumb {...{ linkList }} />
       </Box>
       <PacientesHeader
@@ -105,8 +107,15 @@ export default function Pacientes() {
           onVerProntuario={handleVerProntuario}
         />
       )}
+      {/* 2. Botão Novo Paciente: Ajusta o padding lateral */}
       <Box
-        sx={{ display: 'flex', justifyContent: 'flex-end', my: 2, px: '13%' }}
+        sx={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          my: 2,
+          // O padding lateral agora é responsivo
+          px: responsivePadding
+        }}
       >
         <Button
           variant="outlined"
@@ -115,11 +124,13 @@ export default function Pacientes() {
           sx={{
             borderColor: '#1351B4',
             color: '#1351B4',
-            borderRadius: '50px', // Deixei bem arredondado como no print
+            borderRadius: '50px',
             textTransform: 'none',
             fontWeight: 'bold',
             paddingX: 3,
             paddingY: 0.8,
+            // 3. Ocupa largura total em mobile e volta à largura original em md
+            width: { xs: '100%', md: 'auto' },
             '&:hover': {
               backgroundColor: 'rgba(19, 81, 180, 0.04)',
               borderColor: '#1351B4'

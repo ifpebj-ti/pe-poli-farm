@@ -5,8 +5,20 @@
 // src/types/paciente.ts
 
 // Tipos aninhados baseados na sua API
+export interface PatientFormData {
+  name: string;
+  socialName: string;
+  birthDate: string;
+  sus: string;
+  cpf: string;
+  rg: string;
+  phone: string;
+  motherName: string;
+  address: Address;
+  emergencyContactDetails: EmergencyContactDetail[];
+}
+
 export type Address = {
-  id: string;
   cep: string;
   city: string;
   street: string;
@@ -15,7 +27,6 @@ export type Address = {
 };
 
 export type EmergencyContactDetail = {
-  id: string;
   name: string;
   phone: string;
   relationship: string;

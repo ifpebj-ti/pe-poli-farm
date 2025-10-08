@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 
 interface PatientData {
-  nome: string;
+  name: string;
   cpf: string;
   sus: string;
 }
@@ -38,6 +38,12 @@ export default function PopupAtestado({
   const handleSaveClick = () => {
     onClose();
     setConfirmOpen(true);
+  };
+
+  const handlePrintClick = () => {
+    // window.print() abre a caixa de diálogo de impressão do navegador
+    window.print();
+    console.log('Atestado impresso!');
   };
 
   // NOVO: Estilo base para todos os botões para evitar repetição
@@ -69,7 +75,7 @@ export default function PopupAtestado({
             <Grid container spacing={2} alignItems="center">
               <Grid>
                 <Typography variant="body1">
-                  <strong>Nome:</strong> {patientData.nome}
+                  <strong>Nome:</strong> {patientData.name}
                 </Typography>
               </Grid>
               <Grid>
@@ -157,6 +163,7 @@ export default function PopupAtestado({
           {/* BOTÃO IMPRIMIR ATUALIZADO */}
           <Button
             variant="contained"
+            onClick={handlePrintClick}
             sx={{
               ...baseButtonStyles, // Usa o estilo base
               backgroundColor: '#1976D2', // Cor azul

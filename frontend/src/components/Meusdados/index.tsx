@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import PopupMeusdados from '@/src/components/PopUp/PopUpMeusDados';
@@ -25,6 +26,7 @@ import {
 export default function MeusDados() {
   const [showPassword, setShowPassword] = useState(false);
   const [openPopup, setOpenPopup] = useState(false);
+  const router = useRouter();
 
   const [form, setForm] = useState({
     nome: '',
@@ -46,17 +48,21 @@ export default function MeusDados() {
     setOpenPopup(false);
   };
 
+  const handleVoltarClick = () => {
+    router.push('/Inicio'); // Navigate to the /Inicio route
+  };
+
   return (
     <>
       <Box
         sx={{
           maxWidth: 500,
           mt: 3,
-          px: 2,
-          mx: 8,
+          mx: 'auto', // Centraliza o Box horizontalmente
+          px: { xs: 2, sm: 4 }, // Espaçamento horizontal responsivo
           display: 'flex',
           flexDirection: 'column',
-          gap: 2
+          gap: 3 // Espaçamento entre os elementos
         }}
       >
         <Typography variant="h4" sx={{ color: '#000' }}>
@@ -173,16 +179,24 @@ export default function MeusDados() {
         />
 
         <Box
-          sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2, gap: 3 }}
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            justifyContent: { xs: 'stretch', sm: 'flex-end' },
+            mt: 2,
+            gap: 2
+          }}
         >
           <Button
             variant="outlined"
+            onClick={handleVoltarClick}
             sx={{
               borderRadius: '20px',
               textTransform: 'none',
               px: 3,
               borderColor: '#1351B4',
-              color: '#1351B4'
+              color: '#1351B4',
+              width: { xs: '100%', sm: 'auto' }
             }}
           >
             Voltar
@@ -194,7 +208,8 @@ export default function MeusDados() {
               borderRadius: '20px',
               textTransform: 'none',
               px: 3,
-              backgroundColor: '#1351B4'
+              backgroundColor: '#1351B4',
+              width: { xs: '100%', sm: 'auto' }
             }}
           >
             Alterar

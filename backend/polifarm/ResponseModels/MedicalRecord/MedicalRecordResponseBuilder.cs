@@ -51,6 +51,11 @@ public class MedicalRecordResponseBuilder
         _patientMedications = patientMedications;
         return this;
     }
+    public MedicalRecordResponseBuilder WithPatientExams(List<PatientExamResponse>? patientExams)
+    {
+        _patientExams = patientExams;
+        return this;
+    }
 
     public MedicalRecordResponseBuilder WithPatientExams(List<PatientExamResponse>? patientExams)
     {

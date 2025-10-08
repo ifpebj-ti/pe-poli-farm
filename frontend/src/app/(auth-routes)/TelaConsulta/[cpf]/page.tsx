@@ -1,12 +1,31 @@
 'use client';
+import { useRouter } from 'next/navigation';
+import React, { useRef } from 'react';
 
 import BreadCrumb from '@/src/components/BreadCrumb';
-import TelaConsulta from '@/src/components/Consulta';
+import TelaConsulta, { TelaConsultaHandle } from '@/src/components/Consulta';
 import NavBar from '@/src/components/NavBar';
 
-import { Box, Button } from '@mui/material';
+import { Box, Button, CircularProgress, Typography } from '@mui/material';
 
-export default function ConsultaCompletaPage() {
+import { usePacienteCpf } from '../../TelaProntuario/[cpf]/hooks/usePacienteCpf';
+
+type ConsultaPageProps = {
+  params: Promise<{
+    cpf: string;
+  }>;
+};
+
+export default function ConsultaCompletaPage({ params }: ConsultaPageProps) {
+  const router = useRouter();
+  const resolvedParams = React.use(params);
+  const { cpf } = resolvedParams;
+
+  const consultaRef = useRef<TelaConsultaHandle>(null);
+
+  // Usa o hook para buscar os dados iniciais do paciente
+  const { paciente, isLoading, error } = usePacienteCpf(cpf);
+
   const linkList = [
     {
       label: 'Home',
@@ -14,6 +33,10 @@ export default function ConsultaCompletaPage() {
     },
     {
       label: 'Novo Atendimento',
+      href: '/NovoAtendimento'
+    },
+    {
+      label: paciente ? `Consulta de ${paciente.name}` : 'Carregando...',
       href: '#'
     }
   ];
@@ -24,6 +47,27 @@ export default function ConsultaCompletaPage() {
     fontWeight: 500,
     px: 3,
     minWidth: 130
+  };
+  const handleCancelarClick = () => {
+    router.push('/NovoAtendimento'); // Navega para a página NovoAtendimento
+  };
+
+  const handleProcedimentosClick = () => {
+    handleSalvarClick(); // Salva os dados antes de navegar
+    router.push('/Procedimentos'); // Navega para a página TelaProcedimentos
+  };
+
+  const handleImprimirClick = () => {
+    // Lógica para imprimir, talvez usando window.print() ou gerando um PDF
+    window.print(); // Exemplo simples de impressão
+    console.log('Botão IMPRIMIR clicado');
+  };
+
+  const handleSalvarClick = () => {
+    // Verifica se a referência está conectada e chama a função 'submit' exposta
+    if (consultaRef.current) {
+      consultaRef.current.submit();
+    }
   };
 
   return (
@@ -51,6 +95,7 @@ export default function ConsultaCompletaPage() {
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Button
               variant="contained"
+              onClick={handleImprimirClick}
               sx={{
                 ...buttonStyles,
                 backgroundColor: '#1351B4',
@@ -62,6 +107,7 @@ export default function ConsultaCompletaPage() {
             </Button>
             <Button
               variant="contained"
+              onClick={handleCancelarClick}
               color="error"
               sx={{ ...buttonStyles, textTransform: 'none' }}
             >
@@ -75,6 +121,7 @@ export default function ConsultaCompletaPage() {
                 '&:hover': { backgroundColor: '#086506' },
                 textTransform: 'none'
               }}
+              onClick={handleProcedimentosClick}
             >
               PROCEDIMENTOS
             </Button>
@@ -84,9 +131,21 @@ export default function ConsultaCompletaPage() {
 
       {/* Box principal para o conteúdo da consulta, que agora começará com "Dados do paciente" */}
       <Box sx={{ p: 4, pt: 0, bgcolor: '#fff' }}>
-        {' '}
-        {/* pt: 0 para remover padding top que já foi tratado acima */}
-        <TelaConsulta />
+        {isLoading && (
+          <Box sx={{ textAlign: 'center', p: 10 }}>
+            <CircularProgress />
+          </Box>
+        )}
+        {error && (
+          <Typography color="error" sx={{ textAlign: 'center', p: 10 }}>
+            {error}
+          </Typography>
+        )}
+
+        {/* Passa o paciente carregado para o formulário de consulta */}
+        {!isLoading && !error && paciente && (
+          <TelaConsulta ref={consultaRef} paciente={paciente} />
+        )}
       </Box>
     </Box>
   );

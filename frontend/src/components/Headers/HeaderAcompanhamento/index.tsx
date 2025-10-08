@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import SearchIcon from '@mui/icons-material/Search';
@@ -18,24 +19,30 @@ import {
 
 export default function AcompanhamentoHeader() {
   const [status, setStatus] = useState('');
+  const router = useRouter();
 
+  const handleVoltarClick = () => {
+    router.push('/Inicio');
+  };
   return (
     <Box
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        p: 6,
+        p: { xs: 2, md: 6 }, // Padding responsivo
         pb: 0,
-        gap: 2.5
+        gap: { xs: 2, md: 2.5 }
       }}
     >
       <Box
         sx={{
           display: 'flex',
+          flexDirection: { xs: 'column', md: 'row' }, // Empilha em telas pequenas, alinha em linha em telas maiores
           justifyContent: 'space-between',
-          alignItems: 'flex-start',
+          alignItems: { xs: 'flex-start', md: 'center' }, // Alinha no topo em telas pequenas, no centro em telas maiores
           backgroundColor: '#fff',
-          fontFamily: 'Roboto, sans-serif'
+          fontFamily: 'Roboto, sans-serif',
+          gap: { xs: 2, md: 0 }
         }}
       >
         {/* Título */}
@@ -51,50 +58,87 @@ export default function AcompanhamentoHeader() {
         </Typography>
 
         {/* Campo de busca e botão */}
-        <TextField
-          placeholder="Pesquise pacientes"
-          size="small"
+        <Box
           sx={{
-            backgroundColor: '#f8f8f8',
-            minWidth: 400,
-            fontFamily: 'Roboto, sans-serif',
-            '& .MuiOutlinedInput-root': {
-              height: 50,
-              borderRadius: '8px',
-              fontFamily: 'Roboto, sans-serif'
-            },
-            '& .MuiOutlinedInput-notchedOutline': {
-              borderColor: '#ccc'
-            }
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            alignItems: { xs: 'flex-start', sm: 'center' },
+            gap: 2,
+            width: { xs: '100%', md: 'auto' }
           }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton size="small">
-                  <SearchIcon sx={{ color: '#1351B4', fontSize: 20 }} />
-                </IconButton>
-              </InputAdornment>
-            )
-          }}
-        />
+        >
+          <TextField
+            placeholder="Pesquise pacientes"
+            size="small"
+            sx={{
+              backgroundColor: '#f8f8f8',
+              flexGrow: 1,
+              width: { xs: '100%', sm: 400 },
+              fontFamily: 'Roboto, sans-serif',
+              '& .MuiOutlinedInput-root': {
+                height: 50,
+                borderRadius: '8px',
+                fontFamily: 'Roboto, sans-serif'
+              },
+              '& .MuiOutlinedInput-notchedOutline': {
+                borderColor: '#ccc'
+              }
+            }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton size="small">
+                    <SearchIcon sx={{ color: '#1351B4', fontSize: 20 }} />
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
+          />
+
+          <Button
+            variant="outlined"
+            onClick={handleVoltarClick}
+            sx={{
+              height: 36,
+              borderRadius: '18px',
+              textTransform: 'none',
+              px: 3,
+              borderColor: '#1351B4',
+              color: '#1351B4',
+              fontWeight: 400,
+              fontFamily: 'Roboto, sans-serif',
+              minWidth: 90,
+              width: { xs: '100%', sm: 'auto' },
+              '&:hover': {
+                borderColor: '#0f479e',
+                backgroundColor: '#f0f7ff'
+              }
+            }}
+          >
+            Voltar
+          </Button>
+        </Box>
       </Box>
       <Box
         sx={{
           width: '100%',
           display: 'flex',
+          flexDirection: { xs: 'column', md: 'row' }, // Empilha em telas pequenas
           justifyContent: 'space-between',
-          alignItems: 'center'
+          alignItems: { xs: 'flex-start', md: 'center' },
+          gap: 2
         }}
       >
         <Box sx={{ minWidth: 120 }}>
-          <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-            <InputLabel id="demo-select-small-label">Status</InputLabel>
+          <FormControl sx={{ width: { xs: '100%', sm: 'auto' } }} size="small">
+            <InputLabel id="status-label">Status</InputLabel>
             <Select
-              labelId="demo-select-small-label"
-              id="demo-select-small"
+              labelId="status-label"
+              id="status-select"
               value={status}
               label="Status"
               onChange={(e) => setStatus(e.target.value)}
+              sx={{ width: { xs: '100%', sm: 150 } }}
             >
               <MenuItem value="">Todos</MenuItem>
               <MenuItem value="andamento">Em Andamento</MenuItem>
@@ -103,26 +147,6 @@ export default function AcompanhamentoHeader() {
             </Select>
           </FormControl>
         </Box>
-        <Button
-          variant="outlined"
-          sx={{
-            height: 36,
-            borderRadius: '18px',
-            textTransform: 'none',
-            px: 3,
-            borderColor: '#1351B4',
-            color: '#1351B4',
-            fontWeight: 400,
-            fontFamily: 'Roboto, sans-serif',
-            minWidth: 90,
-            '&:hover': {
-              borderColor: '#0f479e',
-              backgroundColor: '#f0f7ff'
-            }
-          }}
-        >
-          Voltar
-        </Button>
       </Box>
     </Box>
   );

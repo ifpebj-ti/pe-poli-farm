@@ -52,7 +52,8 @@ export default function TabelaNovoAtendimento({
   onPageChange,
   onIniciarAtendimento
 }: TabelaProps) {
-  const router = useRouter();
+  const router = useRouter(); // Inicialize useRouter
+
   return (
     <Box sx={{ px: 4, pt: 3, display: 'flex', justifyContent: 'center' }}>
       <Box sx={{ width: '100%' }}>

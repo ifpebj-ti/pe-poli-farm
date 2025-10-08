@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -127,6 +128,8 @@ export default function EstatisticasSistema() {
     total: 100
   });
 
+  const router = useRouter();
+
   // useEffect para buscar os dados quando os filtros mudam
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -202,6 +205,10 @@ export default function EstatisticasSistema() {
   const yAxisLabels = [4000, 3000, 2000, 1000, 100];
   const maxNovoGraficoValue = Math.max(...mediaDiaria.map((d) => d.value), 0);
 
+  const handleVoltarClick = () => {
+    router.push('/Inicio'); // Navega para a página /Inicio
+  };
+
   return (
     <Box
       sx={{
@@ -215,22 +222,35 @@ export default function EstatisticasSistema() {
       <Box
         sx={{
           display: 'flex',
+          flexDirection: { xs: 'column', md: 'row' }, // Empilha em telas pequenas, alinha lado a lado em telas médias e maiores
           justifyContent: 'space-between',
-          alignItems: 'center',
-          mb: 4
+          alignItems: { xs: 'flex-start', md: 'center' }, // Alinha no topo em telas pequenas, no centro em telas maiores
+          mb: 4,
+          gap: { xs: 2, md: 0 } // Adiciona espaço entre os elementos em telas pequenas
         }}
       >
-        <Typography variant="h4" sx={{ fontWeight: 'normal', color: 'black' }}>
+        <Typography
+          variant="h4"
+          sx={{ fontWeight: 'normal', color: 'black', mb: { xs: 2, md: 0 } }}
+        >
           Estatística do Sistema
         </Typography>
-        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' }, // Filtros se empilham em telas pequenas, alinha em linha em telas maiores
+            gap: 2,
+            alignItems: 'center',
+            width: { xs: '100%', md: 'auto' } // Ocupa a largura total em telas pequenas
+          }}
+        >
           {/* Filtro de Data */}
           <TextField
             select
             size="small"
             value={dataFiltro}
             onChange={(e) => setDataFiltro(e.target.value)}
-            sx={{ width: 150, bgcolor: 'white' }}
+            sx={{ width: { xs: '100%', sm: 150 }, bgcolor: 'white' }}
             SelectProps={{ IconComponent: ArrowDropDownIcon }}
             InputLabelProps={{ shrink: false }}
           >
@@ -243,7 +263,7 @@ export default function EstatisticasSistema() {
             size="small"
             value={especialidadeFiltro}
             onChange={(e) => setEspecialidadeFiltro(e.target.value)}
-            sx={{ width: 200, bgcolor: 'white' }}
+            sx={{ width: { xs: '100%', sm: 200 }, bgcolor: 'white' }}
             SelectProps={{ IconComponent: ArrowDropDownIcon }}
             InputLabelProps={{ shrink: false }}
           >
@@ -255,10 +275,16 @@ export default function EstatisticasSistema() {
             <MenuItem value="Enfermagem">Enfermagem</MenuItem>
             <MenuItem value="Ginecologia">Ginecologia</MenuItem>
           </TextField>
-
           <Button
             variant="contained"
-            sx={{ bgcolor: '#1351B4', textTransform: 'none' }}
+            onClick={handleVoltarClick}
+            sx={{
+              bgcolor: '#1351B4',
+              textTransform: 'none',
+              borderRadius: '25px',
+              px: 3,
+              width: { xs: '100%', sm: 'auto' } // Ocupa a largura total em telas pequenas
+            }}
           >
             Voltar
           </Button>
