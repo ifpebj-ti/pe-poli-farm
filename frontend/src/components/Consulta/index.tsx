@@ -600,68 +600,99 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
             Cardio
           </Typography>
           <Grid container spacing={2} mb={3}>
-            <Grid size={{ xs: 6, sm: 2.4 }}>
-              <FormControl fullWidth sx={inputStyles}>
-                <InputLabel>Pupilas</InputLabel>
-                <Select
-                  name="pupils"
-                  value={formData.anamnese.pupils}
-                  label="Pupilas"
-                  onChange={handleAnamneseChange}
-                >
-                  <MenuItem value="Foto reagente">Foto reagente</MenuItem>
-                </Select>
-              </FormControl>
+            <Grid size={3}>
+              <Typography sx={{ color: 'grey.700' }}>Pupilas:</Typography>
+              <Select
+                fullWidth
+                defaultValue="Isocóricas Fotorreagentes"
+                sx={{
+                  ...inputStyles['& .MuiOutlinedInput-root'],
+                  borderRadius: '10px'
+                }}
+              >
+                <MenuItem value="Isocóricas Fotorreagentes">
+                  Isocóricas Fotorreagentes (PPRR)
+                </MenuItem>
+                <MenuItem value="Anisocóricas">Anisocóricas</MenuItem>
+                <MenuItem value="Midriáticas">Midriáticas</MenuItem>
+                <MenuItem value="Mióticas">Mióticas</MenuItem>
+                <MenuItem value="Arreagentes">Arreagentes</MenuItem>
+                <MenuItem value="Fotorreagentes">Fotorreagentes</MenuItem>
+                <MenuItem value="Sem Reação Fotomotora">
+                  Sem Reação Fotomotora
+                </MenuItem>
+              </Select>
             </Grid>
-            <Grid size={{ xs: 6, sm: 2.4 }}>
-              <FormControl fullWidth sx={inputStyles}>
-                <InputLabel>Fala</InputLabel>
-                <Select
-                  name="speech"
-                  value={formData.anamnese.speech}
-                  label="Fala"
-                  onChange={handleAnamneseChange}
-                >
-                  <MenuItem value="Afonia">Afonia</MenuItem>
-                </Select>
-              </FormControl>
+            <Grid size={3}>
+              <Typography sx={{ color: 'grey.700' }}>Fala:</Typography>
+              <Select
+                fullWidth
+                defaultValue="Clara e Coerente"
+                sx={{
+                  ...inputStyles['& .MuiOutlinedInput-root'],
+                  borderRadius: '10px'
+                }}
+              >
+                <MenuItem value="Clara e Coerente">Clara e Coerente</MenuItem>
+                <MenuItem value="Disartria">Disartria</MenuItem>
+                <MenuItem value="Afasia Expressiva">Afasia Expressiva</MenuItem>
+                <MenuItem value="Afasia Receptiva">Afasia Receptiva</MenuItem>
+                <MenuItem value="Afonia">Afonia</MenuItem>
+                <MenuItem value="Disfonia">Disfonia</MenuItem>
+                <MenuItem value="Logorreia">Logorreia</MenuItem>
+                <MenuItem value="Mutismo">Mutismo</MenuItem>
+                <MenuItem value="Bradilalia">Bradilalia</MenuItem>
+                <MenuItem value="Taquilalia">Taquilalia</MenuItem>
+              </Select>
             </Grid>
-            <Grid size={{ xs: 6, sm: 2.4 }}>
-              <FormControl fullWidth sx={inputStyles}>
-                <InputLabel>Nível de consciência</InputLabel>
-                <Select
-                  name="consciousnessLevel"
-                  value={formData.anamnese.consciousnessLevel}
-                  label="Nível de consciência"
-                  onChange={handleAnamneseChange}
-                >
-                  <MenuItem value="Sonolento">Sonolento</MenuItem>
-                </Select>
-              </FormControl>
+            <Grid size={3}>
+              <Typography sx={{ color: 'grey.700' }}>
+                Nível de Consciência:
+              </Typography>
+              <Select
+                fullWidth
+                defaultValue="Alerta e Orientado"
+                sx={{
+                  ...inputStyles['& .MuiOutlinedInput-root'],
+                  borderRadius: '10px'
+                }}
+              >
+                <MenuItem value="Alerta e Orientado">
+                  Alerta e Orientado (AO)
+                </MenuItem>
+                <MenuItem value="Confuso">Confuso</MenuItem>
+                <MenuItem value="Sonolento">Sonolento</MenuItem>
+                <MenuItem value="Obnubilado">Obnubilado</MenuItem>
+                <MenuItem value="Torporoso">Torporoso</MenuItem>
+                <MenuItem value="Comatoso">Comatoso</MenuItem>
+                <MenuItem value="Letárgico">Letárgico</MenuItem>
+              </Select>
             </Grid>
-            <Grid size={{ xs: 6, sm: 2.4 }}>
-              <FormControl fullWidth sx={inputStyles}>
-                <InputLabel>Resp. motora</InputLabel>
-                <Select
-                  name="motorResponse"
-                  value={formData.anamnese.motorResponse}
-                  label="Resp. motora"
-                  onChange={handleAnamneseChange}
-                >
-                  <MenuItem value="Plegia">Plegia</MenuItem>
-                </Select>
-              </FormControl>
+            <Grid size={3}>
+              <Typography sx={{ color: 'grey.700' }}>
+                Resposta Motora:
+              </Typography>
+              <Select
+                fullWidth
+                defaultValue="Normal"
+                sx={{
+                  ...inputStyles['& .MuiOutlinedInput-root'],
+                  borderRadius: '10px'
+                }}
+              >
+                <MenuItem value="Normal">Normal</MenuItem>
+                <MenuItem value="Paresia">Paresia</MenuItem>
+                <MenuItem value="Plegia">Plegia</MenuItem>
+                <MenuItem value="Decorticação">Decorticação</MenuItem>
+                <MenuItem value="Descerebração">Descerebração</MenuItem>
+                <MenuItem value="Movimentos Involuntários">
+                  Movimentos Involuntários
+                </MenuItem>
+                <MenuItem value="Sem Resposta">Sem Resposta</MenuItem>
+              </Select>
             </Grid>
           </Grid>
-
-          <Typography
-            variant="h6"
-            color="black"
-            sx={{ mb: 2, mt: 3, borderTop: '1px solid #e0e0e0', pt: 2 }}
-          >
-            Saúde e Doença
-          </Typography>
-
+          {/* Blocos de texto */}
           <Grid container spacing={2} mb={3}>
             {/* Antecedentes Familiares */}
             <Grid
