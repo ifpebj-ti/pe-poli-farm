@@ -1,12 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
+// 1. Importações necessárias
 import PopupDetalhes from '@/src/components/PopUp/PopUpDetalhes';
 
+import { api } from '@/src/services/api';
 import {
   Box,
   Button,
+  CircularProgress,
   Pagination,
   Paper,
   Table,
@@ -20,19 +23,68 @@ import {
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
-// Dados simulados
-const exames = Array.from({ length: 7 }, () => ({
-  nome: `Nome Paciente`,
-  profissional: 'Dra. Ana Souza',
-  data: '2025-05-01',
-  tipoExame: 'Hemograma Completo'
-}));
+// Tipo para a estrutura da tabela (o que você quer no final)
+type Exame = {
+  id: number;
+  nome: string;
+  profissional: string;
+  data: string;
+  tipoExame: string;
+};
+
+// Tipo que representa a resposta crua da sua API
+type PacienteApiResponse = {
+  id: number;
+  nome: string;
+  profissional?: string; // Campo opcional
+  data: string;
+  tipoExame?: string; // Campo opcional
+};
 
 export default function TabelaHistoricoExames() {
   const [open, setOpen] = useState(false);
-  const [, setExameSelecionado] = useState<unknown>(null);
 
-  const handleOpen = (exame: unknown) => {
+  // Estados para dados da API, loading e erro
+  const [exames, setExames] = useState<Exame[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const [, setExameSelecionado] = useState<Exame | null>(null);
+
+  // Hook para buscar os dados da API
+  useEffect(() => {
+    const fetchExames = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get('/Patient/GetAll');
+
+        // ✅ CORREÇÃO: Tratamento para campos opcionais
+        const dadosAdaptados: Exame[] = response.data.map(
+          (paciente: PacienteApiResponse) => ({
+            id: paciente.id,
+            nome: paciente.nome,
+            // Adiciona um valor padrão se o campo da API for nulo ou indefinido
+            profissional: paciente.profissional || 'Não informado',
+            data: paciente.data,
+            // Adiciona um valor padrão se o campo da API for nulo ou indefinido
+            tipoExame: paciente.tipoExame || 'Não especificado'
+          })
+        );
+
+        setExames(dadosAdaptados);
+        setError(null);
+      } catch (err) {
+        console.error('Erro ao buscar histórico de exames:', err);
+        setError('Não foi possível carregar o histórico de exames.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchExames();
+  }, []);
+
+  const handleOpen = (exame: Exame) => {
     setExameSelecionado(exame);
     setOpen(true);
   };
@@ -41,6 +93,36 @@ export default function TabelaHistoricoExames() {
     setOpen(false);
     setExameSelecionado(null);
   };
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: 400
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: 400
+        }}
+      >
+        <Typography color="error">{error}</Typography>
+      </Box>
+    );
+  }
 
   return (
     <Box
@@ -74,40 +156,35 @@ export default function TabelaHistoricoExames() {
                 />
               </TableRow>
             </TableHead>
-
             <TableBody>
-              {exames.map((exame, index) => (
-                <TableRow key={index}>
-                  {/* Nome do Paciente */}
+              {exames.map((exame) => (
+                <TableRow key={exame.id}>
                   <TableCell sx={{ paddingY: 1 }}>
                     <Typography sx={{ color: '#1351B4', cursor: 'pointer' }}>
                       {exame.nome}
                     </Typography>
                   </TableCell>
-                  {/* Profissional Solicitante */}
                   <TableCell sx={{ paddingY: 1, whiteSpace: 'nowrap' }}>
                     {exame.profissional}
                   </TableCell>
-                  {/* Data */}
                   <TableCell sx={{ paddingY: 1, whiteSpace: 'nowrap' }}>
-                    {format(
-                      new Date(exame.data.replace(/-/g, '/')),
-                      'dd/MM/yyyy',
-                      { locale: ptBR }
-                    )}
+                    {exame.data
+                      ? format(
+                          new Date(exame.data.replace(/-/g, '/')),
+                          'dd/MM/yyyy',
+                          { locale: ptBR }
+                        )
+                      : 'Não informado'}
                   </TableCell>
-                  {/* Tipo de Exame */}
                   <TableCell sx={{ paddingY: 1, whiteSpace: 'nowrap' }}>
                     {exame.tipoExame}
                   </TableCell>
-                  {/* Célula de Ações */}
                   <TableCell align="right" sx={{ paddingY: 1 }}>
                     <Box
-                      // Empilha os botões verticalmente em telas pequenas
                       sx={{
                         display: 'flex',
                         flexDirection: { xs: 'column', sm: 'row' },
-                        gap: { xs: 1, sm: 0 }, // Espaçamento vertical em mobile
+                        gap: { xs: 1, sm: 0 },
                         alignItems: 'flex-end',
                         justifyContent: 'flex-end'
                       }}
@@ -122,7 +199,7 @@ export default function TabelaHistoricoExames() {
                           fontWeight: 500,
                           minWidth: 120,
                           height: 30,
-                          marginRight: { xs: 0, sm: '18px' }, // Remove margem direita em mobile
+                          marginRight: { xs: 0, sm: '18px' },
                           '&:hover': { backgroundColor: '#0f479e' }
                         }}
                         onClick={() => handleOpen(exame)}
@@ -132,7 +209,9 @@ export default function TabelaHistoricoExames() {
                       <Button
                         variant="contained"
                         size="small"
-                        onClick={() => handleOpen(exame)}
+                        onClick={() => {
+                          /* Adicione a lógica de download aqui */
+                        }}
                         sx={{
                           backgroundColor: '#0E930B',
                           borderRadius: '8px',
@@ -158,7 +237,6 @@ export default function TabelaHistoricoExames() {
         </Box>
       </Box>
 
-      {/* Pop-up de Detalhes funcionando corretamente */}
       <PopupDetalhes open={open} handleClose={handleClose} />
     </Box>
   );

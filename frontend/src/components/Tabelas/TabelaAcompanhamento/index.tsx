@@ -1,12 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import PopupDetalhesTratamento from '@/src/components/PopUp/PopUpDetalhesTratamento';
 
+import { api } from '@/src/services/api';
 import {
   Box,
   Button,
+  CircularProgress,
   Pagination,
   Paper,
   Table,
@@ -21,6 +23,7 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
 type Paciente = {
+  id: number;
   nome: string;
   profissional: string;
   data: string;
@@ -28,18 +31,32 @@ type Paciente = {
   status: string;
 };
 
-const pacientes: Paciente[] = Array.from({ length: 7 }, () => ({
-  nome: `Nome Paciente`,
-  profissional: 'Dra. João',
-  data: '2025-05-03',
-  tratamento: 'Hemograma Completo',
-  status: 'Em Andamento'
-}));
-
 export default function TabelaAcompanhamento() {
+  const [pacientes, setPacientes] = useState<Paciente[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const [open, setOpen] = useState(false);
   const [pacienteSelecionado, setPacienteSelecionado] =
     useState<Paciente | null>(null);
+
+  useEffect(() => {
+    const fetchPacientes = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get('/Patient/GetAll');
+        setPacientes(response.data);
+        setError(null);
+      } catch (err) {
+        console.error('Erro ao buscar pacientes:', err);
+        setError('Não foi possível carregar os dados dos pacientes.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPacientes();
+  }, []);
 
   const handleOpen = (paciente: Paciente) => {
     setPacienteSelecionado(paciente);
@@ -50,6 +67,36 @@ export default function TabelaAcompanhamento() {
     setOpen(false);
     setPacienteSelecionado(null);
   };
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: 400
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: 400
+        }}
+      >
+        <Typography color="error">{error}</Typography>
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ px: 4, pt: 3, display: 'flex', justifyContent: 'center' }}>
@@ -66,10 +113,9 @@ export default function TabelaAcompanhamento() {
                 <TableCell align="right" sx={{ paddingY: 1 }} />
               </TableRow>
             </TableHead>
-
             <TableBody>
-              {pacientes.map((paciente, index) => (
-                <TableRow key={index}>
+              {pacientes.map((paciente) => (
+                <TableRow key={paciente.id}>
                   <TableCell sx={{ paddingY: 1 }}>
                     <Typography sx={{ color: '#1351B4', cursor: 'pointer' }}>
                       {paciente.nome}
@@ -79,13 +125,13 @@ export default function TabelaAcompanhamento() {
                     {paciente.profissional}
                   </TableCell>
                   <TableCell sx={{ paddingY: 1 }}>
-                    {format(
-                      new Date(paciente.data.replace(/-/g, '/')),
-                      'dd/MM/yyyy',
-                      {
-                        locale: ptBR
-                      }
-                    )}
+                    {paciente.data
+                      ? format(
+                          new Date(paciente.data.replace(/-/g, '/')),
+                          'dd/MM/yyyy',
+                          { locale: ptBR }
+                        )
+                      : 'Não informado'}
                   </TableCell>
                   <TableCell sx={{ paddingY: 1 }}>
                     {paciente.tratamento}

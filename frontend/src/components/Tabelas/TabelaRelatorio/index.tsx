@@ -1,9 +1,14 @@
 'use client';
-import { useRouter } from 'next/navigation'; // Importe useRouter
 
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+
+// 1. Importe a instância da API e o CircularProgress
+import { api } from '@/src/services/api'; // <-- Verifique se este caminho está correto
 import {
   Box,
   Button,
+  CircularProgress, // Para o feedback de carregamento
   Pagination,
   Paper,
   Table,
@@ -17,19 +22,77 @@ import {
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
-const relatorios = Array.from({ length: 7 }, () => ({
-  nome: `Nome Paciente`,
-  profissional: 'Dr. João',
-  data: '2025-05-03',
-  tipoAtendimento: 'Consulta Médica'
-}));
+// 2. Defina o tipo de dado que corresponde à sua API
+type Paciente = {
+  id: number; // Essencial para a key e para a navegação
+  nome: string;
+  profissional: string;
+  data: string;
+  tipoAtendimento: string; // Verifique se este campo existe na sua API
+};
 
 export default function TabelaRelatorio() {
   const router = useRouter();
-  const handleGerarRelatorioClick = () => {
-    // Navega para a página RelatorioPaciente SEM passar um ID específico
-    router.push('/RelatorioPaciente');
+
+  // 3. Crie os estados para os dados, carregamento e erros
+  const [pacientes, setPacientes] = useState<Paciente[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // 4. Busque os dados da API quando o componente for montado
+  useEffect(() => {
+    const fetchPacientes = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get('/Patient/GetAll');
+        setPacientes(response.data);
+      } catch (err) {
+        console.error('Erro ao buscar pacientes:', err);
+        setError('Não foi possível carregar os relatórios.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPacientes();
+  }, []); // O array vazio [] garante que a busca ocorra apenas uma vez
+
+  // 5. Modifique a função para aceitar o ID do paciente
+  const handleGerarRelatorioClick = (pacienteId: number) => {
+    // Navega para uma página de relatório específica do paciente
+    router.push(`/RelatorioPaciente/${pacienteId}`);
   };
+
+  // 6. Adicione renderização condicional para carregamento e erro
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: 400
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: 400
+        }}
+      >
+        <Typography color="error">{error}</Typography>
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ px: 4, pt: 3, display: 'flex', justifyContent: 'center' }}>
@@ -45,35 +108,36 @@ export default function TabelaRelatorio() {
                 <TableCell align="right" sx={{ paddingY: 1 }} />
               </TableRow>
             </TableHead>
-
             <TableBody>
-              {relatorios.map((relatorio, index) => (
-                <TableRow key={index}>
+              {/* 7. Mapeie os dados do estado 'pacientes' */}
+              {pacientes.map((paciente) => (
+                <TableRow key={paciente.id}>
                   <TableCell sx={{ paddingY: 1 }}>
                     <Typography sx={{ color: '#1351B4', cursor: 'pointer' }}>
-                      {relatorio.nome}
+                      {paciente.nome}
                     </Typography>
                   </TableCell>
                   <TableCell sx={{ paddingY: 1 }}>
-                    {relatorio.profissional}
+                    {paciente.profissional}
                   </TableCell>
                   <TableCell sx={{ paddingY: 1 }}>
-                    {format(
-                      new Date(relatorio.data.replace(/-/g, '/')),
-                      'dd/MM/yyyy',
-                      {
-                        locale: ptBR
-                      }
-                    )}
+                    {paciente.data
+                      ? format(
+                          new Date(paciente.data.replace(/-/g, '/')),
+                          'dd/MM/yyyy',
+                          { locale: ptBR }
+                        )
+                      : 'Não informado'}
                   </TableCell>
                   <TableCell sx={{ paddingY: 1 }}>
-                    {relatorio.tipoAtendimento}
+                    {paciente.tipoAtendimento}
                   </TableCell>
                   <TableCell align="right" sx={{ paddingY: 1 }}>
                     <Button
                       variant="contained"
                       size="small"
-                      onClick={handleGerarRelatorioClick}
+                      // 8. Passe o ID do paciente para a função de clique
+                      onClick={() => handleGerarRelatorioClick(paciente.id)}
                       sx={{
                         backgroundColor: '#1351B4',
                         borderRadius: '8px',
@@ -95,8 +159,6 @@ export default function TabelaRelatorio() {
             </TableBody>
           </Table>
         </TableContainer>
-
-        {/* Paginação agora dentro da largura da tabela */}
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
           <Pagination count={5} page={1} color="primary" />
         </Box>
