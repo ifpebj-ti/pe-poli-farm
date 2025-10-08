@@ -46,7 +46,7 @@ export default function Inicio() {
   }
 
   return (
-    <Box sx={{ backgroundColor: 'white', height: '100%', width: '100%' }}>
+    <Box sx={{ backgroundColor: 'white', height: '100vh', width: '100%' }}>
       <NavBar />
       <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
         <BreadCrumb {...{ linkList }} />
@@ -56,7 +56,7 @@ export default function Inicio() {
           gutterBottom
           sx={{ fontWeight: '500', color: 'black', marginTop: '24px' }}
         >
-          Inicios
+          Inicio
         </Typography>
         <MenuInicio />
 
