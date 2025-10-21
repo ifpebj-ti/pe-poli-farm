@@ -223,10 +223,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
           prescriptionDate: new Date().toISOString(),
           executionDate: new Date().toISOString()
         })),
-        patientExams: formData.patientExams.map((e) => ({
-          ...(typeof e === 'object' && e !== null ? e : {}),
-          prescriptionDate: new Date().toISOString()
-        }))
+        patientExams: formData.patientExams
       };
 
       try {
@@ -268,12 +265,12 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
       }));
     };
 
-    // const handleAddPrescription = (prescription: PatientMedication) => {
-    //   setFormData((prev) => ({
-    //     ...prev,
-    //     prescriptions: [...prev.prescriptions, prescription]
-    //   }));
-    // };
+    const handleAddPrescription = (prescription: PatientMedication) => {
+      setFormData((prev) => ({
+        ...prev,
+        prescriptions: [...prev.prescriptions, prescription]
+      }));
+    };
 
     // Função para adicionar um novo exame na lista
     const handleAddExam = (exam: PatientExam) => {
@@ -1061,9 +1058,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
         <PopupPrescricaoMedicacao
           open={openMedicacaoPopup}
           onClose={() => setOpenMedicacaoPopup(false)}
-          onAdd={() => {
-            console.log('Medicamento adicionado');
-          }}
+          onAdd={handleAddPrescription}
         />
         <PopupPrescricaoExame
           open={openExamePopup}

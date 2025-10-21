@@ -46,7 +46,8 @@ export default function PopupPrescricaoExame({
   };
 
   const handleAdicionarClick = () => {
-    onAdd(exam);
+    const { name, description, priority } = exam;
+    onAdd({ name, description, priority });
     onClose();
     setConfirmOpen(true);
   };

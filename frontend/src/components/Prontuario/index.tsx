@@ -148,7 +148,7 @@ export default function DadosDoPacientePageContent({
           <TextField
             select
             size="small"
-            value={selectedServiceId}
+            value={selectedServiceId || ''}
             onChange={(e) => setSelectedServiceId(e.target.value)}
             sx={{
               width: 120,

@@ -4,7 +4,7 @@ import { useState } from 'react'; // NOVO
 
 import PopupConfirmacaoPrescricao from '@/src/components/PopUp/PopupConfirmacaoPrescricao';
 
-// import { PatientMedication } from '@/src/lib/pacientes';
+import { PatientMedication } from '@/src/lib/pacientes';
 import {
   Button,
   Dialog,
@@ -19,11 +19,11 @@ import {
 interface PopupProps {
   open: boolean;
   onClose: () => void;
-  onAdd: () => void;
+  onAdd: (prescription: PatientMedication) => void;
 }
 
 const initialPrescriptionState = {
-  medicationName: '',
+  name: '',
   posology: '',
   type: '' // O backend espera um 'type', que pode ser a frequência ou outra coisa
   // Adicione outros campos conforme o seu modelo do backend
@@ -46,7 +46,7 @@ export default function PopupPrescricaoMedicacao({
   // NOVO: Função para lidar com o clique
   const handleAdicionarClick = () => {
     // 4. Chamar o onAdd com os dados do estado antes de fechar
-    onAdd();
+    onAdd(prescription as PatientMedication);
     onClose();
     setConfirmOpen(true);
     setPrescription(initialPrescriptionState); // Limpa o formulário para a próxima vez
@@ -65,8 +65,8 @@ export default function PopupPrescricaoMedicacao({
             <Grid size={{ xs: 12 }}>
               <TextField
                 label="Nome do Medicamento:"
-                name="medicationName"
-                value={prescription.medicationName}
+                name="name"
+                value={prescription.name}
                 onChange={handleChange}
                 fullWidth
               />
