@@ -1,4 +1,5 @@
-import React, { useRef, useState } from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useState } from 'react';
 import { useReactToPrint } from 'react-to-print';
 
 import {
@@ -28,20 +29,22 @@ const PopupAtestado: React.FC<PopupAtestadoProps> = ({
   doctorName,
   onClose
 }) => {
-  const componentRef = useRef<HTMLDivElement>(null);
+  const [componentToPrint, setComponentToPrint] = useState(null);
+  const componentRef = (el: any) => {
+    setComponentToPrint(el);
+  };
+
+  const handlePrint = useReactToPrint({
+    content: () => componentToPrint
+  } as any);
+
   const [view, setView] = useState<'form' | 'certificate'>('form');
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [certificateData, setCertificateData] = useState<any>(null);
 
   const [reason, setReason] = React.useState('');
   const [days, setDays] = React.useState('');
   const [cid, setCid] = React.useState('');
   const [crm, setCrm] = React.useState('');
-
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } as any);
 
   const handleGenerateCertificate = () => {
     setCertificateData({

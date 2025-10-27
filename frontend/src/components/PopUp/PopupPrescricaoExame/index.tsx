@@ -35,7 +35,7 @@ export default function PopupPrescricaoExame({
   const [exam, setExam] = useState({
     name: '',
     description: '',
-    priority: 'baixa',
+    priority: 'BAIXA', // Corrigido para o valor esperado pelo backend
     observations: ''
   });
 
@@ -90,9 +90,9 @@ export default function PopupPrescricaoExame({
                   value={exam.priority}
                   onChange={handleChange}
                 >
-                  <MenuItem value="baixa">Baixa</MenuItem>
-                  <MenuItem value="media">Média</MenuItem>
-                  <MenuItem value="alta">Alta</MenuItem>
+                  <MenuItem value="BAIXA">Baixa</MenuItem>
+                  <MenuItem value="NORMAL">Média</MenuItem>
+                  <MenuItem value="ALTA">Alta</MenuItem>
                 </Select>
               </FormControl>
             </Grid>

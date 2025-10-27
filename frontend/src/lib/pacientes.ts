@@ -95,6 +95,8 @@ export type MedicalRecord = {
 };
 
 export type PatientExam = {
+  prescriptionDate: string | number | Date;
+  professionalName: ReactNode;
   name: string;
   description: string;
   priority: string;

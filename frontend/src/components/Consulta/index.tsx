@@ -219,7 +219,9 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
         anamnese: formData.anamnese,
         healthHistory: formData.healthHistory,
         prescriptions: formData.prescriptions.map((p) => ({
-          ...(typeof p === 'object' && p !== null ? p : {}),
+          medicationName: p.name, // Corrigindo o nome do campo
+          posology: p.posology,
+          type: p.type,
           prescriptionDate: new Date().toISOString(),
           executionDate: new Date().toISOString()
         })),
