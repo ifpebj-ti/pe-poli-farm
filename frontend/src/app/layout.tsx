@@ -4,6 +4,8 @@ import { Geist, Geist_Mono } from 'next/font/google';
 
 import './globals.css';
 
+import VersionInfo from '@/src/components/VersionInfo';
+
 import ThemeRegistry from '../theme/ThemeRegistry';
 import Providers from './providers';
 
@@ -24,25 +26,15 @@ export const metadata: Metadata = {
     icon: '/logo.png',
     apple: '/logo.png',
     other: [
-      {
-        rel: 'icon',
-        url: '/logo.png',
-        sizes: '16x16'
-      },
-      {
-        rel: 'icon',
-        url: '/logo.png',
-        sizes: '32x32'
-      }
+      { rel: 'icon', url: '/logo.png', sizes: '16x16' },
+      { rel: 'icon', url: '/logo.png', sizes: '32x32' }
     ]
   }
 };
 
 export default function RootLayout({
   children
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="pt-br">
       <head>
@@ -54,6 +46,9 @@ export default function RootLayout({
         <ThemeRegistry>
           <Providers>{children}</Providers>
         </ThemeRegistry>
+
+        {/* Fixa no canto inferior direito em TODAS as páginas */}
+        <VersionInfo fixedBottomRight locale="en-US" />
       </body>
     </html>
   );
