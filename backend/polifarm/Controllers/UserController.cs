@@ -1,4 +1,4 @@
-﻿using Application.Usecases.User;
+using Application.Usecases.User;
 using Application.UseCases.User;
 using Domain.Dtos.User;
 using Domain.Errors;
@@ -94,12 +94,13 @@ namespace WebApi.Controllers
 
         /// <summary>
         /// Atualizar dados do usuário logado
+        /// </summary>
         /// <returns>Mensagem de sucesso na operação</returns>
         /// <response code="200">Usuaro atualizado com sucesso</response>
         /// <response code="400">Erro na operação</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="409">Erro de conflito</response>
-        [AllowAnonymous]
+        [Authorize]
         [HttpPatch("me/update")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -126,7 +127,54 @@ namespace WebApi.Controllers
         }
 
         /// <summary>
+        /// (Admin) Atualiza os dados de um usuário específico.
+        /// </summary>
+        /// <returns>Mensagem de sucesso na operação</returns>
+        /// <response code="200">Usuário atualizado com sucesso</response>
+        /// <response code="400">Erro na operação / Dados inválidos</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="403">Acesso negado (Não é admin)</response>
+        /// <response code="404">Usuário não encontrado</response>
+        [HttpPut("{userId:guid}")]
+        [Authorize(Roles = "ADMIN")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<MessageSuccessResponseModel>> AdminUpdateUser(
+            [FromRoute] Guid userId,
+            [FromBody] UpdateUserDTO data,
+            [FromServices] UpdateUserUseCase updateUserUseCase)
+        {
+            var validator = new UpdateUserDTOValidator();
+            var validationResult = await validator.ValidateAsync(data);
+            if (!validationResult.IsValid)
+            {
+                return new BadRequestObjectResult(ResultPattern<string>.BadRequest(validationResult.ToString()).ErrorDetails);
+            }
+
+            var result = await updateUserUseCase.Execute(userId, data);
+
+            if (result.IsFailure)
+            {
+                var endpointUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.Path}";
+                result.ErrorDetails!.Type = endpointUrl;
+
+                return result.ErrorDetails?.Status switch
+                {
+                    404 => NotFound(result.ErrorDetails),
+                    _ => BadRequest(result.ErrorDetails)
+                };
+            }
+
+            _logger.LogInformation($"Admin atualizou o usuário {userId} com sucesso");
+            return Ok(new MessageSuccessResponseModel(result.Message));
+        }
+
+        /// <summary>
         /// Desativa um usuário pelo ID
+        /// </summary>
         /// <returns>Mensagem de sucesso na operação</returns>
         /// <response code="200">Usuaro desativado com sucesso</response>
         /// <response code="400">Erro na operação</response>

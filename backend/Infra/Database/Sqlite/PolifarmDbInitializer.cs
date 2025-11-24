@@ -1,4 +1,4 @@
-﻿using Application.Gateways;
+using Application.Gateways;
 using Domain.Entites.AccessCode;
 using Domain.Entites.Profile;
 using Domain.Entites.User;
@@ -149,9 +149,19 @@ public static class PolifarmDbInitializer
                 medicationInUseType: "Losartana",
                 medicalHypothesis: "Gripe comum",
                 previousSurgeries: "Apendicectomia",
-                SignsAndSymptoms: "Febre, dor de cabeça",
+                signsAndSymptoms: "Febre, dor de cabeça",
+                respiratoryPattern: "",
+                pulmonaryAuscultation: "",
+                skinColor: "",
+                cardiacBubbles: "",
+                pulse: "",
+                rhythm: "",
+                pupils: "",
+                speech: "",
+                consciousnessLevel: "",
+                motorResponse: "",
                 classificationStatus: new ClassificationStatus(ClassificationStatusType.EMERGENCY.ToString()),
-                registro.Id
+                medicalRecordId: registro.Id
             );
 
             // 5. Cria o Histórico de Saúde associado ao prontuário

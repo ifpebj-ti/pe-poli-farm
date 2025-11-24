@@ -1,4 +1,4 @@
-﻿using Application.Factories;
+using Application.Factories;
 using Application.Gateways;
 using Domain.Dtos.User;
 using Domain.Entites.User;
@@ -9,7 +9,8 @@ namespace Application.Usecases.User
 {
     public class CreateUserUseCase(
         IUserRepositoryGateway userGateway, 
-        IProfileRepositoryGateway profileGateway)
+        IProfileRepositoryGateway profileGateway,
+        IBcryptGateway bcryptGateway)
     {
         public async Task<ResultPattern<UserEntity>> Execute(CreateUserDTO data)
         {
@@ -21,7 +22,8 @@ namespace Application.Usecases.User
             var accessCode = AccessCodeFactory.CreateAccessCodeEntity();
             try
             {
-                var userEntity = UserFactory.CreateUser(data, accessCode, profiles);
+                var hashedPassword = bcryptGateway.GenerateHashPassword(data.Password);
+                var userEntity = UserFactory.CreateUser(data, hashedPassword, accessCode, profiles);
                 await userGateway.Create(userEntity);
                 return ResultPattern<UserEntity>.SuccessResult(userEntity);
             }

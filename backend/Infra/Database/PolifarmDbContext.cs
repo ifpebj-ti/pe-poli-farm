@@ -1,4 +1,4 @@
-﻿using Domain.Entites;
+using Domain.Entites;
 using Domain.Entites.AccessCode;
 using Domain.Entites.Appointment;
 using Domain.Entites.Conduct;
@@ -12,6 +12,7 @@ using Domain.Entities.Notes;
 using Domain.Entities.Patient;
 using Domain.Entities.Service;
 using Domain.ValuesObjects;
+using Infra.Database.Mappings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using prontuario.Domain.Entities.PatientMedication;
@@ -49,6 +50,8 @@ namespace Infra.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.ApplyConfiguration(new UserMap());
+            
             modelBuilder.Owned<CEP>();
             modelBuilder.Owned<CPF>();
             modelBuilder.Owned<Email>();

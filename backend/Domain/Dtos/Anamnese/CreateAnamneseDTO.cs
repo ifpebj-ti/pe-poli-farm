@@ -1,4 +1,4 @@
-﻿using prontuario.Domain.ValuesObjects;
+using prontuario.Domain.ValuesObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +30,16 @@ namespace Domain.Dtos.Anamnese
         string MedicalHypothesis,
         string PreviousSurgeries,
         string SignsAndSymptoms,
+        string RespiratoryPattern,
+        string PulmonaryAuscultation,
+        string SkinColor,
+        string CardiacBubbles,
+        string Pulse,
+        string Rhythm,
+        string Pupils,
+        string Speech,
+        string ConsciousnessLevel,
+        string MotorResponse,
         ClassificationStatus ClassificationStatus
     );
 }

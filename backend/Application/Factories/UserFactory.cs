@@ -1,4 +1,4 @@
-﻿using Domain.Dtos.User;
+using Domain.Dtos.User;
 using Domain.Entites.AccessCode;
 using Domain.Entites.Profile;
 using Domain.Entites.User;
@@ -16,9 +16,8 @@ namespace Application.Factories
 {
     public class UserFactory
     {
-        public static UserEntity CreateUser(CreateUserDTO data, AccessCodeEntity accessCode, List<ProfileEntity> profiles)
+        public static UserEntity CreateUser(CreateUserDTO data, string hashedPassword, AccessCodeEntity accessCode, List<ProfileEntity> profiles)
         {
-            var genericPassword = $"{data.Email}_{data.Cpf}";
             var profile = profiles.Find(p => p.Role.Value == data.Profile.Role);
 
             return new UserEntityBuilder()
@@ -26,9 +25,9 @@ namespace Application.Factories
                 .WithEmail(new Email(data.Email))
                 .WithCpf(new CPF(data.Cpf))
                 .WithPosition(new Positions(data.Position))
-                .WithPassword(genericPassword)
+                .WithPassword(hashedPassword)
                 .WithActive(true)
-                .WithFirstAccess(false)
+                .WithFirstAccess(true)
                 .WithProfile(profile!)
                 .WithAccessCode(new AccessCodeEntityBuilder()
                     .WithCode(accessCode.Code)

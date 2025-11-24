@@ -1,4 +1,4 @@
-﻿using Domain.Dtos.Anamnese;
+using Domain.Dtos.Anamnese;
 using Domain.Entities.Anamnese;
 using System;
 using System.Collections.Generic;
@@ -34,6 +34,16 @@ namespace Application.Factories
                 .WithMedicalHypothesis(dto.MedicalHypothesis)
                 .WithPreviousSurgeries(dto.PreviousSurgeries)
                 .WithSignsAndSymptoms(dto.SignsAndSymptoms)
+                .WithRespiratoryPattern(dto.RespiratoryPattern)
+                .WithPulmonaryAuscultation(dto.PulmonaryAuscultation)
+                .WithSkinColor(dto.SkinColor)
+                .WithCardiacBubbles(dto.CardiacBubbles)
+                .WithPulse(dto.Pulse)
+                .WithRhythm(dto.Rhythm)
+                .WithPupils(dto.Pupils)
+                .WithSpeech(dto.Speech)
+                .WithConsciousnessLevel(dto.ConsciousnessLevel)
+                .WithMotorResponse(dto.MotorResponse)
                 .WithClassificationStatus(dto.ClassificationStatus)
                 .WithMedicalRecordId(medicalRecordId)
                 .Build();

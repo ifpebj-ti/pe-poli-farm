@@ -27,6 +27,16 @@ public class AnamneseEntityBuilder
     private string _medicalHypothesis = string.Empty;
     private string _previousSurgeries = string.Empty;
     private string _signsAndSymptoms = string.Empty;
+    private string _respiratoryPattern = string.Empty;
+    private string _pulmonaryAuscultation = string.Empty;
+    private string _skinColor = string.Empty;
+    private string _cardiacBubbles = string.Empty;
+    private string _pulse = string.Empty;
+    private string _rhythm = string.Empty;
+    private string _pupils = string.Empty;
+    private string _speech = string.Empty;
+    private string _consciousnessLevel = string.Empty;
+    private string _motorResponse = string.Empty;
     private ClassificationStatus _classificationStatus;
     private Guid _medicalRecordId;
 
@@ -162,6 +172,66 @@ public class AnamneseEntityBuilder
         return this;
     }
 
+    public AnamneseEntityBuilder WithRespiratoryPattern(string respiratoryPattern)
+    {
+        _respiratoryPattern = respiratoryPattern;
+        return this;
+    }
+
+    public AnamneseEntityBuilder WithPulmonaryAuscultation(string pulmonaryAuscultation)
+    {
+        _pulmonaryAuscultation = pulmonaryAuscultation;
+        return this;
+    }
+
+    public AnamneseEntityBuilder WithSkinColor(string skinColor)
+    {
+        _skinColor = skinColor;
+        return this;
+    }
+
+    public AnamneseEntityBuilder WithCardiacBubbles(string cardiacBubbles)
+    {
+        _cardiacBubbles = cardiacBubbles;
+        return this;
+    }
+
+    public AnamneseEntityBuilder WithPulse(string pulse)
+    {
+        _pulse = pulse;
+        return this;
+    }
+
+    public AnamneseEntityBuilder WithRhythm(string rhythm)
+    {
+        _rhythm = rhythm;
+        return this;
+    }
+
+    public AnamneseEntityBuilder WithPupils(string pupils)
+    {
+        _pupils = pupils;
+        return this;
+    }
+
+    public AnamneseEntityBuilder WithSpeech(string speech)
+    {
+        _speech = speech;
+        return this;
+    }
+
+    public AnamneseEntityBuilder WithConsciousnessLevel(string consciousnessLevel)
+    {
+        _consciousnessLevel = consciousnessLevel;
+        return this;
+    }
+
+    public AnamneseEntityBuilder WithMotorResponse(string motorResponse)
+    {
+        _motorResponse = motorResponse;
+        return this;
+    }
+
     public AnamneseEntityBuilder WithClassificationStatus(ClassificationStatus classificationStatus)
     {
         _classificationStatus = classificationStatus;
@@ -199,6 +269,16 @@ public class AnamneseEntityBuilder
             _medicalHypothesis,
             _previousSurgeries,
             _signsAndSymptoms,
+            _respiratoryPattern,
+            _pulmonaryAuscultation,
+            _skinColor,
+            _cardiacBubbles,
+            _pulse,
+            _rhythm,
+            _pupils,
+            _speech,
+            _consciousnessLevel,
+            _motorResponse,
             _classificationStatus,
             _medicalRecordId
         );

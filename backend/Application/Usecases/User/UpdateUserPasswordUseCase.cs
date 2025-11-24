@@ -15,17 +15,15 @@ public class UpdateUserPasswordUseCase(IUserRepositoryGateway userGateway, IBcry
         
         if(user?.AccessCode.Code != accessCode)
             return ResultPattern<string>.FailureResult("Não foi possível atualizar a senha do usuário.", 409);
-
-        var firstAccess = user.FirstAccess;
-        if (!firstAccess)
-            firstAccess = true;
         
         var hashPassword = bcryptGateway.GenerateHashPassword(password);
 
         try
         {
-            var newUserWithNewPassword = UserFactory.CreateUser(user, hashPassword, firstAccess);
-            await userGateway.Update(newUserWithNewPassword);
+            user.FirstAccess = false;
+            user.Password = hashPassword;
+            
+            await userGateway.Update(user);
             return ResultPattern<string>.SuccessResult();
         } catch(DomainException dex)
         {

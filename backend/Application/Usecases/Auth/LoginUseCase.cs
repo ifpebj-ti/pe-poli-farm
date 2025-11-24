@@ -1,4 +1,4 @@
-﻿using Application.Gateways;
+using Application.Gateways;
 using Domain.Errors;
 // using Microsoft.Extensions.Logging;
 using System;
@@ -23,24 +23,11 @@ namespace Application.Usecases.Auth
                 return ResultPattern<string>.FailureResult("Erro ao realizar login, verifique os dados e tente novamente", 404);
             }
 
-            if (user.FirstAccess)
+            var passwordIsValid = bcryptGateway.VerifyHashPassword(user, userPassword);
+            if (!passwordIsValid)
             {
-                // logger.LogInformation("Usuário {Email} realizando primeiro acesso, verificando senha hash.", userEmail);
-                var result = bcryptGateway.VerifyHashPassword(user, userPassword);
-                if (!result)
-                {
-                    // logger.LogWarning("Falha na verificação de senha hash para o usuário: {Email}", userEmail);
-                    return ResultPattern<string>.FailureResult("Erro ao realizar login, verifique os dados e tente novamente", 400);
-                }
-            }
-            else
-            {
-                // logger.LogInformation("Usuário {Email} não está em primeiro acesso, comparando senha simples.", userEmail);
-                if (user.Password != userPassword)
-                {
-                    // logger.LogWarning("Senha incorreta fornecida para o usuário: {Email}", userEmail);
-                    return ResultPattern<string>.FailureResult("Erro ao realizar login, verifique os dados e tente novamente", 400);
-                }
+                // logger.LogWarning("Falha na verificação de senha hash para o usuário: {Email}", userEmail);
+                return ResultPattern<string>.FailureResult("Erro ao realizar login, verifique os dados e tente novamente", 400);
             }
 
             var accessToken = tokenGateway.CreateToken(user);

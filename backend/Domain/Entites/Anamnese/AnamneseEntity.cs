@@ -28,6 +28,16 @@ public class AnamneseEntity : BaseEntity
     public string MedicalHypothesis { get; private set; } = string.Empty;
     public string PreviousSurgeries { get; private set; } = string.Empty;
     public string SignsAndSymptoms { get; private set; } = string.Empty;
+        public string RespiratoryPattern { get; private set; } = string.Empty;
+    public string PulmonaryAuscultation { get; private set; } = string.Empty;
+    public string SkinColor { get; private set; } = string.Empty;
+    public string CardiacBubbles { get; private set; } = string.Empty;
+    public string Pulse { get; private set; } = string.Empty;
+    public string Rhythm { get; private set; } = string.Empty;
+    public string Pupils { get; private set; } = string.Empty;
+    public string Speech { get; private set; } = string.Empty;
+    public string ConsciousnessLevel { get; private set; } = string.Empty;
+    public string MotorResponse { get; private set; } = string.Empty;
     public ClassificationStatus ClassificationStatus { get; private set; }
     public Guid MedicalRecordId { get; private set; }
     public MedicalRecordEntity MedicalRecord { get; private set; }
@@ -56,7 +66,17 @@ public class AnamneseEntity : BaseEntity
         string medicationInUseType,
         string medicalHypothesis,
         string previousSurgeries,
-        string SignsAndSymptoms,
+        string signsAndSymptoms,
+        string respiratoryPattern,
+        string pulmonaryAuscultation,
+        string skinColor,
+        string cardiacBubbles,
+        string pulse,
+        string rhythm,
+        string pupils,
+        string speech,
+        string consciousnessLevel,
+        string motorResponse,
         ClassificationStatus classificationStatus,
         Guid medicalRecordId)
     {
@@ -81,7 +101,17 @@ public class AnamneseEntity : BaseEntity
         MedicationInUseType = medicationInUseType;
         MedicalHypothesis = medicalHypothesis;
         PreviousSurgeries = previousSurgeries;
-        SignsAndSymptoms = SignsAndSymptoms;
+        SignsAndSymptoms = signsAndSymptoms;
+        RespiratoryPattern = respiratoryPattern;
+        PulmonaryAuscultation = pulmonaryAuscultation;
+        SkinColor = skinColor;
+        CardiacBubbles = cardiacBubbles;
+        Pulse = pulse;
+        Rhythm = rhythm;
+        Pupils = pupils;
+        Speech = speech;
+        ConsciousnessLevel = consciousnessLevel;
+        MotorResponse = motorResponse;
         ClassificationStatus = classificationStatus;
         MedicalRecordId = medicalRecordId;
     }
