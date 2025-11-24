@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useMemo, useState } from 'react';
@@ -99,7 +100,7 @@ export default function TabelaHistoricoExames() {
     >
       <Box sx={{ width: '100%', maxWidth: 1100 }}>
         {patientsWithExams.length === 0 ? (
-          <Typography sx={{ textAlign: 'center', mt: 4 }}>
+          <Typography sx={{ textAlign: 'center', mt: 4, color: 'black' }}>
             Nenhum histórico de exame encontrado.
           </Typography>
         ) : (

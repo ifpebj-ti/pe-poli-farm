@@ -39,7 +39,7 @@ export function useCardNovaSenha() {
         console.log('Resposta da nova senha:', response.data);
 
         // Redireciona para a página de login
-        router.push('/Inicio'); // Ou '/signin', dependendo da sua rota de login
+        router.push('/'); // Ou '/signin', dependendo da sua rota de login
       } else {
         // Se a API retornar 200 OK, mas com um corpo que indica erro lógico (sem token, por exemplo)
         const errorData = response.data;

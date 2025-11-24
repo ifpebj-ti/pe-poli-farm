@@ -34,3 +34,24 @@ export async function PostUser(data: {
 
   return response.data;
 }
+
+// Tipagem para os dados que o admin pode atualizar
+export type AdminUpdateUserData = {
+  name?: string;
+  email?: string;
+  isActive?: boolean;
+  profileId?: string;
+};
+
+/**
+ * Atualiza os dados de um usuário (requer permissão de Admin).
+ * @param userId - O ID do usuário a ser atualizado.
+ * @param data - Os dados a serem atualizados.
+ */
+export async function AdminUpdateUser(
+  userId: string,
+  data: AdminUpdateUserData
+) {
+  const response = await api.put(`/User/${userId}`, data);
+  return response.data;
+}

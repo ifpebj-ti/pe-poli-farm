@@ -47,7 +47,7 @@ interface Profissional {
 // Componente da tela
 export function CardProfissionais() {
   const router = useRouter();
-  const { profissionais, isLoading, error } = useProfissionais();
+  const { profissionais, isLoading, error, refetch } = useProfissionais();
 
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [openEdit, setOpenEdit] = useState(false);
@@ -91,6 +91,11 @@ export function CardProfissionais() {
       setOpenDesativar(false);
       setSelectedProf(null);
     }
+  };
+
+  const handleEditClick = (profissional: Profissional) => {
+    setSelectedProf(profissional);
+    setOpenEdit(true);
   };
 
   return (
@@ -222,7 +227,7 @@ export function CardProfissionais() {
                         color="primary"
                         size="small"
                         fullWidth={isMobile}
-                        onClick={() => setOpenEdit(true)}
+                        onClick={() => handleEditClick(profissional)}
                       >
                         Editar
                       </Button>
@@ -304,7 +309,10 @@ export function CardProfissionais() {
         open={openEdit}
         onClose={() => setOpenEdit(false)}
         profissional={selectedProf || undefined}
-        onSave={() => setOpenConfirm(true)}
+        onUpdateSuccess={() => {
+          setOpenEdit(false);
+          refetch();
+        }}
       />
       <PopUpConfirmacao
         open={openConfirm}

@@ -86,6 +86,7 @@ export default function FormDadosPaciente() {
     // Converte o número do endereço para inteiro antes de enviar
     const payload = {
       ...formData,
+      birthDate: formData.birthDate ? formData.birthDate : null,
       address: {
         ...formData.address,
         number: formData.address.number || 0

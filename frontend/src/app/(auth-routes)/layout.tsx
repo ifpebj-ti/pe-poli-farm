@@ -17,7 +17,7 @@ export default async function PrivateLayout({
     redirect('/');
   }
 
-  if (session.user.isUserUpdatePassword === 'false') {
+  if (session.user.firstAccess === 'True') {
     redirect('/NovoAcesso');
   }
 

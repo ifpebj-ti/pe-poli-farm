@@ -57,20 +57,23 @@ export default function ConsultaCompletaPage({ params }: ConsultaPageProps) {
     router.push('/NovoAtendimento'); // Navega para a página NovoAtendimento
   };
 
-  const handleProcedimentosClick = () => {
-    handleSalvarClick(); // Salva os dados antes de navegar
-    router.push(`/Procedimentos/${cpf}`); // Navega para a página TelaProcedimentos
+  const handleProcedimentosClick = async () => {
+    const success = await handleSalvarClick(); // Salva os dados antes de navegar
+    if (success) {
+      router.push(`/Procedimentos/${cpf}`); // Navega para a página TelaProcedimentos
+    }
   };
 
   const handleImprimirClick = () => {
     setAtestadoPopupOpen(true);
   };
 
-  const handleSalvarClick = () => {
+  const handleSalvarClick = async () => {
     // Verifica se a referência está conectada e chama a função 'submit' exposta
     if (consultaRef.current) {
-      consultaRef.current.submit();
+      return await consultaRef.current.submit();
     }
+    return false;
   };
 
   return (

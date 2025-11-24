@@ -26,11 +26,11 @@ export default function Inicio() {
     // Este efeito será executado quando a sessão for carregada
     if (status === 'authenticated') {
       // Graças ao nosso 'next-auth.d.ts', o TypeScript conhece 'firstAccess'
-      const firstAccess = session.user?.isUserUpdatePassword;
+      const firstAccess = session.user?.firstAccess;
       console.log('SESSÃO COMPLETA NO CLIENTE:', session);
 
       // Se for o primeiro acesso, redireciona para a página de troca de senha
-      if (firstAccess === 'true') {
+      if (firstAccess === 'True') {
         // Ajuste para 'True' ou 'False' conforme seu token
         router.replace('/NovoAcesso');
       }

@@ -10,7 +10,7 @@ type decodeTokenType = {
   userId: string;
   active: boolean;
   email: string;
-  IsUserUpdatePassword: boolean;
+  firstAccess: string;
   position: string;
   role: string;
   unique_name: string;
@@ -53,7 +53,7 @@ export const nextAuthOptions: NextAuthOptions = {
               id: decodeToken.userId,
               active: decodeToken.active,
               email: decodeToken.email,
-              isUserUpdatePassword: decodeToken.IsUserUpdatePassword,
+              firstAccess: decodeToken.firstAccess,
               position: decodeToken.position,
               role: decodeToken.role,
               unique_name: decodeToken.unique_name,
@@ -80,7 +80,7 @@ export const nextAuthOptions: NextAuthOptions = {
         token.active = user.active;
         token.accessToken = user.token;
         token.email = user.email;
-        token.IsUserUpdatePassword = user.isUserUpdatePassword;
+        token.firstAccess = user.firstAccess;
         token.unique_name = user.unique_name;
         token.position = user.position;
         token.role = user.role;
@@ -93,7 +93,7 @@ export const nextAuthOptions: NextAuthOptions = {
       session.user.accessToken = token.accessToken;
       session.user.active = token.active;
       session.user.email = token.email;
-      session.user.isUserUpdatePassword = token.isUserUpdatePassword;
+      session.user.firstAccess = token.firstAccess;
       session.user.role = token.role;
       session.user.position = token.position as string;
       return session;

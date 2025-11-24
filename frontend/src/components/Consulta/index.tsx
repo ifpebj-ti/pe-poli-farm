@@ -38,7 +38,7 @@ interface TelaConsultaProps {
 }
 
 export type TelaConsultaHandle = {
-  submit: () => void;
+  submit: () => Promise<boolean>;
 };
 
 const initialState = {
@@ -52,14 +52,12 @@ const initialState = {
     bloodType: '',
     saturation: '',
     height: '',
-    // --- CAMPOS QUE VAMOS MUDAR ---
     diabetes: false,
     antecPathological: false,
     necesPsicobio: false,
     allergies: false,
     useOfProthesis: false,
     medicationsInUse: false,
-    // --- FIM DA MUDANÇA ---
     respiratoryPattern: '',
     pulmonaryAuscultation: '',
     skinColor: '',
@@ -70,16 +68,13 @@ const initialState = {
     speech: '',
     consciousnessLevel: '',
     motorResponse: '',
-    // Esses a gente mantém como texto, porque o usuário vai escrever neles
     allergiesType: '',
     antecPathologicalType: '',
     medicationInUseType: '',
     signsAndSymptoms: '',
     previousSurgeries: '',
     medicalHypothesis: '',
-    classificationStatus: {
-      value: 'EMERGENCY'
-    }
+    classificationStatus: 'EMERGENCY' // Simplificado para string
   },
   healthHistory: {
     familyHAS: false,
@@ -131,31 +126,18 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
     useEffect(() => {
       const ultimoAtendimento = paciente.services?.[0];
       if (ultimoAtendimento?.medicalRecord?.anamnese) {
-        const anamneseFromRecord = {
-          ...ultimoAtendimento.medicalRecord.anamnese
-        };
-        // Ensure diabetes is a boolean
-        if (typeof anamneseFromRecord.diabetes !== 'boolean') {
-          anamneseFromRecord.diabetes = Boolean(anamneseFromRecord.diabetes);
-        }
+        const anamneseFromRecord = ultimoAtendimento.medicalRecord.anamnese;
+
         setFormData((prev) => ({
           ...prev,
           anamnese: {
             ...prev.anamnese,
             ...anamneseFromRecord,
+            // Garante que o estado sempre armazene uma string
             classificationStatus:
-              typeof anamneseFromRecord.classificationStatus === 'object' &&
-              anamneseFromRecord.classificationStatus !== null
-                ? anamneseFromRecord.classificationStatus
-                : {
-                    value: String(
-                      anamneseFromRecord.classificationStatus || 'EMERGENCY'
-                    )
-                  },
-            necesPsicobio:
-              typeof anamneseFromRecord.necesPsicobio === 'boolean'
-                ? anamneseFromRecord.necesPsicobio
-                : false
+              String(anamneseFromRecord.classificationStatus) || 'EMERGENCY',
+            diabetes: Boolean(anamneseFromRecord.diabetes),
+            necesPsicobio: Boolean(anamneseFromRecord.necesPsicobio)
           }
         }));
       }
@@ -170,7 +152,6 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
 
       let finalValue: string | boolean = value;
 
-      // Lista dos campos que devem ser booleanos
       const booleanFields = [
         'diabetes',
         'antecPathological',
@@ -180,7 +161,6 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
         'medicationsInUse'
       ];
 
-      // Se o campo for um dos booleanos, converte 'true'/'false' (string) para boolean
       if (booleanFields.includes(name)) {
         finalValue = value === 'true';
       }
@@ -200,7 +180,6 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
         ...prev,
         healthHistory: {
           ...prev.healthHistory,
-          // Se for checkbox, usa o 'checked', senão, usa o 'value'
           [name]: type === 'checkbox' ? checked : value
         }
       }));
@@ -210,16 +189,17 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
       const professionalId = session?.user?.id;
       if (!professionalId) {
         alert('Erro: Profissional não autenticado.');
-        return;
+        return false;
       }
 
+      // O payload agora pode usar o formData.anamnese diretamente
       const payload = {
         patientId: paciente.id,
         professionalId: professionalId,
         anamnese: formData.anamnese,
         healthHistory: formData.healthHistory,
         prescriptions: formData.prescriptions.map((p) => ({
-          medicationName: p.name, // Corrigindo o nome do campo
+          medicationName: p.name,
           posology: p.posology,
           type: p.type,
           prescriptionDate: new Date().toISOString(),
@@ -232,12 +212,13 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
         console.log('Enviando dados da consulta:', payload);
         await api.post('/MedicalRecord/MedicalConsultation', payload);
         alert('Consulta salva com sucesso!');
-        router.push('/Pacientes');
+        return true;
       } catch (error) {
         console.error('Erro ao salvar a consulta:', error);
         alert(
           'Erro ao salvar a consulta. Verifique o console para mais detalhes.'
         );
+        return false;
       }
     };
 
@@ -274,7 +255,6 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
       }));
     };
 
-    // Função para adicionar um novo exame na lista
     const handleAddExam = (exam: PatientExam) => {
       setFormData((prev) => ({
         ...prev,
@@ -284,13 +264,12 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
 
     return (
       <>
-        {/* BOTÕES DE CIMA */}
         <Box sx={{ p: 3, bgcolor: '#FFF', borderRadius: '16px' }}>
           <Typography variant="h6" color="black" sx={{ mb: 2 }}>
             Dados do paciente
           </Typography>
           <Grid container spacing={2} mb={3}>
-            <Grid size={{ xs: 6, sm: 6 }}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 label="Nome"
                 fullWidth
@@ -299,7 +278,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 InputProps={{ readOnly: true }}
               />
             </Grid>
-            <Grid size={{ xs: 3, sm: 3 }}>
+            <Grid item xs={12} sm={3}>
               <TextField
                 label="CPF"
                 fullWidth
@@ -308,7 +287,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 InputProps={{ readOnly: true }}
               />
             </Grid>
-            <Grid size={{ xs: 3, sm: 3 }}>
+            <Grid item xs={12} sm={3}>
               <TextField
                 label="SUS"
                 fullWidth
@@ -323,7 +302,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
             Anamnese
           </Typography>
           <Grid container spacing={2} mb={3}>
-            <Grid size={{ xs: 6, sm: 2 }}>
+            <Grid item xs={6} sm={2}>
               <TextField
                 label="Pressão Art."
                 name="bloodPressure"
@@ -333,7 +312,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 sx={inputStyles}
               />
             </Grid>
-            <Grid size={{ xs: 6, sm: 2 }}>
+            <Grid item xs={6} sm={2}>
               <TextField
                 label="Glicose"
                 name="glucose"
@@ -343,7 +322,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 sx={inputStyles}
               />
             </Grid>
-            <Grid size={{ xs: 6, sm: 2 }}>
+            <Grid item xs={6} sm={2}>
               <TextField
                 label="Temperatura"
                 name="temperature"
@@ -353,7 +332,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 sx={inputStyles}
               />
             </Grid>
-            <Grid size={{ xs: 6, sm: 2 }}>
+            <Grid item xs={6} sm={2}>
               <TextField
                 label="Peso"
                 name="weight"
@@ -363,7 +342,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 sx={inputStyles}
               />
             </Grid>
-            <Grid size={{ xs: 6, sm: 2 }}>
+            <Grid item xs={6} sm={2}>
               <TextField
                 label="Freq. Card."
                 name="heartRate"
@@ -373,7 +352,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 sx={inputStyles}
               />
             </Grid>
-            <Grid size={{ xs: 6, sm: 2 }}>
+            <Grid item xs={6} sm={2}>
               <TextField
                 label="Freq. Resp."
                 name="respiratoryRate"
@@ -383,7 +362,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 sx={inputStyles}
               />
             </Grid>
-            <Grid size={{ xs: 6, sm: 2 }}>
+            <Grid item xs={6} sm={2}>
               <TextField
                 label="Saturação"
                 name="saturation"
@@ -393,7 +372,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 sx={inputStyles}
               />
             </Grid>
-            <Grid size={{ xs: 6, sm: 2 }}>
+            <Grid item xs={6} sm={2}>
               <TextField
                 label="Altura"
                 name="height"
@@ -403,7 +382,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 sx={inputStyles}
               />
             </Grid>
-            <Grid size={{ xs: 6, sm: 2 }}>
+            <Grid item xs={6} sm={2}>
               <TextField
                 label="Tipo Sang."
                 name="bloodType"
@@ -413,7 +392,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 sx={inputStyles}
               />
             </Grid>
-            <Grid size={{ xs: 6, sm: 2 }}>
+            <Grid item xs={6} sm={2}>
               <FormControl fullWidth sx={inputStyles}>
                 <InputLabel>Diabetes</InputLabel>
                 <Select
@@ -428,7 +407,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
               </FormControl>
             </Grid>
 
-            <Grid size={{ xs: 6, sm: 2 }}>
+            <Grid item xs={6} sm={2}>
               <FormControl fullWidth sx={inputStyles}>
                 <InputLabel>Alergias</InputLabel>
                 <Select
@@ -442,7 +421,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 </Select>
               </FormControl>
             </Grid>
-            <Grid size={{ xs: 6, sm: 2 }}>
+            <Grid item xs={6} sm={2}>
               <FormControl fullWidth sx={inputStyles}>
                 <InputLabel>Uso de Prótese</InputLabel>
                 <Select
@@ -456,7 +435,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 </Select>
               </FormControl>
             </Grid>
-            <Grid size={{ xs: 6, sm: 2 }}>
+            <Grid item xs={6} sm={2}>
               <FormControl fullWidth sx={inputStyles}>
                 <InputLabel>Antec. Patológicos</InputLabel>
                 <Select
@@ -470,7 +449,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 </Select>
               </FormControl>
             </Grid>
-            <Grid size={{ xs: 6, sm: 2 }}>
+            <Grid item xs={6} sm={2}>
               <FormControl fullWidth sx={inputStyles}>
                 <InputLabel>Neces. Psicobio.</InputLabel>
                 <Select
@@ -484,7 +463,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 </Select>
               </FormControl>
             </Grid>
-            <Grid size={{ xs: 6, sm: 2 }}>
+            <Grid item xs={6} sm={2}>
               <FormControl fullWidth sx={inputStyles}>
                 <InputLabel>Medicamentos em uso</InputLabel>
                 <Select
@@ -498,14 +477,30 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 </Select>
               </FormControl>
             </Grid>
+            <Grid item xs={6} sm={2}>
+              <FormControl fullWidth sx={inputStyles}>
+                <InputLabel>Classificação de Risco</InputLabel>
+                <Select
+                  name="classificationStatus"
+                  value={formData.anamnese.classificationStatus}
+                  label="Classificação de Risco"
+                  onChange={handleAnamneseChange}
+                >
+                  <MenuItem value="EMERGENCY">Emergência</MenuItem>
+                  <MenuItem value="VERY_URGENT">Muito Urgente</MenuItem>
+                  <MenuItem value="URGENCY">Urgente</MenuItem>
+                  <MenuItem value="LESS_SERIOUS">Pouco Urgente</MenuItem>
+                  <MenuItem value="LIGHTWEIGHT">Não Urgente</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
           </Grid>
 
-          {/* SEÇÕES NOVAS */}
           <Typography variant="h6" color="black" sx={{ mb: 2 }}>
             Necessidades Psicobiológicas
           </Typography>
           <Grid container spacing={2} mb={3}>
-            <Grid size={{ xs: 4 }}>
+            <Grid item xs={4}>
               <FormControl fullWidth sx={inputStyles}>
                 <InputLabel>Padrão Respiratório</InputLabel>
                 <Select
@@ -518,7 +513,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 </Select>
               </FormControl>
             </Grid>
-            <Grid size={{ xs: 4 }}>
+            <Grid item xs={4}>
               <FormControl fullWidth sx={inputStyles}>
                 <InputLabel>Ausculta Pulmonar</InputLabel>
                 <Select
@@ -531,7 +526,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 </Select>
               </FormControl>
             </Grid>
-            <Grid size={{ xs: 4 }}>
+            <Grid item xs={4}>
               <FormControl fullWidth sx={inputStyles}>
                 <InputLabel>Coloração da pele</InputLabel>
                 <Select
@@ -550,7 +545,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
             Neuro
           </Typography>
           <Grid container spacing={2} mb={3}>
-            <Grid size={{ xs: 4 }}>
+            <Grid item xs={4}>
               <FormControl fullWidth sx={inputStyles}>
                 <InputLabel>Bulhas Cardíacas</InputLabel>
                 <Select
@@ -565,7 +560,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 </Select>
               </FormControl>
             </Grid>
-            <Grid size={{ xs: 4 }}>
+            <Grid item xs={4}>
               <FormControl fullWidth sx={inputStyles}>
                 <InputLabel>Pulso</InputLabel>
                 <Select
@@ -578,7 +573,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 </Select>
               </FormControl>
             </Grid>
-            <Grid size={{ xs: 4 }}>
+            <Grid item xs={4}>
               <FormControl fullWidth sx={inputStyles}>
                 <InputLabel>Ritmo</InputLabel>
                 <Select
@@ -599,7 +594,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
             Cardio
           </Typography>
           <Grid container spacing={2} mb={3}>
-            <Grid size={3}>
+            <Grid item xs={3}>
               <Typography sx={{ color: 'grey.700' }}>Pupilas:</Typography>
               <Select
                 fullWidth
@@ -622,7 +617,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 </MenuItem>
               </Select>
             </Grid>
-            <Grid size={3}>
+            <Grid item xs={3}>
               <Typography sx={{ color: 'grey.700' }}>Fala:</Typography>
               <Select
                 fullWidth
@@ -644,7 +639,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 <MenuItem value="Taquilalia">Taquilalia</MenuItem>
               </Select>
             </Grid>
-            <Grid size={3}>
+            <Grid item xs={3}>
               <Typography sx={{ color: 'grey.700' }}>
                 Nível de Consciência:
               </Typography>
@@ -667,7 +662,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 <MenuItem value="Letárgico">Letárgico</MenuItem>
               </Select>
             </Grid>
-            <Grid size={3}>
+            <Grid item xs={3}>
               <Typography sx={{ color: 'grey.700' }}>
                 Resposta Motora:
               </Typography>
@@ -691,11 +686,10 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
               </Select>
             </Grid>
           </Grid>
-          {/* Blocos de texto */}
           <Grid container spacing={2} mb={3}>
-            {/* Antecedentes Familiares */}
             <Grid
-              size={{ xs: 12 }}
+              item
+              xs={12}
               sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}
             >
               <Typography
@@ -779,9 +773,9 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
               />
             </Grid>
 
-            {/* Antecedentes Pessoais */}
             <Grid
-              size={{ xs: 12 }}
+              item
+              xs={12}
               sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}
             >
               <Typography
@@ -867,7 +861,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
           </Grid>
 
           <Grid container spacing={2} mb={3}>
-            <Grid size={{ xs: 12, sm: 4 }}>
+            <Grid item xs={12} sm={4}>
               <TextField
                 label="Alergias"
                 name="allergiesType"
@@ -879,7 +873,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 rows={3}
               />
             </Grid>
-            <Grid size={{ xs: 12, sm: 4 }}>
+            <Grid item xs={12} sm={4}>
               <TextField
                 label="Antec. Patológicos"
                 name="antecPathologicalType"
@@ -891,7 +885,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 rows={3}
               />
             </Grid>
-            <Grid size={{ xs: 12, sm: 4 }}>
+            <Grid item xs={12} sm={4}>
               <TextField
                 label="Medicamentos em uso"
                 name="medicationInUseType"
@@ -903,7 +897,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 rows={3}
               />
             </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 label="Sinais e Sintomas"
                 name="signsAndSymptoms"
@@ -915,7 +909,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 rows={3}
               />
             </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 label="Cirurgias Prévias"
                 name="previousSurgeries"
@@ -927,7 +921,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 rows={3}
               />
             </Grid>
-            <Grid size={{ xs: 12 }}>
+            <Grid item xs={12}>
               <TextField
                 label="Hipótese Médica"
                 name="medicalHypothesis"
@@ -942,7 +936,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
           </Grid>
 
           <Grid container spacing={2} mb={3}>
-            <Grid size={{ xs: 12, sm: 6 }}>
+            <Grid item xs={12} sm={6}>
               <Typography variant="h6" color="black" sx={{ mb: 1 }}>
                 Prescrição de Medicação
               </Typography>
@@ -971,7 +965,6 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                     }}
                   >
                     <Typography variant="body1">
-                      {/* >>> MUDE AQUI para a propriedade correta, ex: prescription.nome */}
                       {prescription.name || 'Medicamento sem nome'}
                     </Typography>
                     <IconButton
@@ -985,7 +978,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 ))}
               </Box>
             </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
+            <Grid item xs={12} sm={6}>
               <Typography variant="h6" color="black" sx={{ mb: 1 }}>
                 Prescrição de Exames
               </Typography>
@@ -1014,7 +1007,6 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                     }}
                   >
                     <Typography variant="body1">
-                      {/* >>> MUDE AQUI para a propriedade correta, ex: exam.nomeExame */}
                       {exam.name || 'Exame sem nome'}
                     </Typography>
                     <IconButton
