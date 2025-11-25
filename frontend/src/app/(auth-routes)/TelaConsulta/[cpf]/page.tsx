@@ -1,47 +1,52 @@
 'use client';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import React, { useRef, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { useRef, useState } from 'react';
 
 import BreadCrumb from '@/src/components/BreadCrumb';
 import TelaConsulta, { TelaConsultaHandle } from '@/src/components/Consulta';
 import NavBar from '@/src/components/NavBar';
 import PopupAtestado from '@/src/components/PopUp/PopupAtestado';
 
+import { GetPatientByCPF } from '@/src/services/PatientService';
 import { Box, Button, CircularProgress, Typography } from '@mui/material';
+import { useQuery } from '@tanstack/react-query';
 
-import { usePacienteCpf } from '../../TelaProntuario/[cpf]/hooks/usePacienteCpf';
-
-type ConsultaPageProps = {
-  params: Promise<{
-    cpf: string;
-  }>;
-};
-
-export default function ConsultaCompletaPage({ params }: ConsultaPageProps) {
+export default function ConsultaCompletaPage() {
   const router = useRouter();
-  const resolvedParams = React.use(params);
-  const { cpf } = resolvedParams;
+  const { cpf } = useParams<{
+    cpf: string;
+  }>();
   const { data: session } = useSession();
 
   const [isAtestadoPopupOpen, setAtestadoPopupOpen] = useState(false);
 
   const consultaRef = useRef<TelaConsultaHandle>(null);
 
-  // Usa o hook para buscar os dados iniciais do paciente
-  const { paciente, isLoading, error } = usePacienteCpf(cpf);
+  const {
+    data: paciente,
+    error,
+    isLoading
+  } = useQuery({
+    queryKey: ['patient', cpf],
+    queryFn: () => GetPatientByCPF(cpf),
+    enabled: !!cpf,
+    staleTime: 5 * 60 * 1000 // 5 minutos
+  });
 
   const linkList = [
     {
       label: 'Home',
-      href: '/'
+      href: '/Inicio'
     },
     {
       label: 'Novo Atendimento',
       href: '/NovoAtendimento'
     },
     {
-      label: paciente ? `Consulta de ${paciente.name}` : 'Carregando...',
+      label: paciente?.data
+        ? `Consulta de ${paciente.data.name}`
+        : 'Carregando...',
       href: '#'
     }
   ];
@@ -59,7 +64,7 @@ export default function ConsultaCompletaPage({ params }: ConsultaPageProps) {
 
   const handleProcedimentosClick = () => {
     handleSalvarClick(); // Salva os dados antes de navegar
-    router.push(`/Procedimentos/${cpf}`); // Navega para a página TelaProcedimentos
+    // router.push(`/Procedimentos/${cpf}`); // Navega para a página TelaProcedimentos
   };
 
   const handleImprimirClick = () => {
@@ -79,12 +84,14 @@ export default function ConsultaCompletaPage({ params }: ConsultaPageProps) {
     >
       <NavBar />
 
-      <PopupAtestado
-        open={isAtestadoPopupOpen}
-        patientData={paciente!}
-        doctorName={session?.user?.unique_name || ''}
-        onClose={() => setAtestadoPopupOpen(false)}
-      />
+      {!isLoading && paciente && (
+        <PopupAtestado
+          open={isAtestadoPopupOpen}
+          patientData={paciente?.data}
+          doctorName={session?.user?.unique_name || ''}
+          onClose={() => setAtestadoPopupOpen(false)}
+        />
+      )}
 
       {/* Conteúdo abaixo da NavBar: BreadCrumb e Nova Atendimento/Botões */}
       <Box sx={{ mt: 4, ml: 10, mr: 4 }}>
@@ -149,13 +156,13 @@ export default function ConsultaCompletaPage({ params }: ConsultaPageProps) {
         )}
         {error && (
           <Typography color="error" sx={{ textAlign: 'center', p: 10 }}>
-            {error}
+            {error.message}
           </Typography>
         )}
 
         {/* Passa o paciente carregado para o formulário de consulta */}
         {!isLoading && !error && paciente && (
-          <TelaConsulta ref={consultaRef} paciente={paciente} />
+          <TelaConsulta ref={consultaRef} paciente={paciente.data} />
         )}
       </Box>
     </Box>
