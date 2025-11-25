@@ -1,5 +1,6 @@
 'use client';
 
+import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 
 import PopupConfirmacaoPrescricao from '@/src/components/PopUp/PopupConfirmacaoPrescricao';
@@ -32,6 +33,7 @@ export default function PopupPrescricaoExame({
   onAdd
 }: PopupProps) {
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const { data: session } = useSession();
   const [exam, setExam] = useState({
     name: '',
     description: '',
@@ -47,7 +49,13 @@ export default function PopupPrescricaoExame({
 
   const handleAdicionarClick = () => {
     const { name, description, priority } = exam;
-    onAdd({ name, description, priority });
+    onAdd({
+      name,
+      description,
+      priority,
+      professionalName: session?.user?.unique_name || '',
+      prescriptionDate: new Date()
+    });
     onClose();
     setConfirmOpen(true);
   };

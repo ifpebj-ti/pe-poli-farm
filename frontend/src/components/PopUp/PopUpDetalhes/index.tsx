@@ -1,5 +1,6 @@
 'use client';
 
+import { Patient, PatientExam } from '@/src/lib/pacientes';
 import {
   Box,
   Button,
@@ -15,17 +16,21 @@ import { ptBR } from 'date-fns/locale';
 interface PopupDetalhesExameProps {
   open: boolean;
   handleClose: () => void;
+  patient: Patient | null;
+  exam: PatientExam | null;
 }
 
 export default function PopupDetalhes({
   open,
-  handleClose
+  handleClose,
+  patient,
+  exam
 }: PopupDetalhesExameProps) {
   const handlePrint = () => {
-    // window.print() abre a caixa de diálogo de impressão do navegador
     window.print();
     console.log('Conteúdo do Pop-up de Detalhes impresso!');
   };
+
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
       <DialogTitle>
@@ -35,82 +40,88 @@ export default function PopupDetalhes({
       </DialogTitle>
 
       <DialogContent dividers>
-        {/* Paciente */}
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="h6" fontWeight={500} mb={1}>
-            Paciente
-          </Typography>
+        {patient && exam ? (
+          <>
+            {/* Paciente */}
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="h6" fontWeight={500} mb={1}>
+                Paciente
+              </Typography>
 
-          <Box
-            sx={{
-              display: 'flex',
-              gap: 5,
-              flexWrap: 'wrap'
-            }}
-          >
-            <Typography>
-              <strong>Nome:</strong> Netinho
-            </Typography>
-            <Typography>
-              <strong>CPF:</strong> 109.519.474-78
-            </Typography>
-            <Typography>
-              <strong>SUS:</strong> 123456789876543
-            </Typography>
-          </Box>
-        </Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: 5,
+                  flexWrap: 'wrap'
+                }}
+              >
+                <Typography>
+                  <strong>Nome:</strong> {patient.name}
+                </Typography>
+                <Typography>
+                  <strong>CPF:</strong> {patient.cpf}
+                </Typography>
+                <Typography>
+                  <strong>SUS:</strong> {patient.sus || 'Não informado'}
+                </Typography>
+              </Box>
+            </Box>
 
-        {/* Profissional */}
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="h6" fontWeight={500} mb={1}>
-            Profissional Solicitante
-          </Typography>
+            {/* Profissional */}
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="h6" fontWeight={500} mb={1}>
+                Profissional Solicitante
+              </Typography>
 
-          <Box
-            sx={{
-              display: 'flex',
-              gap: 5,
-              flexWrap: 'wrap'
-            }}
-          >
-            <Typography>
-              <strong>Nome:</strong> Dr. João Silva
-            </Typography>
-            <Typography>
-              <strong>Especialidade:</strong> Clínica Geral
-            </Typography>
-            <Typography>
-              <strong>Data:</strong>{' '}
-              {format(new Date('2025-07-17'), 'dd/MM/yyyy', {
-                locale: ptBR
-              })}
-            </Typography>
-          </Box>
-        </Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: 5,
+                  flexWrap: 'wrap'
+                }}
+              >
+                <Typography>
+                  <strong>Nome:</strong>{' '}
+                  {exam.professionalName || 'Não informado'}
+                </Typography>
+                {/* Especialidade não está no PatientExam, pode ser adicionada se necessário */}
+                <Typography>
+                  <strong>Data:</strong>{' '}
+                  {exam.prescriptionDate
+                    ? format(new Date(exam.prescriptionDate), 'dd/MM/yyyy', {
+                        locale: ptBR
+                      })
+                    : 'Não informada'}
+                </Typography>
+              </Box>
+            </Box>
 
-        {/* Exames */}
-        <Box>
-          <Typography variant="h6" fontWeight={500} mb={1}>
-            Exames
-          </Typography>
+            {/* Exames */}
+            <Box>
+              <Typography variant="h6" fontWeight={500} mb={1}>
+                Exames
+              </Typography>
 
-          <Typography sx={{ mb: 1 }}>
-            <strong>Tipo de exame:</strong> Hemograma Completo
-          </Typography>
+              <Typography sx={{ mb: 1 }}>
+                <strong>Tipo de exame:</strong> {exam.name}
+              </Typography>
 
-          <Typography sx={{ mb: 1 }}>
-            <strong>Motivo da Solicitação:</strong> Verificação de sintomas
-            gripais persistentes
-          </Typography>
+              <Typography sx={{ mb: 1 }}>
+                <strong>Motivo da Solicitação:</strong> {exam.description}
+              </Typography>
 
-          <Typography sx={{ mb: 0.5 }}>
-            <strong>Observações adicionais:</strong>
-          </Typography>
-          <Typography>
-            Paciente apresenta febre e palidez. Solicita-se hemograma para
-            verificar possíveis alterações hematológicas.
-          </Typography>
-        </Box>
+              {/* Observações adicionais - se existir um campo para isso no PatientExam */}
+              {/* <Typography sx={{ mb: 0.5 }}>
+                <strong>Observações adicionais:</strong>
+              </Typography>
+              <Typography>
+                {exam.observations || 'Nenhuma observação adicional.'}
+              </Typography> */}
+            </Box>
+          </>
+        ) : (
+          <Typography>Dados do paciente ou exame não disponíveis.</Typography>
+        )}
       </DialogContent>
 
       <DialogActions sx={{ padding: '16px 24px' }}>

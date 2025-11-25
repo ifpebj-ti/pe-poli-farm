@@ -81,8 +81,7 @@ export default function ConsultaCompletaPage({ params }: ConsultaPageProps) {
 
       <PopupAtestado
         open={isAtestadoPopupOpen}
-        patientName={paciente?.name || ''}
-        patientCpf={cpf}
+        patientData={paciente!}
         doctorName={session?.user?.unique_name || ''}
         onClose={() => setAtestadoPopupOpen(false)}
       />

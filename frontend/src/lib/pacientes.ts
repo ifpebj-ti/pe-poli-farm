@@ -1,5 +1,7 @@
 // src/data/mockPacientes.ts
 
+import { ReactNode } from 'react';
+
 // -> TIPO DEFINIDO AQUI <-
 // Este é o "contrato" que todo objeto de paciente deve seguir.
 // src/types/paciente.ts

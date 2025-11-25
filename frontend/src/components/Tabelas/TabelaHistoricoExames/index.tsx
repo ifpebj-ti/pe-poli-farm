@@ -5,7 +5,6 @@ import { useMemo, useState } from 'react';
 import PopupDetalhes from '@/src/components/PopUp/PopUpDetalhes';
 
 import { useHistoricoExames } from '@/src/app/(auth-routes)/HistoricoExames/hooks/useHistoricoExames';
-const PopupDetalhesAny = PopupDetalhes as unknown;
 import { Patient, PatientExam } from '@/src/lib/pacientes'; // Importando os tipos corretos
 import {
   Box,
@@ -202,7 +201,7 @@ export default function TabelaHistoricoExames() {
           </>
         )}
       </Box>
-      <PopupDetalhesAny
+      <PopupDetalhes
         open={open}
         handleClose={handleClose}
         patient={selectedPatient}

@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useReactToPrint } from 'react-to-print';
 
+import { Patient } from '@/src/lib/pacientes';
 import {
   Box,
   Button,
@@ -16,16 +17,14 @@ import { CertificateTemplate } from './CertificateTemplate';
 
 interface PopupAtestadoProps {
   open: boolean;
-  patientName: string;
-  patientCpf: string;
+  patientData: Patient;
   doctorName: string;
   onClose: () => void;
 }
 
 const PopupAtestado: React.FC<PopupAtestadoProps> = ({
   open,
-  patientName,
-  patientCpf,
+  patientData,
   doctorName,
   onClose
 }) => {
@@ -48,8 +47,8 @@ const PopupAtestado: React.FC<PopupAtestadoProps> = ({
 
   const handleGenerateCertificate = () => {
     setCertificateData({
-      patientName,
-      patientCpf,
+      patientName: patientData.name,
+      patientCpf: patientData.cpf,
       doctorName,
       date: new Date().toLocaleDateString('pt-BR'),
       reason,
@@ -79,14 +78,14 @@ const PopupAtestado: React.FC<PopupAtestadoProps> = ({
             <TextField
               label="Paciente"
               fullWidth
-              value={patientName}
+              value={patientData.name}
               disabled
               margin="normal"
             />
             <TextField
               label="CPF"
               fullWidth
-              value={patientCpf}
+              value={patientData.cpf}
               disabled
               margin="normal"
             />

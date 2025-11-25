@@ -1071,6 +1071,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
           open={openAtestadoPopup}
           onClose={() => setOpenAtestadoPopup(false)}
           patientData={paciente}
+          doctorName={session?.user?.unique_name || ''}
         />
       </>
     );
