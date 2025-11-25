@@ -1,10 +1,12 @@
 'use client';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 
 import BreadCrumb from '@/src/components/BreadCrumb';
 import TelaConsulta, { TelaConsultaHandle } from '@/src/components/Consulta';
 import NavBar from '@/src/components/NavBar';
+import PopupAtestado from '@/src/components/PopUp/PopupAtestado';
 
 import { Box, Button, CircularProgress, Typography } from '@mui/material';
 
@@ -20,6 +22,9 @@ export default function ConsultaCompletaPage({ params }: ConsultaPageProps) {
   const router = useRouter();
   const resolvedParams = React.use(params);
   const { cpf } = resolvedParams;
+  const { data: session } = useSession();
+
+  const [isAtestadoPopupOpen, setAtestadoPopupOpen] = useState(false);
 
   const consultaRef = useRef<TelaConsultaHandle>(null);
 
@@ -58,9 +63,7 @@ export default function ConsultaCompletaPage({ params }: ConsultaPageProps) {
   };
 
   const handleImprimirClick = () => {
-    // Lógica para imprimir, talvez usando window.print() ou gerando um PDF
-    window.print(); // Exemplo simples de impressão
-    console.log('Botão IMPRIMIR clicado');
+    setAtestadoPopupOpen(true);
   };
 
   const handleSalvarClick = () => {
@@ -75,6 +78,13 @@ export default function ConsultaCompletaPage({ params }: ConsultaPageProps) {
       sx={{ backgroundColor: 'white', minHeight: '100vh', minWidth: '100%' }}
     >
       <NavBar />
+
+      <PopupAtestado
+        open={isAtestadoPopupOpen}
+        patientData={paciente!}
+        doctorName={session?.user?.unique_name || ''}
+        onClose={() => setAtestadoPopupOpen(false)}
+      />
 
       {/* Conteúdo abaixo da NavBar: BreadCrumb e Nova Atendimento/Botões */}
       <Box sx={{ mt: 4, ml: 10, mr: 4 }}>
@@ -102,8 +112,9 @@ export default function ConsultaCompletaPage({ params }: ConsultaPageProps) {
                 '&:hover': { backgroundColor: '#0f479e' },
                 textTransform: 'uppercase'
               }}
+              disabled={isLoading || !paciente}
             >
-              IMPRIMIR
+              ATESTADO
             </Button>
             <Button
               variant="contained"

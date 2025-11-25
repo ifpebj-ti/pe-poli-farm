@@ -1,5 +1,6 @@
 'use client';
 
+import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 
 import PopupConfirmacaoPrescricao from '@/src/components/PopUp/PopupConfirmacaoPrescricao';
@@ -32,10 +33,11 @@ export default function PopupPrescricaoExame({
   onAdd
 }: PopupProps) {
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const { data: session } = useSession();
   const [exam, setExam] = useState({
     name: '',
     description: '',
-    priority: 'baixa',
+    priority: 'BAIXA', // Corrigido para o valor esperado pelo backend
     observations: ''
   });
 
@@ -46,7 +48,14 @@ export default function PopupPrescricaoExame({
   };
 
   const handleAdicionarClick = () => {
-    onAdd(exam);
+    const { name, description, priority } = exam;
+    onAdd({
+      name,
+      description,
+      priority,
+      professionalName: session?.user?.unique_name || '',
+      prescriptionDate: new Date()
+    });
     onClose();
     setConfirmOpen(true);
   };
@@ -89,9 +98,9 @@ export default function PopupPrescricaoExame({
                   value={exam.priority}
                   onChange={handleChange}
                 >
-                  <MenuItem value="baixa">Baixa</MenuItem>
-                  <MenuItem value="media">Média</MenuItem>
-                  <MenuItem value="alta">Alta</MenuItem>
+                  <MenuItem value="BAIXA">Baixa</MenuItem>
+                  <MenuItem value="NORMAL">Média</MenuItem>
+                  <MenuItem value="ALTA">Alta</MenuItem>
                 </Select>
               </FormControl>
             </Grid>

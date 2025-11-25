@@ -1,18 +1,19 @@
 'use client';
 
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import PopupMeusdados from '@/src/components/PopUp/PopUpMeusDados';
 
+import { api } from '@/src/services/api';
 import {
   Visibility,
   VisibilityOff,
   Person,
   Email,
   Lock,
-  Work,
-  LocalHospital
+  Work
 } from '@mui/icons-material';
 import {
   Box,
@@ -23,33 +24,84 @@ import {
   InputAdornment
 } from '@mui/material';
 
+interface UserForm {
+  name: string;
+  email: string;
+  password: string;
+  profileId: string; // Importante para o envio
+  profileName: string; // Apenas para exibição
+}
+
 export default function MeusDados() {
   const [showPassword, setShowPassword] = useState(false);
   const [openPopup, setOpenPopup] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [error, setError] = useState('');
   const router = useRouter();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { data: session, status } = useSession();
 
-  const [form, setForm] = useState({
-    nome: '',
+  const [form, setForm] = useState<UserForm>({
+    name: '',
     email: '',
-    senha: '',
-    unidade: '',
-    perfil: ''
+    password: '',
+    profileId: '',
+    profileName: ''
   });
+
+  useEffect(() => {
+    // Verifica se a sessão já carregou e tem dados de usuário
+    if (session && session.user) {
+      console.log('Dados da sessão:', session.user); // Ótimo para debugar!
+
+      // ATENÇÃO AQUI: Adapte os nomes das propriedades para bater com o que vem na sua sessão.
+      // Ex: session.user.profileId ou session.user.profile?.id
+      setForm({
+        name: session.user.unique_name || '',
+        email: session.user.email || '',
+        password: '', // Senha sempre começa vazia
+        profileId: session.user.id || '', // << VERIFIQUE ESSE CAMPO
+        profileName: session.user.position || 'Perfil não informado' // << VERIFIQUE ESSE CAMPO
+      });
+    }
+  }, [session]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleOpenPopup = () => {
-    setOpenPopup(true);
+  const handleAlterar = async () => {
+    // Monta o payload SÓ com os campos que a API espera
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const payload: any = {
+      name: form.name,
+      email: form.email,
+      profileId: form.profileId,
+      isActive: true // A API espera esse campo
+    };
+
+    // Só adiciona a senha no payload se o usuário tiver digitado algo
+    if (form.password) {
+      payload.password = form.password;
+    }
+
+    try {
+      console.log('Enviando payload:', payload);
+      await api.patch('/User/me/update', payload);
+      setOpenPopup(true); // Abre o popup de sucesso
+    } catch (err) {
+      setError('Eita, não foi possível alterar os dados. Tenta de novo.');
+      console.error(err);
+    }
   };
 
   const handleClosePopup = () => {
     setOpenPopup(false);
+    router.push('/Inicio'); // Volta pra tela inicial após o sucesso
   };
 
   const handleVoltarClick = () => {
-    router.push('/Inicio'); // Navigate to the /Inicio route
+    router.push('/Inicio');
   };
 
   return (
@@ -71,9 +123,8 @@ export default function MeusDados() {
 
         <TextField
           label="Nome:"
-          name="nome"
-          placeholder="João Antônio da Silva"
-          value={form.nome}
+          name="name"
+          value={form.name}
           onChange={handleChange}
           fullWidth
           InputProps={{
@@ -92,7 +143,6 @@ export default function MeusDados() {
         <TextField
           label="E-mail:"
           name="email"
-          placeholder="drjoaoantonio@gmail.com"
           value={form.email}
           onChange={handleChange}
           fullWidth
@@ -111,10 +161,9 @@ export default function MeusDados() {
 
         <TextField
           label="Senha:"
-          name="senha"
+          name="password"
           type={showPassword ? 'text' : 'password'}
-          placeholder="********"
-          value={form.senha}
+          value={form.password}
           onChange={handleChange}
           fullWidth
           InputProps={{
@@ -144,7 +193,7 @@ export default function MeusDados() {
         <TextField
           label="Perfil:"
           placeholder="Médico Cardiologista"
-          value={form.perfil}
+          value={form.profileName}
           fullWidth
           InputProps={{
             startAdornment: (
@@ -160,7 +209,7 @@ export default function MeusDados() {
           helperText="Função pela qual a pessoa é identificada no sistema."
         />
 
-        <TextField
+        {/* <TextField
           label="Tipo de Unidade:"
           placeholder="Policlínica"
           value={form.unidade}
@@ -176,7 +225,7 @@ export default function MeusDados() {
           InputLabelProps={{
             sx: { color: '#000' }
           }}
-        />
+        /> */}
 
         <Box
           sx={{
@@ -203,7 +252,7 @@ export default function MeusDados() {
           </Button>
           <Button
             variant="contained"
-            onClick={handleOpenPopup}
+            onClick={handleAlterar}
             sx={{
               borderRadius: '20px',
               textTransform: 'none',

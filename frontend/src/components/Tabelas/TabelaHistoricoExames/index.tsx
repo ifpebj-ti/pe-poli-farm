@@ -1,12 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import PopupDetalhes from '@/src/components/PopUp/PopUpDetalhes';
 
+import { useHistoricoExames } from '@/src/app/(auth-routes)/HistoricoExames/hooks/useHistoricoExames';
+import { Patient, PatientExam } from '@/src/lib/pacientes'; // Importando os tipos corretos
 import {
   Box,
   Button,
+  CircularProgress,
   Pagination,
   Paper,
   Table,
@@ -20,40 +23,69 @@ import {
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
-const exames = [
-  {
-    nome: 'Netinho',
-    profissional: 'Dr. João Silva',
-    data: '2025-07-17',
-    tipoExame: 'Hemograma'
-  },
-  {
-    nome: 'Teste',
-    profissional: 'Dr. João Silva',
-    data: '2025-07-17',
-    tipoExame: 'Raio-X'
-  },
-  {
-    nome: 'Carlos Andrade',
-    profissional: 'Dr. João Silva',
-    data: '2025-07-17',
-    tipoExame: 'Eco Cardiograma'
-  }
-];
+interface PatientWithLastExam {
+  patient: Patient;
+  lastExam: PatientExam;
+}
 
 export default function TabelaHistoricoExames() {
+  const { pacientes, isLoading, error } = useHistoricoExames();
   const [open, setOpen] = useState(false);
-  const [, setExameSelecionado] = useState<unknown>(null);
+  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+  const [selectedExam, setSelectedExam] = useState<PatientExam | null>(null);
 
-  const handleOpen = (exame: unknown) => {
-    setExameSelecionado(exame);
+  const patientsWithExams = useMemo(() => {
+    if (!pacientes) return [];
+
+    return pacientes
+      .map((patient) => {
+        const latestServiceWithExams = patient.services
+          ?.filter((s) => s.medicalRecord?.patientExam?.length > 0)
+          .sort(
+            (a, b) =>
+              new Date(b.serviceDate).getTime() -
+              new Date(a.serviceDate).getTime()
+          )[0];
+
+        if (latestServiceWithExams) {
+          const lastExam =
+            latestServiceWithExams.medicalRecord.patientExam[
+              latestServiceWithExams.medicalRecord.patientExam.length - 1
+            ];
+          return { patient, lastExam };
+        }
+        return null;
+      })
+      .filter((p): p is PatientWithLastExam => p !== null);
+  }, [pacientes]);
+
+  const handleOpen = (data: PatientWithLastExam) => {
+    setSelectedPatient(data.patient);
+    setSelectedExam(data.lastExam);
     setOpen(true);
   };
 
   const handleClose = () => {
     setOpen(false);
-    setExameSelecionado(null);
+    setSelectedPatient(null);
+    setSelectedExam(null);
   };
+
+  if (isLoading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Typography color="error" sx={{ textAlign: 'center', pt: 8 }}>
+        Ocorreu um erro ao buscar os pacientes.
+      </Typography>
+    );
+  }
 
   return (
     <Box
@@ -65,114 +97,116 @@ export default function TabelaHistoricoExames() {
       }}
     >
       <Box sx={{ width: '100%', maxWidth: 1100 }}>
-        <TableContainer component={Paper} elevation={1}>
-          <Table>
-            <TableHead>
-              <TableRow sx={{ backgroundColor: '#e0ecff' }}>
-                <TableCell sx={{ paddingY: 1, whiteSpace: 'nowrap' }}>
-                  PACIENTE
-                </TableCell>
-                <TableCell sx={{ paddingY: 1, whiteSpace: 'nowrap' }}>
-                  PROFISSIONAL SOLICITANTE
-                </TableCell>
-                <TableCell sx={{ paddingY: 1, whiteSpace: 'nowrap' }}>
-                  DATA
-                </TableCell>
-                <TableCell sx={{ paddingY: 1, whiteSpace: 'nowrap' }}>
-                  TIPO DE EXAME
-                </TableCell>
-                <TableCell
-                  align="right"
-                  sx={{ paddingY: 1, whiteSpace: 'nowrap' }}
-                />
-              </TableRow>
-            </TableHead>
-
-            <TableBody>
-              {exames.map((exame, index) => (
-                <TableRow key={index}>
-                  {/* Nome do Paciente */}
-                  <TableCell sx={{ paddingY: 1 }}>
-                    <Typography sx={{ color: '#1351B4', cursor: 'pointer' }}>
-                      {exame.nome}
-                    </Typography>
-                  </TableCell>
-                  {/* Profissional Solicitante */}
-                  <TableCell sx={{ paddingY: 1, whiteSpace: 'nowrap' }}>
-                    {exame.profissional}
-                  </TableCell>
-                  {/* Data */}
-                  <TableCell sx={{ paddingY: 1, whiteSpace: 'nowrap' }}>
-                    {format(
-                      new Date(exame.data.replace(/-/g, '/')),
-                      'dd/MM/yyyy',
-                      { locale: ptBR }
-                    )}
-                  </TableCell>
-                  {/* Tipo de Exame */}
-                  <TableCell sx={{ paddingY: 1, whiteSpace: 'nowrap' }}>
-                    {exame.tipoExame}
-                  </TableCell>
-                  {/* Célula de Ações */}
-                  <TableCell align="right" sx={{ paddingY: 1 }}>
-                    <Box
-                      // Empilha os botões verticalmente em telas pequenas
-                      sx={{
-                        display: 'flex',
-                        flexDirection: { xs: 'column', sm: 'row' },
-                        gap: { xs: 1, sm: 0 }, // Espaçamento vertical em mobile
-                        alignItems: 'flex-end',
-                        justifyContent: 'flex-end'
-                      }}
-                    >
-                      <Button
-                        variant="contained"
-                        size="small"
-                        sx={{
-                          backgroundColor: '#1351B4',
-                          borderRadius: '8px',
-                          textTransform: 'none',
-                          fontWeight: 500,
-                          minWidth: 120,
-                          height: 30,
-                          marginRight: { xs: 0, sm: '18px' }, // Remove margem direita em mobile
-                          '&:hover': { backgroundColor: '#0f479e' }
-                        }}
-                        onClick={() => handleOpen(exame)}
-                      >
-                        VER MAIS
-                      </Button>
-                      <Button
-                        variant="contained"
-                        size="small"
-                        onClick={() => handleOpen(exame)}
-                        sx={{
-                          backgroundColor: '#0E930B',
-                          borderRadius: '8px',
-                          textTransform: 'none',
-                          fontWeight: 500,
-                          minWidth: 120,
-                          height: 30,
-                          '&:hover': { backgroundColor: '#086506' }
-                        }}
-                      >
-                        BAIXAR PDF
-                      </Button>
-                    </Box>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-          <Pagination count={5} page={1} color="primary" />
-        </Box>
+        {patientsWithExams.length === 0 ? (
+          <Typography sx={{ textAlign: 'center', mt: 4 }}>
+            Nenhum histórico de exame encontrado.
+          </Typography>
+        ) : (
+          <>
+            <TableContainer component={Paper} elevation={1}>
+              <Table>
+                <TableHead>
+                  <TableRow sx={{ backgroundColor: '#e0ecff' }}>
+                    <TableCell sx={{ paddingY: 1, whiteSpace: 'nowrap' }}>
+                      NOME DO PACIENTE
+                    </TableCell>
+                    <TableCell sx={{ paddingY: 1, whiteSpace: 'nowrap' }}>
+                      PROFISSIONAL SOLICITANTE
+                    </TableCell>
+                    <TableCell sx={{ paddingY: 1, whiteSpace: 'nowrap' }}>
+                      DATA
+                    </TableCell>
+                    <TableCell sx={{ paddingY: 1, whiteSpace: 'nowrap' }}>
+                      TIPO DE EXAME
+                    </TableCell>
+                    <TableCell
+                      align="right"
+                      sx={{ paddingY: 1, whiteSpace: 'nowrap' }}
+                    />
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {patientsWithExams.map((data) => (
+                    <TableRow key={data.patient.id}>
+                      <TableCell sx={{ paddingY: 1 }}>
+                        <Typography
+                          sx={{ color: '#1351B4', cursor: 'pointer' }}
+                        >
+                          {data.patient.name}
+                        </Typography>
+                      </TableCell>
+                      <TableCell sx={{ paddingY: 1, whiteSpace: 'nowrap' }}>
+                        {data.lastExam.professionalName}
+                      </TableCell>
+                      <TableCell sx={{ paddingY: 1, whiteSpace: 'nowrap' }}>
+                        {format(
+                          new Date(data.lastExam.prescriptionDate),
+                          'dd/MM/yyyy',
+                          { locale: ptBR }
+                        )}
+                      </TableCell>
+                      <TableCell sx={{ paddingY: 1, whiteSpace: 'nowrap' }}>
+                        {data.lastExam.name}
+                      </TableCell>
+                      <TableCell align="right" sx={{ paddingY: 1 }}>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            flexDirection: { xs: 'column', sm: 'row' },
+                            gap: { xs: 1, sm: 0 },
+                            alignItems: 'flex-end',
+                            justifyContent: 'flex-end'
+                          }}
+                        >
+                          <Button
+                            variant="contained"
+                            size="small"
+                            onClick={() => handleOpen(data)}
+                            sx={{
+                              backgroundColor: '#1351B4',
+                              borderRadius: '8px',
+                              textTransform: 'none',
+                              fontWeight: 500,
+                              minWidth: 120,
+                              height: 30,
+                              marginRight: { xs: 0, sm: '18px' }
+                            }}
+                          >
+                            VER MAIS
+                          </Button>
+                          <Button
+                            variant="contained"
+                            size="small"
+                            sx={{
+                              backgroundColor: '#0E930B',
+                              borderRadius: '8px',
+                              textTransform: 'none',
+                              fontWeight: 500,
+                              minWidth: 120,
+                              height: 30
+                            }}
+                          >
+                            BAIXAR PDF
+                          </Button>
+                        </Box>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+              <Pagination count={5} page={1} color="primary" />
+            </Box>
+          </>
+        )}
       </Box>
-
-      {/* Pop-up de Detalhes funcionando corretamente */}
-      <PopupDetalhes open={open} handleClose={handleClose} />
+      <PopupDetalhes
+        open={open}
+        handleClose={handleClose}
+        patient={selectedPatient}
+        exam={selectedExam}
+      />
     </Box>
   );
 }
