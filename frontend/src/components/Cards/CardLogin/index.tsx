@@ -41,7 +41,7 @@ export function CardLogin() {
   });
 
   return (
-    <Card className="flex flex-col justify-between bg-[#BED6EF] w-[478px] p-[30px] rounded-[20px] absolute right-[150px] self-center border-gray-600">
+    <Card className="flex flex-col justify-between bg-[#BED6EF] w-[478px] p-[30px] rounded-[20px] border-gray-600">
       <CardHeader className="p-0">
         <CardTitle className="text-black text-3xl font-medium my-10">
           Acesso ao Sistema

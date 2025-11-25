@@ -243,14 +243,13 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
         anamnese: formData.anamnese,
         healthHistory: formData.healthHistory,
         prescriptions: formData.prescriptions.map((p) => ({
-          ...(typeof p === 'object' && p !== null ? p : {}),
+          medicationName: p.name, // Corrigindo o nome do campo
+          posology: p.posology,
+          type: p.type,
           prescriptionDate: new Date().toISOString(),
           executionDate: new Date().toISOString()
         })),
-        patientExams: formData.patientExams.map((e) => ({
-          ...(typeof e === 'object' && e !== null ? e : {}),
-          prescriptionDate: new Date().toISOString()
-        }))
+        patientExams: formData.patientExams
       };
 
       try {
@@ -288,12 +287,12 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
       }));
     };
 
-    // const handleAddPrescription = (prescription: PatientMedication) => {
-    //   setFormData((prev) => ({
-    //     ...prev,
-    //     prescriptions: [...prev.prescriptions, prescription]
-    //   }));
-    // };
+    const handleAddPrescription = (prescription: PatientMedication) => {
+      setFormData((prev) => ({
+        ...prev,
+        prescriptions: [...prev.prescriptions, prescription]
+      }));
+    };
 
     // Função para adicionar um novo exame na lista
     const handleAddExam = (exam: PatientExam) => {
@@ -1087,9 +1086,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
         <PopupPrescricaoMedicacao
           open={openMedicacaoPopup}
           onClose={() => setOpenMedicacaoPopup(false)}
-          onAdd={() => {
-            console.log('Medicamento adicionado');
-          }}
+          onAdd={handleAddPrescription}
         />
         <PopupPrescricaoExame
           open={openExamePopup}
@@ -1100,6 +1097,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
           open={openAtestadoPopup}
           onClose={() => setOpenAtestadoPopup(false)}
           patientData={paciente}
+          doctorName={session?.user?.unique_name || ''}
         />
       </>
     );

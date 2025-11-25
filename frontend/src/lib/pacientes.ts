@@ -1,5 +1,7 @@
 // src/data/mockPacientes.ts
 
+import { ReactNode } from 'react';
+
 // -> TIPO DEFINIDO AQUI <-
 // Este é o "contrato" que todo objeto de paciente deve seguir.
 // src/types/paciente.ts
@@ -95,6 +97,8 @@ export type MedicalRecord = {
 };
 
 export type PatientExam = {
+  prescriptionDate: string | number | Date;
+  professionalName: ReactNode;
   name: string;
   description: string;
   priority: string;
