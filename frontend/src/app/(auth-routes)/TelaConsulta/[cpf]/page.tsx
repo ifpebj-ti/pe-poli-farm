@@ -1,8 +1,7 @@
 'use client';
+import { useSession } from 'next-auth/react';
 import { useParams, useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 
 import BreadCrumb from '@/src/components/BreadCrumb';
 import TelaConsulta, { TelaConsultaHandle } from '@/src/components/Consulta';
@@ -85,12 +84,14 @@ export default function ConsultaCompletaPage() {
     >
       <NavBar />
 
-      <PopupAtestado
-        open={isAtestadoPopupOpen}
-        patientData={paciente!}
-        doctorName={session?.user?.unique_name || ''}
-        onClose={() => setAtestadoPopupOpen(false)}
-      />
+      {!isLoading && paciente && (
+        <PopupAtestado
+          open={isAtestadoPopupOpen}
+          patientData={paciente?.data}
+          doctorName={session?.user?.unique_name || ''}
+          onClose={() => setAtestadoPopupOpen(false)}
+        />
+      )}
 
       {/* Conteúdo abaixo da NavBar: BreadCrumb e Nova Atendimento/Botões */}
       <Box sx={{ mt: 4, ml: 10, mr: 4 }}>
