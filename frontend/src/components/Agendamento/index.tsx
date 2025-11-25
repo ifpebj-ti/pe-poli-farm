@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -5,6 +7,8 @@ import React, { useState } from 'react';
 
 import PopupAgendamentoSucesso from '@/src/components/PopUp/PopUpConfirmaçãoAgendamento';
 
+import { Profissional } from '@/src/lib/profissionais';
+import { api } from '@/src/services/api';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import {
@@ -18,32 +22,107 @@ import {
   List,
   ListItem,
   ListItemText,
-  Divider
+  Divider,
+  CircularProgress
 } from '@mui/material';
 
-// Interfaces
-interface Evento {
-  date: Date;
-  titulo: string;
-}
+import { useAppointments } from './hooks/useAppointments';
+import { useCreateAppointment } from './hooks/useCreateAppointment';
 
 // --- COMPONENTE PRINCIPAL ---
 export default function TelaAgendamentoContent() {
   // --- Estados do Componente ---
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [eventos] = useState<Evento[]>([
-    {
-      date: new Date(new Date().setHours(8, 50, 0, 0)),
-      titulo: 'Ana Paula - Consulta'
-    },
-    {
-      date: new Date(new Date().setDate(new Date().getDate() + 1)),
-      titulo: 'Reunião de Equipe'
-    }
-  ]);
   const [filtro, setFiltro] = useState('mês');
+  const { appointments, isLoading, error, refetch } = useAppointments(
+    currentDate,
+    filtro
+  );
+  const {
+    createNewAppointment,
+    isLoading: isCreating,
+    error: createError
+  } = useCreateAppointment();
+
+  const [formState, setFormState] = useState({
+    patientCpf: '',
+    professionalCpf: '',
+    specialty: '',
+    data: '',
+    hora: '',
+    observacao: ''
+  });
+
+  const eventos = appointments.map((app) => {
+    const start = new Date(app.start);
+    const end = new Date(start.getTime() + 30 * 60 * 1000); // 30 min duration
+    return {
+      start,
+      end,
+      title: app.title
+    };
+  });
+
   const [openConfirmacao, setOpenConfirmacao] = useState(false);
   const router = useRouter();
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setFormState((prevState) => ({ ...prevState, [name]: value }));
+  };
+
+  const handleAgendar = async () => {
+    const { data, hora, specialty, patientCpf, professionalCpf } = formState;
+
+    // Basic validation
+    if (!patientCpf || !professionalCpf || !specialty || !data || !hora) {
+      alert('Por favor, preencha todos os campos obrigatórios.');
+      return;
+    }
+
+    try {
+      // 1. Fetch patient by CPF to get patientId
+      const patientResponse = await api.get(`/Patient/${patientCpf}`);
+      const patientId = patientResponse.data.id;
+
+      if (!patientId) {
+        alert('Paciente não encontrado com o CPF fornecido.');
+        return;
+      }
+
+      // 2. Fetch all professionals and find the one with the matching CPF
+      const professionalsResponse =
+        await api.get<Profissional[]>('/User/GetAll');
+      const professional = professionalsResponse.data.find(
+        (p) => p.cpf === professionalCpf
+      );
+
+      if (!professional) {
+        alert('Profissional não encontrado com o CPF fornecido.');
+        return;
+      }
+      const professionalId = professional.id;
+
+      // 3. Create appointment data with the fetched IDs
+      const scheduledAt = `${data}T${hora}:00.000`;
+      const appointmentData = {
+        patientId,
+        professionalId,
+        specialty,
+        scheduledAt,
+        status: 0
+      };
+
+      await createNewAppointment(appointmentData);
+      setOpenConfirmacao(true);
+      refetch();
+    } catch (err) {
+      console.error('Erro ao agendar consulta:', err);
+      alert(
+        'Ocorreu um erro ao tentar agendar a consulta. Verifique os dados e tente novamente.'
+      );
+    }
+  };
 
   // --- Constantes e Helpers ---
   const meses = [
@@ -100,15 +179,55 @@ export default function TelaAgendamentoContent() {
   // --- Funções de Renderização (DENTRO do componente) ---
   // =================================================================
 
+  const calculateDayLayout = (events: any[]) => {
+    const sortedEvents = events.sort(
+      (a, b) => a.start.getTime() - b.start.getTime()
+    );
+    const layout: any[] = [];
+    const columns: any[][] = [];
+
+    sortedEvents.forEach((event) => {
+      let placed = false;
+      for (let i = 0; i < columns.length; i++) {
+        const lastEventInColumn = columns[i][columns[i].length - 1];
+        if (lastEventInColumn.end.getTime() <= event.start.getTime()) {
+          columns[i].push(event);
+          layout.push({ ...event, col: i, totalCols: 0 });
+          placed = true;
+          break;
+        }
+      }
+
+      if (!placed) {
+        columns.push([event]);
+        layout.push({ ...event, col: columns.length - 1, totalCols: 0 });
+      }
+    });
+
+    layout.forEach((event) => {
+      const overlappingEvents = layout.filter(
+        (e) => event.start < e.end && event.end > e.start
+      );
+      event.totalCols =
+        overlappingEvents.length > 1
+          ? Math.max(...overlappingEvents.map((e) => e.col)) + 1
+          : 1;
+    });
+
+    return layout;
+  };
+
   const renderAgendaDia = () => {
     const hours = Array.from({ length: 15 }, (_, i) => i + 7);
     const diaEventos = eventos.filter(
-      (e) => e.date.toDateString() === currentDate.toDateString()
+      (e) => e.start.toDateString() === currentDate.toDateString()
     );
+
+    const eventLayout = calculateDayLayout(diaEventos);
+    const colors = ['#e6f7e6', '#e6e6f7', '#f7e6e6', '#f7f7e6'];
 
     return (
       <Box
-        // Responsividade: permite rolagem horizontal
         sx={{
           display: 'flex',
           height: '100%',
@@ -144,7 +263,7 @@ export default function TelaAgendamentoContent() {
             minWidth: '300px',
             borderLeft: '1px solid #eee',
             position: 'relative'
-          }} // Adicionado minWidth
+          }}
         >
           {hours.map((hour) => (
             <Box
@@ -152,28 +271,35 @@ export default function TelaAgendamentoContent() {
               sx={{ height: '60px', borderBottom: '1px solid #eee' }}
             />
           ))}
-          {diaEventos.map((evento, idx) => {
+          {eventLayout.map((evento, idx) => {
             const topPosition =
-              (evento.date.getHours() - 7) * 60 + evento.date.getMinutes();
+              (evento.start.getHours() - 7) * 60 + evento.start.getMinutes();
+            const height =
+              (evento.end.getTime() - evento.start.getTime()) / (1000 * 60);
+            const width = 100 / evento.totalCols;
+            const left = evento.col * width;
+
             return (
               <Paper
                 key={idx}
                 sx={{
                   position: 'absolute',
                   top: `${topPosition}px`,
-                  left: '5px',
-                  right: '5px',
+                  left: `${left}%`,
+                  width: `${width}%`,
+                  height: `${height}px`,
                   p: 1,
-                  bgcolor: '#e6f7e6',
-                  borderLeft: '4px solid #0E930B',
-                  zIndex: 2
+                  bgcolor: colors[evento.col % colors.length],
+                  borderLeft: `4px solid ${colors[(evento.col + 1) % colors.length]}`,
+                  zIndex: 2,
+                  boxSizing: 'border-box'
                 }}
               >
                 <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-                  {evento.titulo}
+                  {evento.title}
                 </Typography>
                 <Typography variant="caption">
-                  {evento.date.toLocaleTimeString('pt-BR', {
+                  {evento.start.toLocaleTimeString('pt-BR', {
                     hour: '2-digit',
                     minute: '2-digit'
                   })}
@@ -188,6 +314,7 @@ export default function TelaAgendamentoContent() {
   const renderAgendaSemanal = () => {
     const weekDays = getWeekDays(currentDate);
     const hours = Array.from({ length: 15 }, (_, i) => i + 7);
+    const colors = ['#e6f7e6', '#e6e6f7', '#f7e6e6', '#f7f7e6'];
 
     return (
       <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -262,41 +389,54 @@ export default function TelaAgendamentoContent() {
                 }}
               />
             ))}
-            {weekDays.map((day) => (
-              <Box
-                key={day.toISOString()}
-                sx={{
-                  flex: 1,
-                  borderLeft: '1px solid #eee',
-                  position: 'relative'
-                }}
-              >
-                {eventos
-                  .filter((e) => e.date.toDateString() === day.toDateString())
-                  .map((evento, idx) => {
+            {weekDays.map((day, dayIndex) => {
+              const dayEvents = eventos.filter(
+                (e) => e.start.toDateString() === day.toDateString()
+              );
+              const dayLayout = calculateDayLayout(dayEvents);
+
+              return (
+                <Box
+                  key={day.toISOString()}
+                  sx={{
+                    flex: 1,
+                    borderLeft: '1px solid #eee',
+                    position: 'relative'
+                  }}
+                >
+                  {dayLayout.map((evento, idx) => {
                     const topPosition =
-                      (evento.date.getHours() - 7) * 60 +
-                      evento.date.getMinutes();
+                      (evento.start.getHours() - 7) * 60 +
+                      evento.start.getMinutes();
+                    const height =
+                      (evento.end.getTime() - evento.start.getTime()) /
+                      (1000 * 60);
+                    const width = 100 / evento.totalCols;
+                    const left = evento.col * width;
+
                     return (
                       <Paper
                         key={idx}
                         sx={{
                           position: 'absolute',
                           top: `${topPosition}px`,
-                          left: '5px',
-                          right: '5px',
+                          left: `${left}%`,
+                          width: `${width}%`,
+                          height: `${height}px`,
                           p: '2px 4px',
-                          bgcolor: '#e6f7e6',
+                          bgcolor: colors[evento.col % colors.length],
                           zIndex: 2,
-                          fontSize: '0.75rem'
+                          fontSize: '0.75rem',
+                          boxSizing: 'border-box'
                         }}
                       >
-                        {evento.titulo}
+                        {evento.title}
                       </Paper>
                     );
                   })}
-              </Box>
-            ))}
+                </Box>
+              );
+            })}
           </Box>
         </Box>
       </Box>
@@ -316,9 +456,9 @@ export default function TelaAgendamentoContent() {
       day.setDate(startDate.getDate() + i);
       return day;
     });
-    const eventDates = new Set(eventos.map((e) => e.date.toDateString()));
+    const eventDates = new Set(eventos.map((e) => e.start.toDateString()));
     const selectedDayEvents = eventos.filter(
-      (e) => e.date.toDateString() === currentDate.toDateString()
+      (e) => e.start.toDateString() === currentDate.toDateString()
     );
 
     return (
@@ -422,8 +562,8 @@ export default function TelaAgendamentoContent() {
                     •
                   </Box>
                   <ListItemText
-                    primary={evento.titulo}
-                    secondary={`${evento.date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`}
+                    primary={evento.title}
+                    secondary={`${evento.start.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`}
                   />
                 </ListItem>
               ))}
@@ -440,8 +580,8 @@ export default function TelaAgendamentoContent() {
   const renderAgendaAno = () => {
     const year = currentDate.getFullYear();
     const anoEventos = eventos
-      .filter((e) => e.date.getFullYear() === year)
-      .sort((a, b) => a.date.getTime() - b.date.getTime());
+      .filter((e) => e.start.getFullYear() === year)
+      .sort((a, b) => a.start.getTime() - b.start.getTime());
 
     return (
       <Box sx={{ height: '100%', overflowY: 'auto' }}>
@@ -450,8 +590,8 @@ export default function TelaAgendamentoContent() {
             {anoEventos.map((evento, idx) => (
               <ListItem key={idx} divider>
                 <ListItemText
-                  primary={evento.titulo}
-                  secondary={evento.date.toLocaleDateString('pt-BR', {
+                  primary={evento.title}
+                  secondary={evento.start.toLocaleDateString('pt-BR', {
                     weekday: 'long',
                     year: 'numeric',
                     month: 'long',
@@ -471,9 +611,7 @@ export default function TelaAgendamentoContent() {
       </Box>
     );
   };
-  const handleAgendar = () => {
-    setOpenConfirmacao(true);
-  };
+
   const handleCancelarClick = () => {
     router.push('/Inicio'); // Navigate to the Inicio page
   };
@@ -499,36 +637,68 @@ export default function TelaAgendamentoContent() {
         </Typography>
         <Paper sx={{ p: 2, borderRadius: '10px', boxShadow: 3 }}>
           <Grid container spacing={2}>
-            <Grid size={12}>
-              <TextField label="Nome Completo:" fullWidth />
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                label="CPF do Paciente:"
+                name="patientCpf"
+                value={formState.patientCpf}
+                onChange={handleInputChange}
+                fullWidth
+              />
             </Grid>
-            <Grid size={12}>
-              <TextField label="Profissional:" fullWidth />
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                label="CPF do Profissional:"
+                name="professionalCpf"
+                value={formState.professionalCpf}
+                onChange={handleInputChange}
+                fullWidth
+              />
             </Grid>
-            <Grid size={12}>
-              <TextField label="Motivo:" fullWidth />
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                label="Especialidade:"
+                name="specialty"
+                value={formState.specialty}
+                onChange={handleInputChange}
+                fullWidth
+              />
             </Grid>
-            <Grid size={6}>
+            <Grid size={{ xs: 6 }}>
               <TextField
                 label="Data:"
                 type="date"
+                name="data"
+                value={formState.data}
+                onChange={handleInputChange}
                 InputLabelProps={{ shrink: true }}
                 fullWidth
               />
             </Grid>
-            <Grid size={6}>
+            <Grid size={{ xs: 6 }}>
               <TextField
                 label="Hora:"
                 type="time"
+                name="hora"
+                value={formState.hora}
+                onChange={handleInputChange}
                 InputLabelProps={{ shrink: true }}
                 fullWidth
               />
             </Grid>
-            <Grid size={12}>
-              <TextField label="Observação:" multiline rows={4} fullWidth />
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                label="Observação:"
+                name="observacao"
+                value={formState.observacao}
+                onChange={handleInputChange}
+                multiline
+                rows={4}
+                fullWidth
+              />
             </Grid>
             <Grid
-              size={12}
+              size={{ xs: 12 }}
               sx={{
                 display: 'flex',
                 justifyContent: 'space-between',
@@ -563,12 +733,22 @@ export default function TelaAgendamentoContent() {
                   flex: 1
                 }}
                 onClick={handleAgendar}
+                disabled={isCreating}
               >
-                Agendar
+                {isCreating ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : (
+                  'Agendar'
+                )}
               </Button>
             </Grid>
           </Grid>
         </Paper>
+        {createError && (
+          <Typography color="error" sx={{ mt: 2 }}>
+            {createError}
+          </Typography>
+        )}
       </Box>
 
       <Box sx={{ flex: 2.5, display: 'flex', flexDirection: 'column' }}>
@@ -626,11 +806,46 @@ export default function TelaAgendamentoContent() {
               ))}
             </Box>
           </Box>
-          <Box sx={{ flexGrow: 1, overflow: 'hidden' }}>
-            {filtro === 'dia' && renderAgendaDia()}
-            {filtro === 'semana' && renderAgendaSemanal()}
-            {filtro === 'mês' && renderAgendaMes()}
-            {filtro === 'ano' && renderAgendaAno()}
+          <Box sx={{ flexGrow: 1, overflow: 'hidden', position: 'relative' }}>
+            {isLoading && (
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  height: '100%',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  backgroundColor: 'rgba(255, 255, 255, 0.7)',
+                  zIndex: 10
+                }}
+              >
+                <CircularProgress />
+              </Box>
+            )}
+            {error && (
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  height: '100%'
+                }}
+              >
+                <Typography color="error">{error}</Typography>
+              </Box>
+            )}
+            {!isLoading && !error && (
+              <>
+                {filtro === 'dia' && renderAgendaDia()}
+                {filtro === 'semana' && renderAgendaSemanal()}
+                {filtro === 'mês' && renderAgendaMes()}
+                {filtro === 'ano' && renderAgendaAno()}
+              </>
+            )}
           </Box>
         </Paper>
       </Box>

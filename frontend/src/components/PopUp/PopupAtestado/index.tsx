@@ -1,184 +1,155 @@
-'use client';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useState } from 'react';
+import { useReactToPrint } from 'react-to-print';
 
-import { useState } from 'react';
-
-import PopupConfirmacaoPrescricao from '@/src/components/PopUp/PopupConfirmacaoPrescricao';
-
+import { Patient } from '@/src/lib/pacientes';
 import {
+  Box,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  Grid,
-  TextField,
-  Typography,
-  Box
+  TextField
 } from '@mui/material';
 
-interface PatientData {
-  name: string;
-  cpf: string;
-  sus: string;
-}
+import { CertificateTemplate } from './CertificateTemplate';
 
 interface PopupAtestadoProps {
   open: boolean;
+  patientData: Patient;
+  doctorName: string;
   onClose: () => void;
-  patientData: PatientData;
 }
 
-export default function PopupAtestado({
+const PopupAtestado: React.FC<PopupAtestadoProps> = ({
   open,
-  onClose,
-  patientData
-}: PopupAtestadoProps) {
-  const [confirmOpen, setConfirmOpen] = useState(false);
+  patientData,
+  doctorName,
+  onClose
+}) => {
+  const [componentToPrint, setComponentToPrint] = useState(null);
+  const componentRef = (el: any) => {
+    setComponentToPrint(el);
+  };
 
-  const handleSaveClick = () => {
+  const handlePrint = useReactToPrint({
+    content: () => componentToPrint
+  } as any);
+
+  const [view, setView] = useState<'form' | 'certificate'>('form');
+  const [certificateData, setCertificateData] = useState<any>(null);
+
+  const [reason, setReason] = React.useState('');
+  const [days, setDays] = React.useState('');
+  const [cid, setCid] = React.useState('');
+  const [crm, setCrm] = React.useState('');
+
+  const handleGenerateCertificate = () => {
+    setCertificateData({
+      patientName: patientData.name,
+      patientCpf: patientData.cpf,
+      doctorName,
+      date: new Date().toLocaleDateString('pt-BR'),
+      reason,
+      days,
+      cid,
+      crm
+    });
+    setView('certificate');
+  };
+
+  const handleClose = () => {
+    setView('form');
+    // Clear form fields
+    setReason('');
+    setDays('');
+    setCid('');
+    setCrm('');
     onClose();
-    setConfirmOpen(true);
-  };
-
-  const handlePrintClick = () => {
-    // window.print() abre a caixa de diálogo de impressão do navegador
-    window.print();
-    console.log('Atestado impresso!');
-  };
-
-  // NOVO: Estilo base para todos os botões para evitar repetição
-  const baseButtonStyles = {
-    borderRadius: '20px', // Deixa os botões em formato de pílula
-    textTransform: 'none', // Garante que o texto não fique em maiúsculas
-    fontWeight: 'bold',
-    px: 3, // Adiciona um padding horizontal
-    color: 'white' // Define a cor do texto como branca para todos
   };
 
   return (
-    <>
-      <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-        <DialogTitle sx={{ fontWeight: 'bold' }}>
-          Emissão de Atestado
-        </DialogTitle>
-        <DialogContent>
-          {/* Seção de Dados do Paciente */}
-          <Box
-            sx={{
-              border: '1px solid #ccc',
-              borderRadius: '4px',
-              p: 2,
-              mb: 3,
-              mt: 1
-            }}
-          >
-            <Grid container spacing={2} alignItems="center">
-              <Grid>
-                <Typography variant="body1">
-                  <strong>Nome:</strong> {patientData.name}
-                </Typography>
-              </Grid>
-              <Grid>
-                <Typography variant="body1">
-                  <strong>CPF:</strong> {patientData.cpf}
-                </Typography>
-              </Grid>
-              <Grid>
-                <Typography variant="body1">
-                  <strong>SUS:</strong> {patientData.sus}
-                </Typography>
-              </Grid>
-            </Grid>
+    <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+      <DialogTitle>Emitir Atestado</DialogTitle>
+      <DialogContent dividers>
+        {view === 'form' ? (
+          <Box component="form" noValidate autoComplete="off">
+            <TextField
+              label="Paciente"
+              fullWidth
+              value={patientData.name}
+              disabled
+              margin="normal"
+            />
+            <TextField
+              label="CPF"
+              fullWidth
+              value={patientData.cpf}
+              disabled
+              margin="normal"
+            />
+            <TextField
+              label="Médico"
+              fullWidth
+              value={doctorName}
+              disabled
+              margin="normal"
+            />
+            <TextField
+              label="Motivo do atestado"
+              multiline
+              rows={4}
+              fullWidth
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              margin="normal"
+            />
+            <TextField
+              label="Dias de afastamento"
+              fullWidth
+              value={days}
+              onChange={(e) => setDays(e.target.value)}
+              margin="normal"
+            />
+            <TextField
+              label="CID"
+              fullWidth
+              value={cid}
+              onChange={(e) => setCid(e.target.value)}
+              margin="normal"
+            />
+            <TextField
+              label="CRM"
+              fullWidth
+              value={crm}
+              onChange={(e) => setCrm(e.target.value)}
+              margin="normal"
+            />
           </Box>
-
-          {/* Formulário do Atestado */}
-          <Grid container spacing={2}>
-            <Grid size={{ xs: 12 }}>
-              <TextField label="Motivo do afastamento:" fullWidth />
-            </Grid>
-            <Grid size={{ xs: 6 }}>
-              <TextField label="CID (Código da Doença):" fullWidth />
-            </Grid>
-            <Grid size={{ xs: 6 }}>
-              <TextField
-                label="Tempo de afastamento (dias):"
-                type="number"
-                fullWidth
-              />
-            </Grid>
-            <Grid size={{ xs: 6 }}>
-              <TextField
-                label="Data de início do afastamento:"
-                type="date"
-                InputLabelProps={{ shrink: true }}
-                fullWidth
-              />
-            </Grid>
-            <Grid size={{ xs: 6 }}>
-              <TextField
-                label="Data de retorno prevista:"
-                type="date"
-                InputLabelProps={{ shrink: true }}
-                fullWidth
-              />
-            </Grid>
-            <Grid size={{ xs: 12 }}>
-              <TextField label="Profissional responsável:" fullWidth />
-            </Grid>
-            <Grid size={{ xs: 12 }}>
-              <TextField
-                label="Observações adicionais:"
-                multiline
-                rows={4}
-                fullWidth
-              />
-            </Grid>
-          </Grid>
-        </DialogContent>
-        <DialogActions sx={{ p: 3 }}>
-          {/* BOTÃO CANCELAR ATUALIZADO */}
-          <Button
-            onClick={onClose}
-            variant="contained"
-            sx={{
-              ...baseButtonStyles, // Usa o estilo base
-              backgroundColor: '#D32F2F', // Cor vermelha
-              '&:hover': { backgroundColor: '#B71C1C' }
-            }}
-          >
-            Cancelar
-          </Button>
-          {/* BOTÃO SALVAR ATUALIZADO */}
-          <Button
-            onClick={handleSaveClick}
-            variant="contained"
-            sx={{
-              ...baseButtonStyles, // Usa o estilo base
-              backgroundColor: '#388E3C', // Cor verde
-              '&:hover': { backgroundColor: '#2E7D32' }
-            }}
-          >
-            Salvar
-          </Button>
-          {/* BOTÃO IMPRIMIR ATUALIZADO */}
-          <Button
-            variant="contained"
-            onClick={handlePrintClick}
-            sx={{
-              ...baseButtonStyles, // Usa o estilo base
-              backgroundColor: '#1976D2', // Cor azul
-              '&:hover': { backgroundColor: '#1565C0' }
-            }}
-          >
-            Imprimir
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <PopupConfirmacaoPrescricao
-        open={confirmOpen}
-        onClose={() => setConfirmOpen(false)}
-      />
-    </>
+        ) : (
+          <CertificateTemplate ref={componentRef} {...certificateData} />
+        )}
+      </DialogContent>
+      <DialogActions>
+        {view === 'form' ? (
+          <>
+            <Button onClick={handleClose}>Cancelar</Button>
+            <Button onClick={handleGenerateCertificate} variant="contained">
+              Gerar Atestado
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button onClick={() => setView('form')}>Voltar</Button>
+            <Button onClick={handlePrint} variant="contained">
+              Imprimir
+            </Button>
+          </>
+        )}
+      </DialogActions>
+    </Dialog>
   );
-}
+};
+
+export default PopupAtestado;

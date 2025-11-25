@@ -10,6 +10,7 @@ import PopUpConfirmacao from '@/src/components/PopUp/PopUpConfirmaçãoProfissio
 import PopUpEditar from '@/src/components/PopUp/PopUpEditarProfissionais';
 
 // MUI
+import { api } from '@/src/services/api';
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
 import {
@@ -66,6 +67,31 @@ export function CardProfissionais() {
         p.email.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [profissionais, searchTerm]);
+
+  const handleDesativar = async () => {
+    // 1. Garante que tem um profissional selecionado
+    if (!selectedProf) {
+      alert('Nenhum profissional selecionado!');
+      return;
+    }
+
+    try {
+      // 2. Chama o endpoint da API com o ID do usuário
+      await api.patch(`/User/disable/${selectedProf.id}`);
+
+      // 3. AVISA A TELA PARA ATUALIZAR OS DADOS (MUITO IMPORTANTE!)
+      window.location.reload(); // Isso vai fazer seu hook buscar os dados de novo
+
+      alert(`Profissional ${selectedProf.name} desativado com sucesso!`);
+    } catch (err) {
+      console.error('Erro ao desativar profissional:', err);
+      alert('Oxente! Deu um erro ao desativar o profissional.');
+    } finally {
+      // 4. Fecha o popup e limpa a seleção
+      setOpenDesativar(false);
+      setSelectedProf(null);
+    }
+  };
 
   return (
     <Box sx={{ p: { xs: 2, md: 4 }, backgroundColor: '#f4f6f8', flexGrow: 1 }}>
@@ -287,7 +313,7 @@ export function CardProfissionais() {
       <PopUpConfirmacaoDesativar
         open={openDesativar}
         onClose={() => setOpenDesativar(false)}
-        onConfirm={() => setOpenDesativar(false)}
+        onConfirm={handleDesativar}
         profissionalNome={selectedProf?.name}
       />
       <PopUpConfirmacaoAtivar
