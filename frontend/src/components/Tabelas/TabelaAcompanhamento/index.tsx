@@ -30,30 +30,6 @@ type Paciente = {
   status: string;
 };
 
-const pacientes = [
-  {
-    paciente: 'Netinho',
-    profissional: 'Dr. João Silva',
-    data: '17/07/2025',
-    tratamento: 'Consulta de Rotina',
-    status: 'Finalizado'
-  },
-  {
-    paciente: 'Beatriz Lima',
-    profissional: 'Dr. João Silva',
-    data: '17/07/2025',
-    tratamento: 'Sessão de Fisioterapia',
-    status: 'Em Andamento'
-  },
-  {
-    paciente: 'Fernando Martins',
-    profissional: 'Dr. João Silva',
-    data: '18/07/2025',
-    tratamento: 'Exame de Sangue',
-    status: 'Agendado'
-  }
-];
-
 export default function TabelaAcompanhamento() {
   const [pacientes, setPacientes] = useState<Paciente[]>([]);
   const [loading, setLoading] = useState(true);

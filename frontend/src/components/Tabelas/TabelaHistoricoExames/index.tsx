@@ -1,11 +1,10 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 
 // 1. Importações necessárias
 import PopupDetalhes from '@/src/components/PopUp/PopUpDetalhes';
 
-import { api } from '@/src/services/api';
 import { useHistoricoExames } from '@/src/app/(auth-routes)/HistoricoExames/hooks/useHistoricoExames';
 import { Patient, PatientExam } from '@/src/lib/pacientes'; // Importando os tipos corretos
 import {
@@ -25,23 +24,6 @@ import {
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
-// Tipo para a estrutura da tabela (o que você quer no final)
-type Exame = {
-  id: number;
-  nome: string;
-  profissional: string;
-  data: string;
-  tipoExame: string;
-};
-
-// Tipo que representa a resposta crua da sua API
-type PacienteApiResponse = {
-  id: number;
-  nome: string;
-  profissional?: string; // Campo opcional
-  data: string;
-  tipoExame?: string; // Campo opcional
-};
 interface PatientWithLastExam {
   patient: Patient;
   lastExam: PatientExam;
@@ -50,10 +32,10 @@ interface PatientWithLastExam {
 export default function TabelaHistoricoExames() {
   const { pacientes, isLoading, error } = useHistoricoExames();
   const [open, setOpen] = useState(false);
-const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [selectedExam, setSelectedExam] = useState<PatientExam | null>(null);
 
-  // Tá ligado que a variável 'pacientes' precisa existir no escopo ou vir via props, né boy?
+  // The computation of patientsWithExams depends on the 'pacientes' variable provided by the useHistoricoExames hook. Ensure 'pacientes' is available in this component's scope.
   const patientsWithExams = useMemo(() => {
     if (!pacientes) return [];
 
