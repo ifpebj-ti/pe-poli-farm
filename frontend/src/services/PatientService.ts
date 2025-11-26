@@ -1,3 +1,5 @@
+import { AxiosError } from 'axios';
+
 import { api } from './api';
 
 interface FilterParams {
@@ -5,6 +7,19 @@ interface FilterParams {
   status?: string;
   pageNumber?: number;
   pageSize?: number;
+}
+
+export async function GetPatientByCPF(cpf: string) {
+  try {
+    const response = await api.get(`/Patient/${cpf}`);
+    return response;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw error.response?.data || new Error('Erro ao buscar paciente');
+    }
+
+    throw new Error('Erro desconhecido ao buscar paciente');
+  }
 }
 
 // Adotando o mesmo padrão de objeto de outros serviços

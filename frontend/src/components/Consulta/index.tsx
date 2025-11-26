@@ -108,6 +108,7 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
     const [openMedicacaoPopup, setOpenMedicacaoPopup] = useState(false);
     const [openExamePopup, setOpenExamePopup] = useState(false);
     const [openAtestadoPopup, setOpenAtestadoPopup] = useState(false);
+    const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
     const inputStyles = {
       '& .MuiOutlinedInput-root': {
@@ -206,7 +207,30 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
       }));
     };
 
+    const validarFormulario = (): boolean => {
+      if (
+        formData.anamnese.signsAndSymptoms &&
+        formData.anamnese.medicalHypothesis
+      ) {
+        return true;
+      }
+
+      const newErrors: { [key: string]: string } = {};
+
+      if (!formData.anamnese.signsAndSymptoms.trim()) {
+        newErrors.signsAndSymptoms = 'O campo Sinais e Sintomas é obrigatório.';
+      }
+      if (!formData.anamnese.medicalHypothesis.trim()) {
+        newErrors.medicalHypothesis =
+          'O campo "Hipótese Médica" é obrigatório.';
+      }
+
+      setErrors(newErrors);
+      return false;
+    };
+
     const handleFinalizarConsulta = async () => {
+      if (!validarFormulario()) return;
       const professionalId = session?.user?.id;
       if (!professionalId) {
         alert('Erro: Profissional não autenticado.');
@@ -231,13 +255,9 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
       try {
         console.log('Enviando dados da consulta:', payload);
         await api.post('/MedicalRecord/MedicalConsultation', payload);
-        alert('Consulta salva com sucesso!');
-        router.push('/Pacientes');
+        router.push(`/Procedimentos/${paciente.cpf}`);
       } catch (error) {
         console.error('Erro ao salvar a consulta:', error);
-        alert(
-          'Erro ao salvar a consulta. Verifique o console para mais detalhes.'
-        );
       }
     };
 
@@ -909,10 +929,13 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 name="signsAndSymptoms"
                 value={formData.anamnese.signsAndSymptoms}
                 onChange={handleAnamneseChange}
+                error={!!errors.signsAndSymptoms}
+                helperText={errors.signsAndSymptoms}
                 fullWidth
                 sx={inputStyles}
                 multiline
                 rows={3}
+                required
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
@@ -933,10 +956,13 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 name="medicalHypothesis"
                 value={formData.anamnese.medicalHypothesis}
                 onChange={handleAnamneseChange}
+                error={!!errors.medicalHypothesis}
+                helperText={errors.medicalHypothesis}
                 fullWidth
                 sx={inputStyles}
                 multiline
                 rows={4}
+                required
               />
             </Grid>
           </Grid>
