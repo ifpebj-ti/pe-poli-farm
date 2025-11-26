@@ -30,26 +30,26 @@ type Paciente = {
   data: string;
   tipoAtendimento: string; // Verifique se este campo existe na sua API
 };
-const relatorios = [
-  {
-    nome: `Netinho`,
-    profissional: 'Dr. João Silva',
-    data: '2025-07-17',
-    tipoAtendimento: 'Consulta Médica'
-  },
-  {
-    nome: `Teste`,
-    profissional: 'Dr. João Silva',
-    data: '2025-07-17',
-    tipoAtendimento: 'Consulta Médica'
-  },
-  {
-    nome: `Carlos Andrade`,
-    profissional: 'Dr. João Silva',
-    data: '2025-07-18',
-    tipoAtendimento: 'Consulta Médica'
-  }
-];
+// const relatorios = [
+//   {
+//     nome: `Netinho`,
+//     profissional: 'Dr. João Silva',
+//     data: '2025-07-17',
+//     tipoAtendimento: 'Consulta Médica'
+//   },
+//   {
+//     nome: `Teste`,
+//     profissional: 'Dr. João Silva',
+//     data: '2025-07-17',
+//     tipoAtendimento: 'Consulta Médica'
+//   },
+//   {
+//     nome: `Carlos Andrade`,
+//     profissional: 'Dr. João Silva',
+//     data: '2025-07-18',
+//     tipoAtendimento: 'Consulta Médica'
+//   }
+// ];
 
 export default function TabelaRelatorio() {
   const router = useRouter();
