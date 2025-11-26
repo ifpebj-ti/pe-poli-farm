@@ -26,22 +26,6 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
 // Tipo para a estrutura da tabela (o que você quer no final)
-type Exame = {
-  id: number;
-  nome: string;
-  profissional: string;
-  data: string;
-  tipoExame: string;
-};
-
-// Tipo que representa a resposta crua da sua API
-type PacienteApiResponse = {
-  id: number;
-  nome: string;
-  profissional?: string; // Campo opcional
-  data: string;
-  tipoExame?: string; // Campo opcional
-};
 interface PatientWithLastExam {
   patient: Patient;
   lastExam: PatientExam;
