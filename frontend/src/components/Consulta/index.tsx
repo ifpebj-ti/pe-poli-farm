@@ -13,16 +13,24 @@ import PopupAtestado from '@/src/components/PopUp/PopupAtestado';
 import PopupPrescricaoExame from '@/src/components/PopUp/PopupPrescricaoExame';
 import PopupPrescricaoMedicacao from '@/src/components/PopUp/PopupPrescricaoMedicacao';
 
-import { Patient } from '@/src/lib/pacientes';
+import { Patient, PatientExam, PatientMedication } from '@/src/lib/pacientes';
 import { api } from '@/src/services/api';
+import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Box,
   Button,
-  Grid,
+  FormControl,
+  InputLabel,
   MenuItem,
   Select,
   TextField,
-  Typography
+  Typography,
+  SelectChangeEvent,
+  Grid,
+  FormControlLabel,
+  Checkbox,
+  Paper,
+  IconButton
 } from '@mui/material';
 
 interface TelaConsultaProps {
@@ -38,24 +46,40 @@ const initialState = {
     bloodPressure: '',
     glucose: '',
     temperature: '',
-    respiratoryRate: '',
-    bloodType: '',
     weight: '',
     heartRate: '',
+    respiratoryRate: '',
+    bloodType: '',
     saturation: '',
     height: '',
+    // --- CAMPOS QUE VAMOS MUDAR ---
+    diabetes: false,
     antecPathological: false,
     necesPsicobio: false,
-    diabetes: false,
-    medicationsInUse: false,
-    useOfProthesis: false,
     allergies: false,
+    useOfProthesis: false,
+    medicationsInUse: false,
+    // --- FIM DA MUDANÇA ---
+    respiratoryPattern: '',
+    pulmonaryAuscultation: '',
+    skinColor: '',
+    cardiacBubbles: '',
+    pulse: '',
+    rhythm: '',
+    pupils: '',
+    speech: '',
+    consciousnessLevel: '',
+    motorResponse: '',
+    // Esses a gente mantém como texto, porque o usuário vai escrever neles
     allergiesType: '',
     antecPathologicalType: '',
     medicationInUseType: '',
-    medicalHypothesis: '',
+    signsAndSymptoms: '',
     previousSurgeries: '',
-    signsAndSymptoms: ''
+    medicalHypothesis: '',
+    classificationStatus: {
+      value: 'EMERGENCY'
+    }
   },
   healthHistory: {
     familyHAS: false,
@@ -71,8 +95,8 @@ const initialState = {
     ownAlzheimer: false,
     ownCA: false
   },
-  prescriptions: [], // Será populado pelos pop-ups
-  patientExams: [] // Será populado pelos pop-ups
+  prescriptions: [] as PatientMedication[],
+  patientExams: [] as PatientExam[]
 };
 
 const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
@@ -84,69 +108,156 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
     const [openMedicacaoPopup, setOpenMedicacaoPopup] = useState(false);
     const [openExamePopup, setOpenExamePopup] = useState(false);
     const [openAtestadoPopup, setOpenAtestadoPopup] = useState(false);
+    const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
     const inputStyles = {
       '& .MuiOutlinedInput-root': {
-        borderRadius: '10px'
+        borderRadius: '8px',
+        backgroundColor: '#F5F5F5'
+      },
+      '& .MuiInputLabel-root': {
+        color: '#6c757d'
       }
     };
 
     const buttonStyles = {
       borderRadius: '20px',
-      fontWeight: 500,
+      fontWeight: 'bold',
       px: 3,
-      minWidth: 130
+      minWidth: 130,
+      textTransform: 'none',
+      boxShadow: 'none'
     };
 
     useEffect(() => {
       const ultimoAtendimento = paciente.services?.[0];
       if (ultimoAtendimento?.medicalRecord?.anamnese) {
+        const anamneseFromRecord = {
+          ...ultimoAtendimento.medicalRecord.anamnese
+        };
+        // Ensure diabetes is a boolean
+        if (typeof anamneseFromRecord.diabetes !== 'boolean') {
+          anamneseFromRecord.diabetes = Boolean(anamneseFromRecord.diabetes);
+        }
         setFormData((prev) => ({
           ...prev,
           anamnese: {
             ...prev.anamnese,
-            ...ultimoAtendimento.medicalRecord.anamnese
+            ...anamneseFromRecord,
+            classificationStatus:
+              typeof anamneseFromRecord.classificationStatus === 'object' &&
+              anamneseFromRecord.classificationStatus !== null
+                ? anamneseFromRecord.classificationStatus
+                : {
+                    value: String(
+                      anamneseFromRecord.classificationStatus || 'EMERGENCY'
+                    )
+                  },
+            necesPsicobio:
+              typeof anamneseFromRecord.necesPsicobio === 'boolean'
+                ? anamneseFromRecord.necesPsicobio
+                : false
           }
         }));
       }
     }, [paciente]);
 
-    const handleAnamneseChange = (e: ChangeEvent<HTMLInputElement>) => {
-      const { name, value, type, checked } = e.target;
+    const handleAnamneseChange = (
+      e:
+        | ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+        | SelectChangeEvent<string>
+    ) => {
+      const { name, value } = e.target;
+
+      let finalValue: string | boolean = value;
+
+      // Lista dos campos que devem ser booleanos
+      const booleanFields = [
+        'diabetes',
+        'antecPathological',
+        'necesPsicobio',
+        'allergies',
+        'useOfProthesis',
+        'medicationsInUse'
+      ];
+
+      // Se o campo for um dos booleanos, converte 'true'/'false' (string) para boolean
+      if (booleanFields.includes(name)) {
+        finalValue = value === 'true';
+      }
+
       setFormData((prev) => ({
         ...prev,
         anamnese: {
           ...prev.anamnese,
+          [name]: finalValue
+        }
+      }));
+    };
+
+    const handleHealthHistoryChange = (e: ChangeEvent<HTMLInputElement>) => {
+      const { name, value, type, checked } = e.target;
+      setFormData((prev) => ({
+        ...prev,
+        healthHistory: {
+          ...prev.healthHistory,
+          // Se for checkbox, usa o 'checked', senão, usa o 'value'
           [name]: type === 'checkbox' ? checked : value
         }
       }));
     };
 
+    const validarFormulario = (): boolean => {
+      if (
+        formData.anamnese.signsAndSymptoms &&
+        formData.anamnese.medicalHypothesis
+      ) {
+        return true;
+      }
+
+      const newErrors: { [key: string]: string } = {};
+
+      if (!formData.anamnese.signsAndSymptoms.trim()) {
+        newErrors.signsAndSymptoms = 'O campo Sinais e Sintomas é obrigatório.';
+      }
+      if (!formData.anamnese.medicalHypothesis.trim()) {
+        newErrors.medicalHypothesis =
+          'O campo "Hipótese Médica" é obrigatório.';
+      }
+
+      setErrors(newErrors);
+      return false;
+    };
+
     const handleFinalizarConsulta = async () => {
-      const professionalId = session?.user?.id; // Pega o ID do profissional da sessão
+      if (!validarFormulario()) return;
+      const professionalId = session?.user?.id;
       if (!professionalId) {
         alert('Erro: Profissional não autenticado.');
         return;
       }
 
-      // Monta o payload final para a API
       const payload = {
         patientId: paciente.id,
         professionalId: professionalId,
         anamnese: formData.anamnese,
         healthHistory: formData.healthHistory,
-        prescriptions: formData.prescriptions,
+        prescriptions: formData.prescriptions.map((p) => ({
+          medicationName: p.name, // Corrigindo o nome do campo
+          posology: p.posology,
+          type: p.type,
+          prescriptionDate: new Date().toISOString(),
+          executionDate: new Date().toISOString()
+        })),
         patientExams: formData.patientExams
       };
 
       try {
         console.log('Enviando dados da consulta:', payload);
-        await api.post('/api/MedicalRecord/MedicalConsultation', payload);
-        alert('Consulta salva com sucesso!');
-        router.push('/Pacientes'); // Ex: Redireciona para a lista de pacientes
+        await api.post('/MedicalRecord/MedicalConsultation', payload);
+        router.push(`/Procedimentos/${paciente.cpf}`);
       } catch (error) {
         console.error('Erro ao salvar a consulta:', error);
-        alert('Falha ao salvar a consulta.');
       }
     };
 
@@ -158,340 +269,357 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
       router.push('/TelaAgendamento');
     };
 
+    const handleRemovePrescription = (indexToRemove: number) => {
+      setFormData((prev) => ({
+        ...prev,
+        prescriptions: prev.prescriptions.filter(
+          (_, index) => index !== indexToRemove
+        )
+      }));
+    };
+
+    const handleRemoveExam = (indexToRemove: number) => {
+      setFormData((prev) => ({
+        ...prev,
+        patientExams: prev.patientExams.filter(
+          (_, index) => index !== indexToRemove
+        )
+      }));
+    };
+
+    const handleAddPrescription = (prescription: PatientMedication) => {
+      setFormData((prev) => ({
+        ...prev,
+        prescriptions: [...prev.prescriptions, prescription]
+      }));
+    };
+
+    // Função para adicionar um novo exame na lista
+    const handleAddExam = (exam: PatientExam) => {
+      setFormData((prev) => ({
+        ...prev,
+        patientExams: [...prev.patientExams, exam]
+      }));
+    };
+
     return (
       <>
-        <Box sx={{ p: 4, bgcolor: '#fff', minHeight: '100vh' }}>
-          {/* Dados do Paciente */}
+        {/* BOTÕES DE CIMA */}
+        <Box sx={{ p: 3, bgcolor: '#FFF', borderRadius: '16px' }}>
           <Typography variant="h6" color="black" sx={{ mb: 2 }}>
             Dados do paciente
           </Typography>
           <Grid container spacing={2} mb={3}>
-            <Grid size={4}>
+            <Grid size={{ xs: 6, sm: 6 }}>
               <TextField
                 label="Nome"
                 fullWidth
                 defaultValue={paciente.name}
                 sx={inputStyles}
+                InputProps={{ readOnly: true }}
               />
             </Grid>
-            <Grid size={4}>
+            <Grid size={{ xs: 3, sm: 3 }}>
               <TextField
                 label="CPF"
                 fullWidth
                 defaultValue={paciente.cpf}
                 sx={inputStyles}
+                InputProps={{ readOnly: true }}
               />
             </Grid>
-            <Grid size={4}>
+            <Grid size={{ xs: 3, sm: 3 }}>
               <TextField
                 label="SUS"
                 fullWidth
                 defaultValue={paciente.sus}
                 sx={inputStyles}
+                InputProps={{ readOnly: true }}
               />
             </Grid>
           </Grid>
-          {/* Anamnese */}
+
           <Typography variant="h6" color="black" sx={{ mb: 2 }}>
             Anamnese
           </Typography>
           <Grid container spacing={2} mb={3}>
-            <Grid size={2}>
+            <Grid size={{ xs: 6, sm: 2 }}>
               <TextField
                 label="Pressão Art."
-                fullWidth
-                sx={inputStyles}
+                name="bloodPressure"
                 value={formData.anamnese.bloodPressure}
                 onChange={handleAnamneseChange}
+                fullWidth
+                sx={inputStyles}
               />
             </Grid>
-            <Grid size={2}>
+            <Grid size={{ xs: 6, sm: 2 }}>
               <TextField
                 label="Glicose"
-                fullWidth
-                sx={inputStyles}
+                name="glucose"
                 value={formData.anamnese.glucose}
                 onChange={handleAnamneseChange}
+                fullWidth
+                sx={inputStyles}
               />
             </Grid>
-            <Grid size={2}>
+            <Grid size={{ xs: 6, sm: 2 }}>
               <TextField
                 label="Temperatura"
-                fullWidth
-                sx={inputStyles}
+                name="temperature"
                 value={formData.anamnese.temperature}
                 onChange={handleAnamneseChange}
+                fullWidth
+                sx={inputStyles}
               />
             </Grid>
-            <Grid size={2}>
+            <Grid size={{ xs: 6, sm: 2 }}>
               <TextField
                 label="Peso"
-                fullWidth
-                sx={inputStyles}
+                name="weight"
                 value={formData.anamnese.weight}
                 onChange={handleAnamneseChange}
+                fullWidth
+                sx={inputStyles}
               />
             </Grid>
-            <Grid size={2}>
+            <Grid size={{ xs: 6, sm: 2 }}>
               <TextField
                 label="Freq. Card."
-                fullWidth
-                sx={inputStyles}
+                name="heartRate"
                 value={formData.anamnese.heartRate}
                 onChange={handleAnamneseChange}
+                fullWidth
+                sx={inputStyles}
               />
             </Grid>
-            <Grid size={2}>
+            <Grid size={{ xs: 6, sm: 2 }}>
               <TextField
                 label="Freq. Resp."
-                fullWidth
-                sx={inputStyles}
+                name="respiratoryRate"
                 value={formData.anamnese.respiratoryRate}
                 onChange={handleAnamneseChange}
-              />
-            </Grid>
-            <Grid size={2}>
-              <TextField
-                label="Tipo Sang."
                 fullWidth
                 sx={inputStyles}
-                value={formData.anamnese.bloodType}
-                onChange={handleAnamneseChange}
               />
             </Grid>
-            <Grid size={2}>
+            <Grid size={{ xs: 6, sm: 2 }}>
               <TextField
                 label="Saturação"
-                fullWidth
-                sx={inputStyles}
+                name="saturation"
                 value={formData.anamnese.saturation}
                 onChange={handleAnamneseChange}
+                fullWidth
+                sx={inputStyles}
               />
             </Grid>
-            <Grid size={2}>
+            <Grid size={{ xs: 6, sm: 2 }}>
               <TextField
                 label="Altura"
-                fullWidth
-                sx={inputStyles}
+                name="height"
                 value={formData.anamnese.height}
                 onChange={handleAnamneseChange}
-              />
-            </Grid>
-            <Grid size={2}>
-              <TextField
-                label="Diabetes"
                 fullWidth
                 sx={inputStyles}
-                value={formData.anamnese.diabetes}
-                onChange={handleAnamneseChange}
               />
             </Grid>
-            <Grid size={4}>
+            <Grid size={{ xs: 6, sm: 2 }}>
               <TextField
-                label="Neces. Psicobiol."
+                label="Tipo Sang."
+                name="bloodType"
+                value={formData.anamnese.bloodType}
+                onChange={handleAnamneseChange}
                 fullWidth
                 sx={inputStyles}
-                value={formData.anamnese.necesPsicobio}
-                onChange={handleAnamneseChange}
               />
+            </Grid>
+            <Grid size={{ xs: 6, sm: 2 }}>
+              <FormControl fullWidth sx={inputStyles}>
+                <InputLabel>Diabetes</InputLabel>
+                <Select
+                  name="diabetes"
+                  value={String(formData.anamnese.diabetes)}
+                  label="Diabetes"
+                  onChange={handleAnamneseChange}
+                >
+                  <MenuItem value="true">Sim</MenuItem>
+                  <MenuItem value="false">Não</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid size={{ xs: 6, sm: 2 }}>
+              <FormControl fullWidth sx={inputStyles}>
+                <InputLabel>Alergias</InputLabel>
+                <Select
+                  name="allergies"
+                  value={String(formData.anamnese.allergies)}
+                  label="Alergias"
+                  onChange={handleAnamneseChange}
+                >
+                  <MenuItem value="true">Sim</MenuItem>
+                  <MenuItem value="false">Não</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid size={{ xs: 6, sm: 2 }}>
+              <FormControl fullWidth sx={inputStyles}>
+                <InputLabel>Uso de Prótese</InputLabel>
+                <Select
+                  name="useOfProthesis"
+                  value={String(formData.anamnese.useOfProthesis)}
+                  label="Uso de Prótese"
+                  onChange={handleAnamneseChange}
+                >
+                  <MenuItem value="true">Sim</MenuItem>
+                  <MenuItem value="false">Não</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid size={{ xs: 6, sm: 2 }}>
+              <FormControl fullWidth sx={inputStyles}>
+                <InputLabel>Antec. Patológicos</InputLabel>
+                <Select
+                  name="antecPathological"
+                  value={String(formData.anamnese.antecPathological)}
+                  label="Antec. Patológicos"
+                  onChange={handleAnamneseChange}
+                >
+                  <MenuItem value="true">Sim</MenuItem>
+                  <MenuItem value="false">Não</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid size={{ xs: 6, sm: 2 }}>
+              <FormControl fullWidth sx={inputStyles}>
+                <InputLabel>Neces. Psicobio.</InputLabel>
+                <Select
+                  name="necesPsicobio"
+                  value={String(formData.anamnese.necesPsicobio)}
+                  label="Neces. Psicobio."
+                  onChange={handleAnamneseChange}
+                >
+                  <MenuItem value="true">Sim</MenuItem>
+                  <MenuItem value="false">Não</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid size={{ xs: 6, sm: 2 }}>
+              <FormControl fullWidth sx={inputStyles}>
+                <InputLabel>Medicamentos em uso</InputLabel>
+                <Select
+                  name="medicationsInUse"
+                  value={String(formData.anamnese.medicationsInUse)}
+                  label="Medicamentos em uso"
+                  onChange={handleAnamneseChange}
+                >
+                  <MenuItem value="true">Sim</MenuItem>
+                  <MenuItem value="false">Não</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
           </Grid>
-          {/* Necessidades Psicobiológicas */}
+
+          {/* SEÇÕES NOVAS */}
           <Typography variant="h6" color="black" sx={{ mb: 2 }}>
             Necessidades Psicobiológicas
           </Typography>
           <Grid container spacing={2} mb={3}>
-            <Grid size={4}>
-              <Typography color="grey.700"> Padrão Respiratório: </Typography>
-              <Select
-                fullWidth
-                defaultValue="Eupneico"
-                sx={{
-                  ...inputStyles['& .MuiOutlinedInput-root'],
-                  borderRadius: '10px'
-                }}
-              >
-                <MenuItem value="Eupneico">Eupneico</MenuItem>
-                <MenuItem value="Dispneico">Dispneico</MenuItem>
-                <MenuItem value="Taquipneico">Taquipneico</MenuItem>
-                <MenuItem value="Bradipneico">Bradipneico</MenuItem>
-                <MenuItem value="Apneico">Apneico</MenuItem>
-                <MenuItem value="Cheyne-Stokes">Cheyne-Stokes</MenuItem>
-                <MenuItem value="Kussmaul">Kussmaul</MenuItem>
-                <MenuItem value="Outro">Outro</MenuItem>
-              </Select>
+            <Grid size={{ xs: 4 }}>
+              <FormControl fullWidth sx={inputStyles}>
+                <InputLabel>Padrão Respiratório</InputLabel>
+                <Select
+                  name="respiratoryPattern"
+                  value={formData.anamnese.respiratoryPattern}
+                  label="Padrão Respiratório"
+                  onChange={handleAnamneseChange}
+                >
+                  <MenuItem value="Dispneico">Dispneico</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
-            <Grid size={4}>
-              <Typography color="grey.700"> Ausculta Pulmonar: </Typography>
-              <Select
-                fullWidth
-                defaultValue="Murmúrio Vesicular Presente"
-                sx={{
-                  ...inputStyles['& .MuiOutlinedInput-root'],
-                  borderRadius: '10px'
-                }}
-              >
-                <MenuItem value="Murmúrio Vesicular Presente">
-                  Murmúrio Vesicular Presente (MV+)
-                </MenuItem>
-                <MenuItem value="Murmúrio Vesicular Diminuído">
-                  Murmúrio Vesicular Diminuído
-                </MenuItem>
-                <MenuItem value="Murmúrio Vesicular Abolido">
-                  Murmúrio Vesicular Abolido
-                </MenuItem>
-                <MenuItem value="Roncos">Roncos</MenuItem>
-                <MenuItem value="Sibilos">Sibilos</MenuItem>
-                <MenuItem value="Creptos">Creptos</MenuItem>
-                <MenuItem value="Estridor">Estridor</MenuItem>
-                <MenuItem value="Atrito Pleural">Atrito Pleural</MenuItem>
-                <MenuItem value="MV com Ruídos Adventícios">
-                  MV com Ruídos Adventícios
-                </MenuItem>
-                <MenuItem value="Normal">Normal</MenuItem>
-              </Select>
+            <Grid size={{ xs: 4 }}>
+              <FormControl fullWidth sx={inputStyles}>
+                <InputLabel>Ausculta Pulmonar</InputLabel>
+                <Select
+                  name="pulmonaryAuscultation"
+                  value={formData.anamnese.pulmonaryAuscultation}
+                  label="Ausculta Pulmonar"
+                  onChange={handleAnamneseChange}
+                >
+                  <MenuItem value="mv+">mv+</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
-            <Grid size={4}>
-              <Typography color="grey.700"> Coloração da pele: </Typography>
-              <Select
-                fullWidth
-                defaultValue="Normocorada"
-                sx={{
-                  ...inputStyles['& .MuiOutlinedInput-root'],
-                  borderRadius: '10px'
-                }}
-              >
-                <MenuItem value="Normocorada">Normocorada</MenuItem>
-                <MenuItem value="Pálida">Pálida</MenuItem>
-                <MenuItem value="Cianótica">Cianótica</MenuItem>
-                <MenuItem value="Ictérica">Ictérica</MenuItem>
-                <MenuItem value="Ruborizada">Ruborizada</MenuItem>
-                <MenuItem value="Hipocorada">Hipocorada</MenuItem>
-                <MenuItem value="Hiperemiada">Hiperemiada</MenuItem>
-              </Select>
+            <Grid size={{ xs: 4 }}>
+              <FormControl fullWidth sx={inputStyles}>
+                <InputLabel>Coloração da pele</InputLabel>
+                <Select
+                  name="skinColor"
+                  value={formData.anamnese.skinColor}
+                  label="Coloração da pele"
+                  onChange={handleAnamneseChange}
+                >
+                  <MenuItem value="Corada">Corada</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
           </Grid>
-          {/* Neuro */}
+
           <Typography variant="h6" color="black" sx={{ mb: 2 }}>
             Neuro
           </Typography>
-          <Box
-            sx={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: 2,
-              mb: 3,
-              '& > div': {
-                flexGrow: 1,
-                minWidth: { xs: '100%', md: '30%' }
-              }
-            }}
-          >
-            <Box>
-              <Typography sx={{ color: 'grey.700' }}>
-                Bulhas Cardíacas:
-              </Typography>
-              <Select
-                fullWidth
-                defaultValue="Normofonéticas"
-                sx={{
-                  ...inputStyles['& .MuiOutlinedInput-root'],
-                  borderRadius: '10px'
-                }}
-              >
-                <MenuItem value="Normofonéticas">Normofonéticas (BNF)</MenuItem>
-                <MenuItem value="Hipofonéticas">Hipofonéticas</MenuItem>
-                <MenuItem value="Hiperfonéticas">Hiperfonéticas</MenuItem>
-                <MenuItem value="Arrítmicas">Arrítmicas</MenuItem>
-                <MenuItem value="Com Sopros">Com Sopros</MenuItem>
-                <MenuItem value="Com 3ª Bulha">Com 3ª Bulha (B3)</MenuItem>
-                <MenuItem value="Com 4ª Bulha">Com 4ª Bulha (B4)</MenuItem>
-                <MenuItem value="Ruídos Dissociados">
-                  Ruídos Dissociados
-                </MenuItem>
-                <MenuItem value="Outro">Outro</MenuItem>
-              </Select>
-            </Box>
-            <Box>
-              <Typography sx={{ color: 'grey.700' }}>Pulso:</Typography>
-              <Select
-                fullWidth
-                defaultValue="Presente, Rítmico, Cheio"
-                sx={{
-                  ...inputStyles['& .MuiOutlinedInput-root'],
-                  borderRadius: '10px'
-                }}
-              >
-                <MenuItem value="Presente, Rítmico, Cheio">
-                  Presente, Rítmico, Cheio
-                </MenuItem>
-                <MenuItem value="Presente, Rítmico, Fraco">
-                  Presente, Rítmico, Fraco
-                </MenuItem>
-                <MenuItem value="Presente, Arrítmico">
-                  Presente, Arrítmico
-                </MenuItem>
-                <MenuItem value="Ausente">Ausente</MenuItem>
-                <MenuItem value="Filiforme">Filiforme</MenuItem>
-                <MenuItem value="Salto">Salto (Martelo d&apos;água)</MenuItem>
-                <MenuItem value="Alternante">Alternante</MenuItem>
-                <MenuItem value="Paradoxal">Paradoxal</MenuItem>
-              </Select>
-            </Box>
-            <Box>
-              <Typography sx={{ color: 'grey.700' }}>
-                Ritmo Cardíaco:
-              </Typography>
-              <Select
-                fullWidth
-                defaultValue="Sinusal"
-                sx={{
-                  ...inputStyles['& .MuiOutlinedInput-root'],
-                  borderRadius: '10px'
-                }}
-              >
-                <MenuItem value="Sinusal">Sinusal</MenuItem>
-                <MenuItem value="Taquicardia Sinusal">
-                  Taquicardia Sinusal
-                </MenuItem>
-                <MenuItem value="Bradicardia Sinusal">
-                  Bradicardia Sinusal
-                </MenuItem>
-                <MenuItem value="Fibrilação Atrial">Fibrilação Atrial</MenuItem>
-                <MenuItem value="Flutter Atrial">Flutter Atrial</MenuItem>
-                <MenuItem value="Taquicardia Supraventricular">
-                  Taquicardia Supraventricular (TSV)
-                </MenuItem>
-                <MenuItem value="Taquicardia Ventricular">
-                  Taquicardia Ventricular (TV)
-                </MenuItem>
-                <MenuItem value="Fibrilação Ventricular">
-                  Fibrilação Ventricular (FV)
-                </MenuItem>
-                <MenuItem value="Assistolia">Assistolia</MenuItem>
-                <MenuItem value="Bradicardia">Bradicardia</MenuItem>
-                <MenuItem value="Taquicardia">Taquicardia</MenuItem>
-                <MenuItem value="Outro Ritmo">Outro Ritmo</MenuItem>
-              </Select>
-            </Box>
-          </Box>
-          {/* Exame Neurológico */}
+          <Grid container spacing={2} mb={3}>
+            <Grid size={{ xs: 4 }}>
+              <FormControl fullWidth sx={inputStyles}>
+                <InputLabel>Bulhas Cardíacas</InputLabel>
+                <Select
+                  name="cardiacBubbles"
+                  value={formData.anamnese.cardiacBubbles}
+                  label="Bulhas Cardíacas"
+                  onChange={handleAnamneseChange}
+                >
+                  <MenuItem value="Ruídos diastólicos">
+                    Ruídos diastólicos
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid size={{ xs: 4 }}>
+              <FormControl fullWidth sx={inputStyles}>
+                <InputLabel>Pulso</InputLabel>
+                <Select
+                  name="pulse"
+                  value={formData.anamnese.pulse}
+                  label="Pulso"
+                  onChange={handleAnamneseChange}
+                >
+                  <MenuItem value="Subclávio">Subclávio</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid size={{ xs: 4 }}>
+              <FormControl fullWidth sx={inputStyles}>
+                <InputLabel>Ritmo</InputLabel>
+                <Select
+                  name="rhythm"
+                  value={formData.anamnese.rhythm}
+                  label="Ritmo"
+                  onChange={handleAnamneseChange}
+                >
+                  <MenuItem value="Taquicardia Ventricular">
+                    Taquicardia Ventricular
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+          </Grid>
+
           <Typography variant="h6" color="black" sx={{ mb: 2 }}>
-            Exame Neurológico
+            Cardio
           </Typography>
-          <Box
-            sx={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: 2,
-              mb: 3,
-              '& > div': {
-                flexGrow: 1,
-                minWidth: { xs: '100%', sm: '45%', md: '22%' }
-              }
-            }}
-          >
-            <Box>
+          <Grid container spacing={2} mb={3}>
+            <Grid size={3}>
               <Typography sx={{ color: 'grey.700' }}>Pupilas:</Typography>
               <Select
                 fullWidth
@@ -513,8 +641,8 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                   Sem Reação Fotomotora
                 </MenuItem>
               </Select>
-            </Box>
-            <Box>
+            </Grid>
+            <Grid size={3}>
               <Typography sx={{ color: 'grey.700' }}>Fala:</Typography>
               <Select
                 fullWidth
@@ -535,8 +663,8 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 <MenuItem value="Bradilalia">Bradilalia</MenuItem>
                 <MenuItem value="Taquilalia">Taquilalia</MenuItem>
               </Select>
-            </Box>
-            <Box>
+            </Grid>
+            <Grid size={3}>
               <Typography sx={{ color: 'grey.700' }}>
                 Nível de Consciência:
               </Typography>
@@ -558,8 +686,8 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 <MenuItem value="Comatoso">Comatoso</MenuItem>
                 <MenuItem value="Letárgico">Letárgico</MenuItem>
               </Select>
-            </Box>
-            <Box>
+            </Grid>
+            <Grid size={3}>
               <Typography sx={{ color: 'grey.700' }}>
                 Resposta Motora:
               </Typography>
@@ -581,73 +709,353 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
                 </MenuItem>
                 <MenuItem value="Sem Resposta">Sem Resposta</MenuItem>
               </Select>
-            </Box>
-          </Box>
-          {/* Blocos de texto */}
-          <Grid container spacing={2} mb={3}>
-            <Grid size={4}>
-              <TextField label="Alergias" fullWidth sx={inputStyles} />
-            </Grid>
-            <Grid size={4}>
-              <TextField
-                label="Antec. Patológicos"
-                fullWidth
-                sx={inputStyles}
-              />
-            </Grid>
-            <Grid size={4}>
-              <TextField
-                label="Medicamentos em uso"
-                fullWidth
-                sx={inputStyles}
-              />
-            </Grid>
-            <Grid size={6}>
-              <TextField label="Sinais e Sintomas" fullWidth sx={inputStyles} />
-            </Grid>
-            <Grid size={6}>
-              <TextField label="Cirurgias Prévias" fullWidth sx={inputStyles} />
-            </Grid>
-            <Grid size={12}>
-              <TextField label="Hipótese Médica" fullWidth sx={inputStyles} />
             </Grid>
           </Grid>
-          {/* Prescrições */}
-          <Grid
-            container
-            mb={3}
-            sx={{
-              display: 'flex',
-              justifyContent: 'flex-start',
-              alignItems: 'flex-start'
-            }}
-          >
-            <Grid size={6} sx={{ mr: 12 }}>
-              <Typography variant="h6" color="black">
+          {/* Blocos de texto */}
+          <Grid container spacing={2} mb={3}>
+            {/* Antecedentes Familiares */}
+            <Grid
+              size={{ xs: 12 }}
+              sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}
+            >
+              <Typography
+                variant="body1"
+                color="black"
+                sx={{ mr: 2, fontWeight: 500 }}
+              >
+                Antecedentes Familiares:
+              </Typography>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="familyHAS"
+                    sx={{ color: 'black' }}
+                    checked={formData.healthHistory.familyHAS}
+                    onChange={handleHealthHistoryChange}
+                  />
+                }
+                label="HAS"
+                slotProps={{ typography: { color: 'black' } }}
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="familyDM"
+                    sx={{ color: 'black' }}
+                    checked={formData.healthHistory.familyDM}
+                    onChange={handleHealthHistoryChange}
+                  />
+                }
+                label="DM"
+                slotProps={{ typography: { color: 'black' } }}
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="familyIAM"
+                    sx={{ color: 'black' }}
+                    checked={formData.healthHistory.familyIAM}
+                    onChange={handleHealthHistoryChange}
+                  />
+                }
+                label="IAM"
+                slotProps={{ typography: { color: 'black' } }}
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="familyAVC"
+                    sx={{ color: 'black' }}
+                    checked={formData.healthHistory.familyAVC}
+                    onChange={handleHealthHistoryChange}
+                  />
+                }
+                label="AVC"
+                slotProps={{ typography: { color: 'black' } }}
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="familyAlzheimer"
+                    checked={formData.healthHistory.familyAlzheimer}
+                    onChange={handleHealthHistoryChange}
+                    sx={{ color: 'black' }}
+                  />
+                }
+                label="Alzheimer"
+                slotProps={{ typography: { color: 'black' } }}
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="familyCA"
+                    sx={{ color: 'black' }}
+                    checked={formData.healthHistory.familyCA}
+                    onChange={handleHealthHistoryChange}
+                  />
+                }
+                label="CA"
+                slotProps={{ typography: { color: 'black' } }}
+              />
+            </Grid>
+
+            {/* Antecedentes Pessoais */}
+            <Grid
+              size={{ xs: 12 }}
+              sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}
+            >
+              <Typography
+                variant="body1"
+                color="black"
+                sx={{ mr: 2, fontWeight: 500 }}
+              >
+                Antecedentes Pessoais:
+              </Typography>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="ownHAS"
+                    sx={{ color: 'black' }}
+                    checked={formData.healthHistory.ownHAS}
+                    onChange={handleHealthHistoryChange}
+                  />
+                }
+                label="HAS"
+                slotProps={{ typography: { color: 'black' } }}
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="ownDM"
+                    sx={{ color: 'black' }}
+                    checked={formData.healthHistory.ownDM}
+                    onChange={handleHealthHistoryChange}
+                  />
+                }
+                label="DM"
+                slotProps={{ typography: { color: 'black' } }}
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="ownIAM"
+                    sx={{ color: 'black' }}
+                    checked={formData.healthHistory.ownIAM}
+                    onChange={handleHealthHistoryChange}
+                  />
+                }
+                label="IAM"
+                slotProps={{ typography: { color: 'black' } }}
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="ownAVC"
+                    sx={{ color: 'black' }}
+                    checked={formData.healthHistory.ownAVC}
+                    onChange={handleHealthHistoryChange}
+                  />
+                }
+                label="AVC"
+                slotProps={{ typography: { color: 'black' } }}
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="ownAlzheimer"
+                    sx={{ color: 'black' }}
+                    checked={formData.healthHistory.ownAlzheimer}
+                    onChange={handleHealthHistoryChange}
+                  />
+                }
+                label="Alzheimer"
+                slotProps={{ typography: { color: 'black' } }}
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="ownCA"
+                    sx={{ color: 'black' }}
+                    checked={formData.healthHistory.ownCA}
+                    onChange={handleHealthHistoryChange}
+                  />
+                }
+                label="CA"
+                slotProps={{ typography: { color: 'black' } }}
+              />
+            </Grid>
+          </Grid>
+
+          <Grid container spacing={2} mb={3}>
+            <Grid size={{ xs: 12, sm: 4 }}>
+              <TextField
+                label="Alergias"
+                name="allergiesType"
+                value={formData.anamnese.allergiesType}
+                onChange={handleAnamneseChange}
+                fullWidth
+                sx={inputStyles}
+                multiline
+                rows={3}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 4 }}>
+              <TextField
+                label="Antec. Patológicos"
+                name="antecPathologicalType"
+                value={formData.anamnese.antecPathologicalType}
+                onChange={handleAnamneseChange}
+                fullWidth
+                sx={inputStyles}
+                multiline
+                rows={3}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 4 }}>
+              <TextField
+                label="Medicamentos em uso"
+                name="medicationInUseType"
+                value={formData.anamnese.medicationInUseType}
+                onChange={handleAnamneseChange}
+                fullWidth
+                sx={inputStyles}
+                multiline
+                rows={3}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField
+                label="Sinais e Sintomas"
+                name="signsAndSymptoms"
+                value={formData.anamnese.signsAndSymptoms}
+                onChange={handleAnamneseChange}
+                error={!!errors.signsAndSymptoms}
+                helperText={errors.signsAndSymptoms}
+                fullWidth
+                sx={inputStyles}
+                multiline
+                rows={3}
+                required
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField
+                label="Cirurgias Prévias"
+                name="previousSurgeries"
+                value={formData.anamnese.previousSurgeries}
+                onChange={handleAnamneseChange}
+                fullWidth
+                sx={inputStyles}
+                multiline
+                rows={3}
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                label="Hipótese Médica"
+                name="medicalHypothesis"
+                value={formData.anamnese.medicalHypothesis}
+                onChange={handleAnamneseChange}
+                error={!!errors.medicalHypothesis}
+                helperText={errors.medicalHypothesis}
+                fullWidth
+                sx={inputStyles}
+                multiline
+                rows={4}
+                required
+              />
+            </Grid>
+          </Grid>
+
+          <Grid container spacing={2} mb={3}>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Typography variant="h6" color="black" sx={{ mb: 1 }}>
                 Prescrição de Medicação
               </Typography>
               <Button
                 onClick={() => setOpenMedicacaoPopup(true)}
                 variant="contained"
-                sx={{ ...buttonStyles, mt: 1, textTransform: 'uppercase' }}
+                sx={{
+                  ...buttonStyles,
+                  textTransform: 'uppercase',
+                  backgroundColor: '#007BFF'
+                }}
               >
                 ADICIONAR
               </Button>
+              <Box sx={{ mt: 2, maxHeight: 200, overflowY: 'auto' }}>
+                {formData.prescriptions.map((prescription, index) => (
+                  <Paper
+                    key={index}
+                    variant="outlined"
+                    sx={{
+                      p: 1.5,
+                      mb: 1,
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <Typography variant="body1">
+                      {/* >>> MUDE AQUI para a propriedade correta, ex: prescription.nome */}
+                      {prescription.name || 'Medicamento sem nome'}
+                    </Typography>
+                    <IconButton
+                      onClick={() => handleRemovePrescription(index)}
+                      color="error"
+                      size="small"
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </Paper>
+                ))}
+              </Box>
             </Grid>
-            <Grid size={6}>
-              <Typography variant="h6" color="black">
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Typography variant="h6" color="black" sx={{ mb: 1 }}>
                 Prescrição de Exames
               </Typography>
               <Button
                 onClick={() => setOpenExamePopup(true)}
                 variant="contained"
-                sx={{ ...buttonStyles, mt: 1, textTransform: 'uppercase' }}
+                sx={{
+                  ...buttonStyles,
+                  textTransform: 'uppercase',
+                  backgroundColor: '#007BFF'
+                }}
               >
                 ADICIONAR
               </Button>
+              <Box sx={{ mt: 2, maxHeight: 200, overflowY: 'auto' }}>
+                {formData.patientExams.map((exam, index) => (
+                  <Paper
+                    key={index}
+                    variant="outlined"
+                    sx={{
+                      p: 1.5,
+                      mb: 1,
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <Typography variant="body1">
+                      {/* >>> MUDE AQUI para a propriedade correta, ex: exam.nomeExame */}
+                      {exam.name || 'Exame sem nome'}
+                    </Typography>
+                    <IconButton
+                      onClick={() => handleRemoveExam(index)}
+                      color="error"
+                      size="small"
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </Paper>
+                ))}
+              </Box>
             </Grid>
           </Grid>
-          {/* Botões finais */}
+
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
             <Button
               variant="contained"
@@ -675,22 +1083,21 @@ const TelaConsulta = forwardRef<TelaConsultaHandle, TelaConsultaProps>(
             </Button>
           </Box>
         </Box>
-
-        {/* Pop-ups */}
         <PopupPrescricaoMedicacao
           open={openMedicacaoPopup}
           onClose={() => setOpenMedicacaoPopup(false)}
+          onAdd={handleAddPrescription}
         />
-
         <PopupPrescricaoExame
           open={openExamePopup}
           onClose={() => setOpenExamePopup(false)}
+          onAdd={handleAddExam}
         />
-
         <PopupAtestado
           open={openAtestadoPopup}
           onClose={() => setOpenAtestadoPopup(false)}
           patientData={paciente}
+          doctorName={session?.user?.unique_name || ''}
         />
       </>
     );

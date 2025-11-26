@@ -30,7 +30,9 @@ export default function Providers({ children }: { children: React.ReactNode }) {
             theme="colored"
           />
         </AppRouterCacheProvider>
-        <ReactQueryDevtools initialIsOpen={false} />
+        {process.env.NODE_ENV === 'development' && (
+          <ReactQueryDevtools initialIsOpen={false} />
+        )}
       </QueryClientProvider>
     </SessionProvider>
   );

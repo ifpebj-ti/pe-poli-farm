@@ -1,9 +1,11 @@
 'use client';
 
-import { useState } from 'react'; // NOVO
+import { useSession } from 'next-auth/react';
+import { useState } from 'react';
 
-import PopupConfirmacaoPrescricao from '@/src/components/PopUp/PopupConfirmacaoPrescricao'; // NOVO
+import PopupConfirmacaoPrescricao from '@/src/components/PopUp/PopupConfirmacaoPrescricao';
 
+import { PatientExam } from '@/src/lib/pacientes';
 import {
   Button,
   Dialog,
@@ -22,16 +24,40 @@ import {
 interface PopupProps {
   open: boolean;
   onClose: () => void;
+  onAdd: (exam: PatientExam) => void;
 }
 
-export default function PopupPrescricaoExame({ open, onClose }: PopupProps) {
-  // NOVO: Estado para controlar a confirmação
+export default function PopupPrescricaoExame({
+  open,
+  onClose,
+  onAdd
+}: PopupProps) {
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const { data: session } = useSession();
+  const [exam, setExam] = useState({
+    name: '',
+    description: '',
+    priority: 'BAIXA', // Corrigido para o valor esperado pelo backend
+    observations: ''
+  });
 
-  // NOVO: Função para lidar com o clique
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
+    setExam((prev) => ({ ...prev, [name]: value }));
+  };
+
   const handleAdicionarClick = () => {
-    onClose(); // Fecha o formulário
-    setConfirmOpen(true); // Abre a confirmação
+    const { name, description, priority } = exam;
+    onAdd({
+      name,
+      description,
+      priority,
+      professionalName: session?.user?.unique_name || '',
+      prescriptionDate: new Date()
+    });
+    onClose();
+    setConfirmOpen(true);
   };
 
   return (
@@ -45,10 +71,22 @@ export default function PopupPrescricaoExame({ open, onClose }: PopupProps) {
         <DialogContent>
           <Grid container spacing={2} sx={{ mt: 1 }}>
             <Grid size={{ xs: 12 }}>
-              <TextField label="Nome do exame:" fullWidth />
+              <TextField
+                label="Nome do exame:"
+                name="name"
+                value={exam.name}
+                onChange={handleChange}
+                fullWidth
+              />
             </Grid>
             <Grid size={{ xs: 12 }}>
-              <TextField label="Finalidade do exame:" fullWidth />
+              <TextField
+                label="Finalidade do exame:"
+                name="description"
+                value={exam.description}
+                onChange={handleChange}
+                fullWidth
+              />
             </Grid>
             <Grid size={{ xs: 12 }}>
               <FormControl fullWidth>
@@ -56,16 +94,26 @@ export default function PopupPrescricaoExame({ open, onClose }: PopupProps) {
                 <Select
                   labelId="prioridade-label"
                   label="Prioridade:"
-                  defaultValue="baixa"
+                  name="priority"
+                  value={exam.priority}
+                  onChange={handleChange}
                 >
-                  <MenuItem value="baixa">Baixa</MenuItem>
-                  <MenuItem value="media">Média</MenuItem>
-                  <MenuItem value="alta">Alta</MenuItem>
+                  <MenuItem value="BAIXA">Baixa</MenuItem>
+                  <MenuItem value="NORMAL">Média</MenuItem>
+                  <MenuItem value="ALTA">Alta</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
             <Grid size={{ xs: 12 }}>
-              <TextField label="Observações:" multiline rows={4} fullWidth />
+              <TextField
+                label="Observações:"
+                name="observations"
+                value={exam.observations}
+                onChange={handleChange}
+                multiline
+                rows={4}
+                fullWidth
+              />
             </Grid>
           </Grid>
         </DialogContent>
@@ -83,7 +131,6 @@ export default function PopupPrescricaoExame({ open, onClose }: PopupProps) {
           >
             Voltar
           </Button>
-          {/* ALTERADO: onClick chama a nova função */}
           <Button
             onClick={handleAdicionarClick}
             variant="contained"
@@ -101,7 +148,6 @@ export default function PopupPrescricaoExame({ open, onClose }: PopupProps) {
         </DialogActions>
       </Dialog>
 
-      {/* NOVO: Renderiza o pop-up de confirmação */}
       <PopupConfirmacaoPrescricao
         open={confirmOpen}
         onClose={() => setConfirmOpen(false)}

@@ -18,7 +18,7 @@ export default function CardResumoClinico() {
         Resumo Clínico:
       </Typography>
       <Typography variant="caption" sx={{ fontWeight: 500, color: '#000' }}>
-        Ultimo atendimento: 10/04/2025 com Dr.João
+        Ultimo atendimento: 10/07/2025 com Dr.João
       </Typography>
       <Typography variant="caption" sx={{ fontWeight: 500, color: '#000' }}>
         Hipoteses Medicas: Rinite; Gripe

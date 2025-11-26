@@ -34,7 +34,7 @@ export default function RelatorioPacienteHeader() {
             fontFamily: 'Roboto, sans-serif'
           }}
         >
-          Laura Oliveira
+          Netinho
         </Typography>
         <Typography
           variant="h5"
@@ -44,7 +44,7 @@ export default function RelatorioPacienteHeader() {
             fontFamily: 'Roboto, sans-serif'
           }}
         >
-          CPF: 123.456.789-10
+          CPF: 109.569.444-78
         </Typography>
         <Typography
           variant="h5"
@@ -54,7 +54,7 @@ export default function RelatorioPacienteHeader() {
             fontFamily: 'Roboto, sans-serif'
           }}
         >
-          SUS: 46743674
+          SUS: 123456789876543
         </Typography>
       </Box>
     </Box>

@@ -4,6 +4,7 @@ import { useState } from 'react'; // NOVO
 
 import PopupConfirmacaoPrescricao from '@/src/components/PopUp/PopupConfirmacaoPrescricao';
 
+import { PatientMedication } from '@/src/lib/pacientes';
 import {
   Button,
   Dialog,
@@ -18,19 +19,37 @@ import {
 interface PopupProps {
   open: boolean;
   onClose: () => void;
+  onAdd: (prescription: PatientMedication) => void;
 }
+
+const initialPrescriptionState = {
+  name: '',
+  posology: '',
+  type: '' // O backend espera um 'type', que pode ser a frequência ou outra coisa
+  // Adicione outros campos conforme o seu modelo do backend
+};
 
 export default function PopupPrescricaoMedicacao({
   open,
-  onClose
+  onClose,
+  onAdd
 }: PopupProps) {
   // NOVO: Estado para controlar a confirmação
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [prescription, setPrescription] = useState(initialPrescriptionState);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setPrescription((prev) => ({ ...prev, [name]: value }));
+  };
 
   // NOVO: Função para lidar com o clique
   const handleAdicionarClick = () => {
-    onClose(); // Fecha o formulário
-    setConfirmOpen(true); // Abre a confirmação
+    // 4. Chamar o onAdd com os dados do estado antes de fechar
+    onAdd(prescription as PatientMedication);
+    onClose();
+    setConfirmOpen(true);
+    setPrescription(initialPrescriptionState); // Limpa o formulário para a próxima vez
   };
 
   return (
@@ -44,19 +63,49 @@ export default function PopupPrescricaoMedicacao({
         <DialogContent>
           <Grid container spacing={2} sx={{ mt: 1 }}>
             <Grid size={{ xs: 12 }}>
-              <TextField label="Nome do Medicamento:" fullWidth />
+              <TextField
+                label="Nome do Medicamento:"
+                name="name"
+                value={prescription.name}
+                onChange={handleChange}
+                fullWidth
+              />
             </Grid>
             <Grid size={{ xs: 6 }}>
-              <TextField label="Posologia:" fullWidth />
+              <TextField
+                label="Posologia:"
+                name="posology"
+                value={prescription.posology}
+                onChange={handleChange}
+                fullWidth
+              />
             </Grid>
             <Grid size={{ xs: 6 }}>
-              <TextField label="Frequência (ex: 8/8h):" fullWidth />
+              <TextField
+                label="Frequência (ex: 8/8h):"
+                name="type"
+                value={prescription.type}
+                onChange={handleChange}
+                fullWidth
+              />
             </Grid>
             <Grid size={{ xs: 12 }}>
-              <TextField label="Duração de uso (dias):" fullWidth />
+              <TextField
+                label="Duração de uso (dias):"
+                name="duration"
+                // value={prescription.duration}
+                onChange={handleChange}
+                fullWidth
+              />
             </Grid>
             <Grid size={{ xs: 12 }}>
-              <TextField label="Observações:" multiline rows={4} fullWidth />
+              <TextField
+                label="Observações:"
+                name="observations"
+                multiline
+                rows={4}
+                fullWidth
+              />
             </Grid>
           </Grid>
         </DialogContent>
