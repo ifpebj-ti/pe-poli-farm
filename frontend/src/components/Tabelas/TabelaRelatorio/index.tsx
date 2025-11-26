@@ -55,6 +55,7 @@ export default function TabelaRelatorio() {
   const router = useRouter();
 
   // 3. Crie os estados para os dados, carregamento e erros
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pacientes, setPacientes] = useState<Paciente[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
