@@ -33,7 +33,7 @@ interface PatientWithLastExam {
 export default function TabelaHistoricoExames() {
   const { pacientes, isLoading, error } = useHistoricoExames();
   const [open, setOpen] = useState(false);
-const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [selectedExam, setSelectedExam] = useState<PatientExam | null>(null);
 
   // Tá ligado que a variável 'pacientes' precisa existir no escopo ou vir via props, né boy?
