@@ -1,7 +1,8 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useState, useMemo } from 'react';
 
+// 1. Importações necessárias
 import PopupDetalhes from '@/src/components/PopUp/PopUpDetalhes';
 
 import { useHistoricoExames } from '@/src/app/(auth-routes)/HistoricoExames/hooks/useHistoricoExames';
@@ -23,6 +24,7 @@ import {
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
+// Tipo para a estrutura da tabela (o que você quer no final)
 interface PatientWithLastExam {
   patient: Patient;
   lastExam: PatientExam;
@@ -34,11 +36,13 @@ export default function TabelaHistoricoExames() {
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [selectedExam, setSelectedExam] = useState<PatientExam | null>(null);
 
+  // The computation of patientsWithExams depends on the 'pacientes' variable provided by the useHistoricoExames hook. Ensure 'pacientes' is available in this component's scope.
   const patientsWithExams = useMemo(() => {
     if (!pacientes) return [];
 
     return pacientes
       .map((patient) => {
+        // Essa lógica aqui busca o atendimento mais recente que tenha exames
         const latestServiceWithExams = patient.services
           ?.filter((s) => s.medicalRecord?.patientExam?.length > 0)
           .sort(
@@ -48,6 +52,7 @@ export default function TabelaHistoricoExames() {
           )[0];
 
         if (latestServiceWithExams) {
+          // Pega o último exame desse atendimento
           const lastExam =
             latestServiceWithExams.medicalRecord.patientExam[
               latestServiceWithExams.medicalRecord.patientExam.length - 1

@@ -1,12 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import PopupDetalhesTratamento from '@/src/components/PopUp/PopUpDetalhesTratamento';
 
+import { api } from '@/src/services/api';
 import {
   Box,
   Button,
+  CircularProgress,
   Pagination,
   Paper,
   Table,
@@ -19,6 +21,8 @@ import {
 } from '@mui/material';
 
 type Paciente = {
+  id: number;
+  nome: string;
   paciente: string;
   profissional: string;
   data: string;
@@ -51,9 +55,32 @@ const pacientes = [
 ];
 
 export default function TabelaAcompanhamento() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_pacientes, setPacientes] = useState<Paciente[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const [open, setOpen] = useState(false);
   const [pacienteSelecionado, setPacienteSelecionado] =
     useState<Paciente | null>(null);
+
+  useEffect(() => {
+    const fetchPacientes = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get('/Patient/GetAll');
+        setPacientes(response.data);
+        setError(null);
+      } catch (err) {
+        console.error('Erro ao buscar pacientes:', err);
+        setError('Não foi possível carregar os dados dos pacientes.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPacientes();
+  }, []);
 
   const handleOpen = (paciente: Paciente) => {
     setPacienteSelecionado(paciente);
@@ -64,6 +91,36 @@ export default function TabelaAcompanhamento() {
     setOpen(false);
     setPacienteSelecionado(null);
   };
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: 400
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: 400
+        }}
+      >
+        <Typography color="error">{error}</Typography>
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ px: 4, pt: 3, display: 'flex', justifyContent: 'center' }}>
@@ -80,10 +137,9 @@ export default function TabelaAcompanhamento() {
                 <TableCell align="right" sx={{ paddingY: 1 }} />
               </TableRow>
             </TableHead>
-
             <TableBody>
-              {pacientes.map((paciente, index) => (
-                <TableRow key={index}>
+              {pacientes.map((paciente) => (
+                <TableRow key={paciente.id}>
                   <TableCell sx={{ paddingY: 1 }}>
                     <Typography sx={{ color: '#1351B4', cursor: 'pointer' }}>
                       {paciente.paciente}
