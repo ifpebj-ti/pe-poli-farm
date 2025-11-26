@@ -36,7 +36,7 @@ export default function TabelaHistoricoExames() {
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [selectedExam, setSelectedExam] = useState<PatientExam | null>(null);
 
-  // Tá ligado que a variável 'pacientes' precisa existir no escopo ou vir via props, né boy?
+  // The computation of patientsWithExams depends on the 'pacientes' variable provided by the useHistoricoExames hook. Ensure 'pacientes' is available in this component's scope.
   const patientsWithExams = useMemo(() => {
     if (!pacientes) return [];
 
