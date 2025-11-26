@@ -35,7 +35,7 @@ export default function TabelaHistoricoExames() {
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [selectedExam, setSelectedExam] = useState<PatientExam | null>(null);
 
-  // The computation of patientsWithExams depends on the 'pacientes' variable provided by the useHistoricoExames hook. Ensure 'pacientes' is available in this component's scope.
+  // Process patients data to extract those with exam history
   const patientsWithExams = useMemo(() => {
     if (!pacientes) return [];
 
