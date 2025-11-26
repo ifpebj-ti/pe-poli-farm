@@ -56,7 +56,7 @@ const pacientes = [
 
 export default function TabelaAcompanhamento() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [pacientes, setPacientes] = useState<Paciente[]>([]);
+  const [_pacientes, setPacientes] = useState<Paciente[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
