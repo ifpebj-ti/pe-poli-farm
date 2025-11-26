@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 
 // 1. Importações necessárias
 import PopupDetalhes from '@/src/components/PopUp/PopUpDetalhes';
