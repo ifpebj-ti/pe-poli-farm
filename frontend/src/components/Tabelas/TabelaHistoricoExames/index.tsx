@@ -5,7 +5,6 @@ import { useEffect, useState, useMemo } from 'react';
 // 1. Importações necessárias
 import PopupDetalhes from '@/src/components/PopUp/PopUpDetalhes';
 
-import { api } from '@/src/services/api';
 import { useHistoricoExames } from '@/src/app/(auth-routes)/HistoricoExames/hooks/useHistoricoExames';
 import { Patient, PatientExam } from '@/src/lib/pacientes'; // Importando os tipos corretos
 import {
