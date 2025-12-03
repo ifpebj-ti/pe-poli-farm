@@ -20,6 +20,12 @@ import {
 } from '@mui/material';
 import Grid from '@mui/material/Grid';
 
+import {
+  normalizeCPF,
+  normalizeRG,
+  normalizeTelephone
+} from './schemas/TextMaskAdapter';
+
 export default function FormDadosPaciente() {
   const [openPopup, setOpenPopup] = useState(false);
   const router = useRouter();
@@ -217,7 +223,11 @@ export default function FormDadosPaciente() {
                 fullWidth
                 required
                 value={formData.cpf}
-                onChange={handleChange}
+                onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                  const { value } = event.target;
+                  event.target.value = normalizeCPF(value);
+                  handleChange(event);
+                }}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 3 }}>
@@ -235,7 +245,11 @@ export default function FormDadosPaciente() {
                 name="rg"
                 fullWidth
                 value={formData.rg}
-                onChange={handleChange}
+                onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                  const { value } = event.target;
+                  event.target.value = normalizeRG(value);
+                  handleChange(event);
+                }}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 3 }}>
@@ -255,7 +269,11 @@ export default function FormDadosPaciente() {
                 name="phone"
                 fullWidth
                 value={formData.phone}
-                onChange={handleChange}
+                onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                  const { value } = event.target;
+                  event.target.value = normalizeTelephone(value);
+                  handleChange(event);
+                }}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
