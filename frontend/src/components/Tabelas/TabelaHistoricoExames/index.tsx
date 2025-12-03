@@ -1,11 +1,11 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 
 import PopupDetalhes from '@/src/components/PopUp/PopUpDetalhes';
 
 import { useHistoricoExames } from '@/src/app/(auth-routes)/HistoricoExames/hooks/useHistoricoExames';
-import { Patient, PatientExam } from '@/src/lib/pacientes'; // Importando os tipos corretos
+import { Patient, PatientExam } from '@/src/lib/pacientes';
 import {
   Box,
   Button,
@@ -28,11 +28,16 @@ interface PatientWithLastExam {
   lastExam: PatientExam;
 }
 
+const ROWS_PER_PAGE = 5; // qtd de registros por página
+
 export default function TabelaHistoricoExames() {
   const { pacientes, isLoading, error } = useHistoricoExames();
   const [open, setOpen] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [selectedExam, setSelectedExam] = useState<PatientExam | null>(null);
+
+  // controla página atual da tabela
+  const [page, setPage] = useState(1);
 
   const patientsWithExams = useMemo(() => {
     if (!pacientes) return [];
@@ -59,6 +64,26 @@ export default function TabelaHistoricoExames() {
       .filter((p): p is PatientWithLastExam => p !== null);
   }, [pacientes]);
 
+  // total de páginas baseado na quantidade real de exames
+  const totalPages = useMemo(() => {
+    if (!patientsWithExams.length) return 1;
+    return Math.ceil(patientsWithExams.length / ROWS_PER_PAGE);
+  }, [patientsWithExams]);
+
+  // garante que a página atual nunca fique maior que o total de páginas
+  useEffect(() => {
+    if (page > totalPages) {
+      setPage(totalPages);
+    }
+  }, [page, totalPages]);
+
+  // fatia os registros para mostrar somente os da página atual
+  const paginatedPatients = useMemo(() => {
+    const startIndex = (page - 1) * ROWS_PER_PAGE;
+    const endIndex = startIndex + ROWS_PER_PAGE;
+    return patientsWithExams.slice(startIndex, endIndex);
+  }, [patientsWithExams, page]);
+
   const handleOpen = (data: PatientWithLastExam) => {
     setSelectedPatient(data.patient);
     setSelectedExam(data.lastExam);
@@ -69,6 +94,13 @@ export default function TabelaHistoricoExames() {
     setOpen(false);
     setSelectedPatient(null);
     setSelectedExam(null);
+  };
+
+  const handleChangePage = (
+    _event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    setPage(value);
   };
 
   if (isLoading) {
@@ -126,7 +158,7 @@ export default function TabelaHistoricoExames() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {patientsWithExams.map((data) => (
+                  {paginatedPatients.map((data) => (
                     <TableRow key={data.patient.id}>
                       <TableCell sx={{ paddingY: 1 }}>
                         <Typography
@@ -195,9 +227,17 @@ export default function TabelaHistoricoExames() {
                 </TableBody>
               </Table>
             </TableContainer>
-            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-              <Pagination count={5} page={1} color="primary" />
-            </Box>
+
+            {totalPages > 1 && (
+              <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+                <Pagination
+                  count={totalPages}
+                  page={page}
+                  onChange={handleChangePage}
+                  color="primary"
+                />
+              </Box>
+            )}
           </>
         )}
       </Box>
