@@ -50,7 +50,13 @@ const pacientes = [
   }
 ];
 
-export default function TabelaAcompanhamento() {
+export default function TabelaAcompanhamento({
+  status,
+  inputData
+}: {
+  status: string;
+  inputData: string;
+}) {
   const [open, setOpen] = useState(false);
   const [pacienteSelecionado, setPacienteSelecionado] =
     useState<Paciente | null>(null);
@@ -82,44 +88,61 @@ export default function TabelaAcompanhamento() {
             </TableHead>
 
             <TableBody>
-              {pacientes.map((paciente, index) => (
-                <TableRow key={index}>
-                  <TableCell sx={{ paddingY: 1 }}>
-                    <Typography sx={{ color: '#1351B4', cursor: 'pointer' }}>
-                      {paciente.paciente}
-                    </Typography>
-                  </TableCell>
-                  <TableCell sx={{ paddingY: 1 }}>
-                    {paciente.profissional}
-                  </TableCell>
-                  <TableCell sx={{ paddingY: 1 }}>{paciente.data}</TableCell>
-                  <TableCell sx={{ paddingY: 1 }}>
-                    {paciente.tratamento}
-                  </TableCell>
-                  <TableCell sx={{ paddingY: 1 }}>{paciente.status}</TableCell>
-                  <TableCell align="right" sx={{ paddingY: 1 }}>
-                    <Button
-                      variant="contained"
-                      size="small"
-                      sx={{
-                        backgroundColor: '#1351B4',
-                        borderRadius: '8px',
-                        textTransform: 'none',
-                        fontWeight: 500,
-                        minWidth: 120,
-                        height: 30,
-                        marginRight: '18px',
-                        '&:hover': {
-                          backgroundColor: '#0f479e'
-                        }
-                      }}
-                      onClick={() => handleOpen(paciente)}
-                    >
-                      VER MAIS
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {pacientes
+                .filter((paciente) => {
+                  if (!status) return true;
+
+                  console.log(paciente.status, status);
+
+                  return paciente.status === status;
+                })
+                .filter((paciente) => {
+                  if (!inputData) return true;
+
+                  const normalizado = inputData.trim().toLowerCase();
+
+                  return paciente.paciente.toLowerCase().includes(normalizado);
+                })
+                .map((paciente, index) => (
+                  <TableRow key={index}>
+                    <TableCell sx={{ paddingY: 1 }}>
+                      <Typography sx={{ color: '#1351B4', cursor: 'pointer' }}>
+                        {paciente.paciente}
+                      </Typography>
+                    </TableCell>
+                    <TableCell sx={{ paddingY: 1 }}>
+                      {paciente.profissional}
+                    </TableCell>
+                    <TableCell sx={{ paddingY: 1 }}>{paciente.data}</TableCell>
+                    <TableCell sx={{ paddingY: 1 }}>
+                      {paciente.tratamento}
+                    </TableCell>
+                    <TableCell sx={{ paddingY: 1 }}>
+                      {paciente.status}
+                    </TableCell>
+                    <TableCell align="right" sx={{ paddingY: 1 }}>
+                      <Button
+                        variant="contained"
+                        size="small"
+                        sx={{
+                          backgroundColor: '#1351B4',
+                          borderRadius: '8px',
+                          textTransform: 'none',
+                          fontWeight: 500,
+                          minWidth: 120,
+                          height: 30,
+                          marginRight: '18px',
+                          '&:hover': {
+                            backgroundColor: '#0f479e'
+                          }
+                        }}
+                        onClick={() => handleOpen(paciente)}
+                      >
+                        VER MAIS
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </TableContainer>

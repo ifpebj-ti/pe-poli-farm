@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 
 import SearchIcon from '@mui/icons-material/Search';
 import {
@@ -17,8 +17,15 @@ import {
   FormControl
 } from '@mui/material';
 
-export default function AcompanhamentoHeader() {
-  const [status, setStatus] = useState('');
+export default function AcompanhamentoHeader({
+  status,
+  setStatus,
+  setInputData
+}: {
+  status: string;
+  setStatus: Dispatch<SetStateAction<string>>;
+  setInputData: Dispatch<SetStateAction<string>>;
+}) {
   const router = useRouter();
 
   const handleVoltarClick = () => {
@@ -93,6 +100,7 @@ export default function AcompanhamentoHeader() {
                 </InputAdornment>
               )
             }}
+            onChange={(event) => setInputData(event.target.value)}
           />
 
           <Button
@@ -141,9 +149,9 @@ export default function AcompanhamentoHeader() {
               sx={{ width: { xs: '100%', sm: 150 } }}
             >
               <MenuItem value="">Todos</MenuItem>
-              <MenuItem value="andamento">Em Andamento</MenuItem>
-              <MenuItem value="finalizado">Finalizado</MenuItem>
-              <MenuItem value="suspenso">Suspenso</MenuItem>
+              <MenuItem value="Em Andamento">Em Andamento</MenuItem>
+              <MenuItem value="Finalizado">Finalizado</MenuItem>
+              <MenuItem value="Suspenso">Suspenso</MenuItem>
             </Select>
           </FormControl>
         </Box>
