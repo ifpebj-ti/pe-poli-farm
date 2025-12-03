@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 
 // PopUps
 import PopUpConfirmacaoAtivar from '@/src/components/PopUp/PopUpConfirmacaoAtivar';
@@ -56,38 +56,60 @@ export function CardProfissionais() {
   const [openAtivar, setOpenAtivar] = useState(false);
   const [selectedProf, setSelectedProf] = useState<Profissional | null>(null);
 
+  // 🔹 Estado da paginação
+  const [page, setPage] = useState(1);
+  const rowsPerPage = 5;
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
+  // 🔹 Lista filtrada (busca)
   const filteredProfissionais = useMemo(() => {
-    if (!searchTerm) return profissionais as Profissional[];
-    return (profissionais as Profissional[]).filter(
+    const list = (profissionais as Profissional[]) || [];
+    if (!searchTerm) return list;
+
+    return list.filter(
       (p) =>
         p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         p.email.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [profissionais, searchTerm]);
 
+  // 🔹 Cálculo de páginas totais com base na lista filtrada
+  const totalPages = useMemo(() => {
+    if (!filteredProfissionais || filteredProfissionais.length === 0) return 0;
+    return Math.ceil(filteredProfissionais.length / rowsPerPage);
+  }, [filteredProfissionais, rowsPerPage]);
+
+  // 🔹 Garante que a página atual nunca fique acima do total
+  useEffect(() => {
+    if (totalPages > 0 && page > totalPages) {
+      setPage(totalPages);
+    }
+  }, [page, totalPages]);
+
+  // 🔹 Fatiar a lista para exibir só a página atual
+  const currentPageProfissionais = useMemo(() => {
+    if (!filteredProfissionais || filteredProfissionais.length === 0) return [];
+    const startIndex = (page - 1) * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+    return filteredProfissionais.slice(startIndex, endIndex);
+  }, [filteredProfissionais, page, rowsPerPage]);
+
   const handleDesativar = async () => {
-    // 1. Garante que tem um profissional selecionado
     if (!selectedProf) {
       alert('Nenhum profissional selecionado!');
       return;
     }
 
     try {
-      // 2. Chama o endpoint da API com o ID do usuário
       await api.patch(`/User/disable/${selectedProf.id}`);
-
-      // 3. AVISA A TELA PARA ATUALIZAR OS DADOS (MUITO IMPORTANTE!)
-      window.location.reload(); // Isso vai fazer seu hook buscar os dados de novo
-
+      window.location.reload();
       alert(`Profissional ${selectedProf.name} desativado com sucesso!`);
     } catch (err) {
       console.error('Erro ao desativar profissional:', err);
       alert('Oxente! Deu um erro ao desativar o profissional.');
     } finally {
-      // 4. Fecha o popup e limpa a seleção
       setOpenDesativar(false);
       setSelectedProf(null);
     }
@@ -121,7 +143,10 @@ export function CardProfissionais() {
             backgroundColor: 'white'
           }}
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setPage(1); // reset página ao mudar busca
+          }}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -172,8 +197,18 @@ export function CardProfissionais() {
                   <Typography color="error">{error}</Typography>
                 </TableCell>
               </TableRow>
+            ) : currentPageProfissionais.length === 0 ? (
+              <TableRow>
+                <TableCell
+                  colSpan={isMobile ? 3 : 5}
+                  align="center"
+                  sx={{ py: 4 }}
+                >
+                  <Typography>Nenhum profissional encontrado.</Typography>
+                </TableCell>
+              </TableRow>
             ) : (
-              filteredProfissionais.map((profissional) => (
+              currentPageProfissionais.map((profissional) => (
                 <TableRow
                   key={profissional.id}
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -273,14 +308,22 @@ export function CardProfissionais() {
           mt: 3
         }}
       >
-        <Pagination
-          count={5}
-          color="primary"
-          sx={{
-            mr: { xs: 0, sm: '35%' },
-            alignSelf: { xs: 'center', sm: 'end' }
-          }}
-        />
+        {/* 🔹 Paginação só aparece se existir mais de 1 página */}
+        {totalPages > 1 && (
+          <Pagination
+            count={totalPages}
+            page={page}
+            onChange={(_, value) => setPage(value)}
+            color="primary"
+            sx={{
+              mr: { xs: 0, sm: '35%' },
+              alignSelf: { xs: 'center', sm: 'end' }
+            }}
+            showFirstButton
+            showLastButton
+          />
+        )}
+
         <Button
           variant="outlined"
           color="primary"

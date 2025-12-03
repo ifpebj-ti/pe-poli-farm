@@ -18,6 +18,7 @@ const linkList = [
     href: '#'
   }
 ];
+
 export default function Inicio() {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -25,49 +26,56 @@ export default function Inicio() {
   useEffect(() => {
     // Este efeito será executado quando a sessão for carregada
     if (status === 'authenticated') {
-      // Graças ao nosso 'next-auth.d.ts', o TypeScript conhece 'firstAccess'
       const firstAccess = session.user?.isUserUpdatePassword;
       console.log('SESSÃO COMPLETA NO CLIENTE:', session);
 
-      // Se for o primeiro acesso, redireciona para a página de troca de senha
       if (firstAccess === 'true') {
-        // Ajuste para 'True' ou 'False' conforme seu token
         router.replace('/NovoAcesso');
       }
     } else if (status === 'unauthenticated') {
-      // Se por algum motivo ele chegar aqui sem estar logado, volta para o login
       router.replace('/');
     }
   }, [status, session, router]);
 
-  // Enquanto a sessão está carregando, podemos mostrar um loader
   if (status === 'loading') {
     return <p>Carregando sua sessão...</p>;
   }
 
   return (
-    <Box sx={{ backgroundColor: 'white', height: '100vh', width: '100%' }}>
+    <Box
+      sx={{
+        backgroundColor: 'white',
+        minHeight: '100vh', // 🔹 altura mínima em vez de fixa
+        width: '100%',
+        overflowX: 'hidden' // 🔹 evita scroll horizontal
+      }}
+    >
       <NavBar />
-      <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
+      <Container
+        maxWidth="xl"
+        sx={{
+          mt: 4,
+          mb: 4,
+          pb: 4
+        }}
+      >
         <BreadCrumb {...{ linkList }} />
         <Typography
           variant="h4"
           component="h1"
           gutterBottom
-          sx={{ fontWeight: '500', color: 'black', marginTop: '24px' }}
+          sx={{ fontWeight: '500', color: 'black', mt: 3 }}
         >
-          Inicio
+          Início
         </Typography>
+
         <MenuInicio />
 
-        {/* Usando Grid v2. Note que a prop "item" foi removida dos filhos. */}
-        <Grid container spacing={4} sx={{ mt: 2, pb: 10 }}>
-          {/* Coluna da Esquerda (sem a prop "item") */}
+        <Grid container spacing={4} sx={{ mt: 2 }}>
           <Grid size={{ xs: 12, md: 8 }}>
             <CardEstatistica />
           </Grid>
 
-          {/* Coluna da Direita (sem a prop "item") */}
           <Grid size={{ xs: 12, md: 4 }}>
             <AgendamentoCard />
           </Grid>
