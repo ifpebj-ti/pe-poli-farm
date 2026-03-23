@@ -21,6 +21,7 @@ import {
 import Grid from '@mui/material/Grid';
 
 import {
+  normalizeCEP,
   normalizeCPF,
   normalizeRG,
   normalizeTelephone
@@ -298,7 +299,11 @@ export default function FormDadosPaciente() {
                 name="cep"
                 fullWidth
                 value={formData.address.cep}
-                onChange={handleAddressChange}
+                onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                  const { value } = event.target;
+                  event.target.value = normalizeCEP(value);
+                  handleAddressChange(event);
+                }}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>

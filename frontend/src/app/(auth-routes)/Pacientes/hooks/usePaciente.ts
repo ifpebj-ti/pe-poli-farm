@@ -24,7 +24,7 @@ export function usePacientes() {
 
       try {
         // -> ALTERAÇÃO: Chamada única e direta para o endpoint getAll
-        const response = await api.get<Patient[]>('/Patient/getAll');
+        const response = await api.get<Patient[]>('/Patient/GetAll');
         setPacientes(response.data);
       } catch (err) {
         console.error('Erro ao buscar todos os pacientes:', err);
