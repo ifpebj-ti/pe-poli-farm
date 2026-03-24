@@ -1,12 +1,10 @@
+import { AppointmentData, CreateAppointment } from '../lib/appointment';
 import { api } from './api';
 
-export const getAppointments = async (date: Date) => {
+export const getAllAppointments = async (): Promise<AppointmentData[]> => {
   try {
-    const response = await api.get('/Appointment', {
-      params: {
-        ScheduledAt: date.toISOString()
-      }
-    });
+    const response = await api.get<AppointmentData[]>('/Appointment');
+
     return response.data;
   } catch (error) {
     console.error('Error fetching appointments:', error);
@@ -14,15 +12,24 @@ export const getAppointments = async (date: Date) => {
   }
 };
 
-export interface AppointmentData {
-  patientId: string;
-  professionalId: string;
-  specialty: string;
-  scheduledAt: string;
-  status: number;
-}
+export const getAppointments = async (
+  date: Date
+): Promise<AppointmentData[]> => {
+  try {
+    const response = await api.get<AppointmentData[]>('/Appointment', {
+      params: {
+        scheduledAt: date.toISOString()
+      }
+    });
 
-export const createAppointment = async (appointmentData: AppointmentData) => {
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching appointments:', error);
+    throw error;
+  }
+};
+
+export const createAppointment = async (appointmentData: CreateAppointment) => {
   try {
     const response = await api.post('/Appointment', appointmentData);
     return response.data;

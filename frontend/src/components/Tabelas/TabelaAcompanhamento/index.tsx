@@ -5,6 +5,11 @@ import { useState } from 'react';
 import PopupDetalhesTratamento from '@/src/components/PopUp/PopUpDetalhesTratamento';
 
 import {
+  AppointmentData,
+  AppointmentStatusEnum,
+  appointmentStatusLabels
+} from '@/src/lib/appointment';
+import {
   Box,
   Button,
   Pagination,
@@ -26,45 +31,23 @@ type Paciente = {
   status: string;
 };
 
-const pacientes = [
-  {
-    paciente: 'Netinho',
-    profissional: 'Dr. João Silva',
-    data: '17/07/2025',
-    tratamento: 'Consulta de Rotina',
-    status: 'Finalizado'
-  },
-  {
-    paciente: 'Beatriz Lima',
-    profissional: 'Dr. João Silva',
-    data: '17/07/2025',
-    tratamento: 'Sessão de Fisioterapia',
-    status: 'Em Andamento'
-  },
-  {
-    paciente: 'Fernando Martins',
-    profissional: 'Dr. João Silva',
-    data: '18/07/2025',
-    tratamento: 'Exame de Sangue',
-    status: 'Agendado'
-  }
-];
-
 export default function TabelaAcompanhamento({
   status,
-  inputData
+  inputData,
+  appointments
 }: {
   status: string;
   inputData: string;
+  appointments: AppointmentData[];
 }) {
   const [open, setOpen] = useState(false);
   const [pacienteSelecionado, setPacienteSelecionado] =
     useState<Paciente | null>(null);
 
-  const handleOpen = (paciente: Paciente) => {
-    setPacienteSelecionado(paciente);
-    setOpen(true);
-  };
+  //  const handleOpen = (paciente: Paciente) => {
+  //    setPacienteSelecionado(paciente);
+  //    setOpen(true);
+  //  };
 
   const handleClose = () => {
     setOpen(false);
@@ -88,37 +71,43 @@ export default function TabelaAcompanhamento({
             </TableHead>
 
             <TableBody>
-              {pacientes
-                .filter((paciente) => {
+              {appointments
+                .filter((appointment) => {
                   if (!status) return true;
 
-                  console.log(paciente.status, status);
-
-                  return paciente.status === status;
+                  return appointment.status === status;
                 })
-                .filter((paciente) => {
+                .filter((appointment) => {
                   if (!inputData) return true;
 
                   const normalizado = inputData.trim().toLowerCase();
 
-                  return paciente.paciente.toLowerCase().includes(normalizado);
+                  return appointment.patientName
+                    .toLowerCase()
+                    .includes(normalizado);
                 })
-                .map((paciente, index) => (
+                .map((appointment, index) => (
                   <TableRow key={index}>
                     <TableCell sx={{ paddingY: 1 }}>
                       <Typography sx={{ color: '#1351B4', cursor: 'pointer' }}>
-                        {paciente.paciente}
+                        {appointment.patientName}
                       </Typography>
                     </TableCell>
                     <TableCell sx={{ paddingY: 1 }}>
-                      {paciente.profissional}
-                    </TableCell>
-                    <TableCell sx={{ paddingY: 1 }}>{paciente.data}</TableCell>
-                    <TableCell sx={{ paddingY: 1 }}>
-                      {paciente.tratamento}
+                      {appointment.professionalName}
                     </TableCell>
                     <TableCell sx={{ paddingY: 1 }}>
-                      {paciente.status}
+                      {appointment.scheduledAt.toLocaleDateString('pt-BR')}
+                    </TableCell>
+                    <TableCell sx={{ paddingY: 1 }}>
+                      {appointment.specialty}
+                    </TableCell>
+                    <TableCell sx={{ paddingY: 1 }}>
+                      {
+                        appointmentStatusLabels[
+                          appointment.status as AppointmentStatusEnum
+                        ]
+                      }
                     </TableCell>
                     <TableCell align="right" sx={{ paddingY: 1 }}>
                       <Button
@@ -136,7 +125,7 @@ export default function TabelaAcompanhamento({
                             backgroundColor: '#0f479e'
                           }
                         }}
-                        onClick={() => handleOpen(paciente)}
+                        //onClick={() => handleOpen(appointment)}
                       >
                         VER MAIS
                       </Button>

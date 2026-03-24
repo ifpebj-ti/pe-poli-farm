@@ -149,9 +149,10 @@ export default function AcompanhamentoHeader({
               sx={{ width: { xs: '100%', sm: 150 } }}
             >
               <MenuItem value="">Todos</MenuItem>
-              <MenuItem value="Em Andamento">Em Andamento</MenuItem>
-              <MenuItem value="Finalizado">Finalizado</MenuItem>
-              <MenuItem value="Suspenso">Suspenso</MenuItem>
+              <MenuItem value="Pending">Pendente</MenuItem>
+              <MenuItem value="Confirmed">Confirmado</MenuItem>
+              <MenuItem value="Canceled">Suspenso</MenuItem>
+              <MenuItem value="Completed">Finalizado</MenuItem>
             </Select>
           </FormControl>
         </Box>
