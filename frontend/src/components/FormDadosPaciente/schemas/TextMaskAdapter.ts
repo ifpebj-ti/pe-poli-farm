@@ -17,6 +17,14 @@ export function normalizeCPF(value: string) {
     .replace(/(\d{3})(\d)/, '$1-$2');
 }
 
+export function normalizeCEP(value: string) {
+  if (!value) return '';
+
+  const digits = noMask(value);
+
+  return digits.slice(0, 8).replace(/(\d{5})(\d)/, '$1-$2');
+}
+
 export function normalizeRG(value: string) {
   if (noMaskRG(value).length <= 9) {
     // Aplica o formato para RG com números e pontos: XX.XXX.XXX
