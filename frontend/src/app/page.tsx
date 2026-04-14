@@ -4,9 +4,9 @@ import { CardLogin } from '../components/Cards/CardLogin';
 
 export default function Login() {
   return (
-    <div className="min-h-screen bg-[url('/Login.png')] bg-no-repeat bg-cover bg-center flex justify-center items-center gap-x-36 h-full">
+    <div className="min-h-screen bg-[url('/Login.png')] bg-no-repeat bg-cover bg-center flex justify-center items-center gap-x-36 h-full p-2">
       <Image
-        className="h-3/4"
+        className="hidden lg:block h-[75vh]"
         src="/DoctorLogin.svg"
         alt="imagem ilustrativa de doutor"
         width={400}
