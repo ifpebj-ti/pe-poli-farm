@@ -121,7 +121,14 @@ export default function PopupDetalhesTratamento({
           )}
         </DialogContent>
 
-        <DialogActions sx={{ padding: '16px 24px' }}>
+        <DialogActions
+          sx={{
+            padding: '16px 24px',
+            '@media print': {
+              display: 'none'
+            }
+          }}
+        >
           <Button
             variant="outlined"
             onClick={handleClose}
