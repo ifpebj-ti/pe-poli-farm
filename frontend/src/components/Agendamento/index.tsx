@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 
 import PopupAgendamentoSucesso from '@/src/components/PopUp/PopUpConfirmaçãoAgendamento';
 
+import { useAppointments } from '@/src/hooks/useAppointments';
 import { Profissional } from '@/src/lib/profissionais';
 import { api } from '@/src/services/api';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
@@ -26,7 +27,6 @@ import {
   CircularProgress
 } from '@mui/material';
 
-import { useAppointments } from './hooks/useAppointments';
 import { useCreateAppointment } from './hooks/useCreateAppointment';
 
 // --- COMPONENTE PRINCIPAL ---
@@ -54,12 +54,12 @@ export default function TelaAgendamentoContent() {
   });
 
   const eventos = appointments.map((app) => {
-    const start = new Date(app.start);
+    const start = new Date(app.scheduledAt);
     const end = new Date(start.getTime() + 30 * 60 * 1000); // 30 min duration
     return {
       start,
       end,
-      title: app.title
+      title: app.specialty
     };
   });
 

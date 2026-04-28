@@ -1,15 +1,13 @@
 import { useState } from 'react';
 
-import {
-  createAppointment,
-  AppointmentData
-} from '@/src/services/AppointmentService';
+import { CreateAppointment } from '@/src/lib/appointment';
+import { createAppointment } from '@/src/services/AppointmentService';
 
 export const useCreateAppointment = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const createNewAppointment = async (appointmentData: AppointmentData) => {
+  const createNewAppointment = async (appointmentData: CreateAppointment) => {
     setIsLoading(true);
     setError(null);
     try {
