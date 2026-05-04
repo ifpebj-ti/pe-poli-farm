@@ -1,0 +1,68 @@
+name: Formatar PR do Dependabot
+
+on:
+  pull_request:
+    types: [opened]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  formatar-pr:
+    if: github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Formatar corpo do PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          REPO: ${{ github.repository }}
+        run: |
+          BODY=$(cat <<EOF
+          ## Descricao
+
+          $PR_TITLE
+
+          ## Tipo de mudanca
+
+          <!-- Selecione EXATAMENTE UMA opcao — a pipeline le este campo para gerar a versao automaticamente -->
+
+          - [ ] \`novo-marco\` — mudanca grande que quebra compatibilidade ou representa uma nova versao major **(X.0.0)**
+          - [ ] \`nova-feature\` — nova funcionalidade ou melhoria sem quebrar o que ja existe **(0.X.0)**
+          - [ ] \`bug-fix\` — correcao de um comportamento incorreto **(0.0.X)**
+          - [x] \`outros\` — refatoracao, ajuste de config, documentacao, etc. **(0.0.X)**
+
+          ## Como testar
+
+          <!-- Descreva os passos para validar as mudancas -->
+
+          1. Verificar se o build passa apos a atualizacao das dependencias
+          2. Confirmar que os testes automatizados continuam passando
+          3. Validar que nao ha breaking changes nas dependencias atualizadas
+
+          ## Screenshots (se aplicavel)
+
+          <!-- Cole prints ou GIFs da interface, se houver mudancas visuais -->
+
+          N/A — atualizacao de dependencias
+
+          ## Checklist
+
+          - [x] Testei localmente e esta funcionando
+          - [x] Nao quebrei nenhuma funcionalidade existente
+          - [x] O codigo esta limpo e sem console.log / debug desnecessario
+          - [x] Atualizei a documentacao, se necessario
+
+          ---
+
+          > _Este template e lido automaticamente pela pipeline de CI/CD. Certifique-se de marcar **apenas uma** opcao no tipo de mudanca._
+          EOF
+          )
+
+          gh api \
+            --method PATCH \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/$REPO/pulls/$PR_NUMBER" \
+            -f body="$BODY"
