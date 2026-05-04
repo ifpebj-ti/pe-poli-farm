@@ -1,0 +1,35 @@
+version: 2
+updates:
+  # Backend (NuGet)
+  - package-ecosystem: "nuget"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    allow:
+      - dependency-type: "all"
+    commit-message:
+      prefix: "chore"
+    labels:
+      - "type: chore"
+    groups:
+      dependencias-backend:
+        patterns:
+          - "*"
+
+  # Frontend (npm)
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    allow:
+      - dependency-type: "all"
+    commit-message:
+      prefix: "chore"
+    labels:
+      - "type: chore"
+    groups:
+      dependencias-frontend:
+        patterns:
+          - "*"
