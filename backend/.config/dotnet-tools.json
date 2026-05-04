@@ -3,13 +3,13 @@
   "isRoot": true,
   "tools": {
     "dotnet-ef": {
-      "version": "9.0.4",
+      "version": "10.0.7",
       "commands": [
         "dotnet-ef"
       ]
     },
     "dotnet-coverage": {
-      "version": "17.14.2",
+      "version": "18.6.2",
       "commands": [
         "dotnet-coverage"
       ]
